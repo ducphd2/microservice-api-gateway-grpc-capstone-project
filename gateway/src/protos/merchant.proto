@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package merchant;
+
+service MerchantServiceGrpc {
+    rpc register (InputRegisterRequest) returns (RegisterResponse) {}
+}
+
+message InputRegisterRequest {
+    string email = 1;
+    string password = 2;
+    string confirmPassword = 3;
+    string name = 4;
+    string phone = 5;
+    string merchantPhone = 6;
+    string merchantName = 7;
+    string merchantAddress = 8;
+    string cityCode = 9;
+    string districtCode = 10;
+    string wardCode = 11;
+    string merchantSubdomain = 12;
+}
+
+message RegisterResponse {
+    User user = 1;
+    string accessToken = 2;
+}
+
+message User {
+    int32 id = 1;
+    string email = 2;
+    string username = 3;
+    string age = 4;
+    UserRole role = 5;
+    int32 createdAt = 6;
+    int32 updatedAt = 7;
+}
+
+enum UserRole {
+    ADMIN = 1;
+    USER = 2;
+}

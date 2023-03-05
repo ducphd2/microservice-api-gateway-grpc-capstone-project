@@ -21,5 +21,6 @@
     "editor.formatOnPaste": false,
     "[json]": {
         "editor.formatOnSave": false
-    }
+    },
+    "prettier.printWidth": 120
 }

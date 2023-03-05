@@ -38,6 +38,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/uuid": "^9.0.1",
     "argon2": "^0.30.1",
+    "dotenv": "^16.0.3",
     "grpc": "^1.24.11",
     "jsonwebtoken": "^8.5.1",
     "mikro-orm": "^5.5.0",

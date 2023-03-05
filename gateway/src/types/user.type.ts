@@ -1,14 +1,10 @@
-import {
-  Field,
-  ObjectType,
-  registerEnumType,
-  Int,
-  GraphQLISODateTime,
-} from '@nestjs/graphql';
+import { Field, HideField, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { BaseType } from './base.type';
 
 export enum UserRole {
-  ADMIN = 1,
-  USER = 2,
+  SUPER_ADMIN = 1,
+  ADMIN = 2,
+  USER = 3,
 }
 
 registerEnumType(UserRole, {
@@ -16,25 +12,17 @@ registerEnumType(UserRole, {
 });
 
 @ObjectType()
-export class User {
-  @Field((_type) => Int)
-  id: number;
-
+export class User extends BaseType {
   @Field()
   email: string;
 
-  @Field((_type) => String)
+  @HideField()
+  // @Field(() => String)
+  password: string;
+
+  @Field(() => String)
   username: string;
 
-  @Field((_type) => Int)
-  age: number;
-
-  @Field((_type) => UserRole)
-  role: UserRole = UserRole.USER;
-
-  @Field(() => Int)
-  createdAt: number;
-
-  @Field(() => Int)
-  updatedAt: number;
+  @Field(() => UserRole)
+  role: UserRole = UserRole.ADMIN;
 }

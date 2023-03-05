@@ -1,13 +1,12 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { CvModule } from './cv/cv.module';
-import { EducationCertificationModule } from './education_certification/education_certification.module';
-import { ExperienceProjectModule } from './experience_project/experience_project.module';
-import { WorkExperienceModule } from './work_experience/work_experience.module';
+import { GqlLoggingInterceptor } from './interceptors/logging.interceptor';
+import { MerchantModule } from './merchant/merchant.module';
 
 @Module({
   imports: [
@@ -26,11 +25,14 @@ import { WorkExperienceModule } from './work_experience/work_experience.module';
         return { req, res };
       },
     }),
-    CvModule,
-    EducationCertificationModule,
     AuthModule,
-    WorkExperienceModule,
-    ExperienceProjectModule,
+    MerchantModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: GqlLoggingInterceptor,
+    },
   ],
 })
 export class AppModule {}

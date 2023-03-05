@@ -3,118 +3,55 @@
 # ------------------------------------------------------
 
 type User {
-  id: Int!
-  email: String!
-  username: String!
-  age: Int!
-  role: UserRole!
+  id: ID!
   createdAt: Int!
   updatedAt: Int!
+  email: String!
+  username: String!
+  role: UserRole!
 }
 
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   USER
 }
 
+type Profile {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  userId: Int!
+  fullName: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  dateOfBirth: Int!
+  monthOfBirth: Int!
+  yearOfBirth: Int!
+  type: ProfileType!
+}
+
+enum ProfileType {
+  CUSTOMER
+  EMPLOYEE
+}
+
 type ResponseAuthFromGrpc {
   user: User!
+  profile: Profile!
   accessToken: String!
 }
 
-type Cv {
-  id: Int!
-  name: String!
-  gender: String!
-  nationality: String!
-  objective: String!
-  summary: String!
-  isDeleted: Boolean!
-  userId: Int!
-  educationCertifications: [EducationCertification!]!
-  workExperiences: [WorkExperience!]!
-  experienceProjects: [ExperienceProject!]!
-}
-
-type EducationCertification {
-  id: Int!
-  name: String!
-  time: String!
-  major: String!
-  isDeleted: Boolean!
-  cv: Cv!
-}
-
-type WorkExperience {
-  id: Int!
-  time: String!
-  company: String!
-  jobTitle: String!
-  jobDescription: String!
-  isDeleted: Boolean!
-  cv: Cv!
-  experienceProjects: [ExperienceProject!]!
-}
-
-type ExperienceProject {
-  id: Int!
-  name: String!
-  time: String!
-  projectDescription: String!
-  role: String!
-  responsibilities: String!
-  programmingLanguages: String!
-  isDeleted: Boolean!
-  cv: Cv!
-  workExperience: WorkExperience!
-}
-
 type Query {
-  getOneCv(cv_id: Float!): Cv!
   isAdmin: Boolean!
-  findEcs(cvId: Float!): [EducationCertification!]!
-  findWes(cvId: Float!): [WorkExperience!]!
-  findEps(cvId: Float!): [ExperienceProject!]!
 }
 
 type Mutation {
-  createCv(inputCreateCv: InputCreateCvRequest!): Cv!
   login(inputLogin: InputLoginRequest!): ResponseAuthFromGrpc!
   register(inputRegister: InputRegisterRequest!): ResponseAuthFromGrpc!
-}
-
-input InputCreateCvRequest {
-  name: String!
-  gender: String!
-  nationality: String!
-  objective: String
-  summary: String
-  educationCertifications: [InputCreateEducationCertification!]
-  workExperiences: [InputCreateWorkExperience!]
-  experienceProjects: [InputCreateExperienceProject!]
-}
-
-input InputCreateEducationCertification {
-  name: String
-  time: String
-  major: String
-}
-
-input InputCreateWorkExperience {
-  time: String
-  company: String!
-  jobTitle: String
-  jobDescription: String
-}
-
-input InputCreateExperienceProject {
-  name: String
-  time: String
-  projectDescription: String
-  role: String
-  responsibilities: String
-  programmingLanguages: String
-  workExperience: InputCreateWorkExperience!
 }
 
 input InputLoginRequest {
@@ -126,4 +63,13 @@ input InputRegisterRequest {
   email: String!
   password: String!
   confirmPassword: String!
+  fullName: String!
+  phone: String!
+  merchantPhone: String!
+  merchantName: String!
+  merchantAddress: String!
+  cityCode: Float!
+  districtCode: Float!
+  wardCode: Float!
+  merchantSubdomain: String!
 }

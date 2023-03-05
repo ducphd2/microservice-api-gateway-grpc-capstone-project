@@ -1,9 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { InputLoginRequest } from './interfaces/inputLoginRequest';
 import { UserService } from './user.service';
-import { InputRegisterRequest } from './interfaces/inputRegisterRequest';
-import { InputPermissionRequest } from './interfaces/inputPermissionRequest';
+import {
+  InputLoginRequest,
+  InputRegisterUserRequest,
+} from '../interfaces/user';
 
 @Controller()
 export class UserController {
@@ -15,12 +16,7 @@ export class UserController {
   }
 
   @GrpcMethod('AuthServiceGrpc', 'register')
-  async register(data: InputRegisterRequest) {
+  async register(data: InputRegisterUserRequest) {
     return await this.userService.register(data);
-  }
-
-  @GrpcMethod('AuthServiceGrpc', 'isAdmin')
-  async isAdmin(data: InputPermissionRequest) {
-    return await this.userService.isAdmin(data);
   }
 }

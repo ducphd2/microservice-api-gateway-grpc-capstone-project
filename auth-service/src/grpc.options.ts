@@ -6,6 +6,6 @@ export const grpcClientOptions: ClientOptions = {
   options: {
     url: 'localhost:50001',
     package: 'user',
-    protoPath: join(__dirname + '/user/user.proto'),
+    protoPath: join(__dirname, 'common/proto/user.proto'),
   },
 };
