@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
-import { User } from './user/entities/user.entity';
+import { Profile, User } from './database/entities';
 
 const configMikroOrm: MikroOrmModuleSyncOptions = {
   type: 'postgresql',
@@ -13,10 +13,10 @@ const configMikroOrm: MikroOrmModuleSyncOptions = {
   discovery: {
     disableDynamicFileAccess: true,
   },
-  entities: [User],
+  entities: [User, Profile],
   migrations: {
-    path: 'dist/migrations',
-    pathTs: 'src/migrations',
+    path: 'dist/database/migrations',
+    pathTs: 'src/database/migrations',
     disableForeignKeys: false,
   },
   allowGlobalContext: true,

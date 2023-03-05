@@ -1,9 +1,5 @@
 import { Property, PrimaryKey } from '@mikro-orm/core';
-
-export const getDateInSeconds = (date: Date): number =>
-  Math.floor(date.getTime() / 1000);
-
-export const getCurrentDateInSecond = getDateInSeconds(new Date());
+import { getCurrentDateInSecond } from '../../helpers/user';
 
 export abstract class BaseEntity {
   @PrimaryKey({
@@ -19,7 +15,7 @@ export abstract class BaseEntity {
 
   @Property({
     type: 'bigint',
-    onUpdate: () => new Date(),
+    onUpdate: () => getCurrentDateInSecond,
     default: getCurrentDateInSecond,
   })
   updatedAt: number = getCurrentDateInSecond;

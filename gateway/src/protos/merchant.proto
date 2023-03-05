@@ -1,42 +1,29 @@
 syntax = "proto3";
 
-package user;
-import "google/protobuf/timestamp.proto";
+package merchant;
 
-service AuthServiceGrpc {
-    rpc login (InputLoginRequest) returns (LoginResponse) {}
+service MerchantServiceGrpc {
     rpc register (InputRegisterRequest) returns (RegisterResponse) {}
-    rpc isAdmin (InputPermissionRequest) returns (PermissionResponse) {}
-}
-
-message InputLoginRequest {
-    string email = 1;
-    string password = 2;
-}
-
-message LoginResponse {
-    User user = 1;
-    string accessToken = 2;
 }
 
 message InputRegisterRequest {
     string email = 1;
     string password = 2;
     string confirmPassword = 3;
+    string name = 4;
+    string phone = 5;
+    string merchantPhone = 6;
+    string merchantName = 7;
+    string merchantAddress = 8;
+    string cityCode = 9;
+    string districtCode = 10;
+    string wardCode = 11;
+    string merchantSubdomain = 12;
 }
 
 message RegisterResponse {
     User user = 1;
     string accessToken = 2;
-}
-
-message InputPermissionRequest {
-    int32 id = 1;
-    string email = 2;
-}
-
-message PermissionResponse {
-    bool isAdmin = 1;
 }
 
 message User {

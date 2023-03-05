@@ -1,18 +1,17 @@
-import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
-import { User } from 'src/types/user.type';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { RpcException } from '@nestjs/microservices';
+import { AuthGuard } from '../guard/auth.guard';
 import { AuthService } from './auth.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
 import { ResponseAuthFromGrpc } from './interfaces/authServiceGrpc';
-import { RpcException } from '@nestjs/microservices';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../guard/auth.guard';
 
-@Resolver((of) => User)
+@Resolver()
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Mutation((_returns) => ResponseAuthFromGrpc)
+  @Mutation(() => ResponseAuthFromGrpc)
   async login(@Args('inputLogin') inputLogin: InputLoginRequest) {
     try {
       return await this.authService.login(inputLogin);
@@ -21,7 +20,7 @@ export class AuthResolver {
     }
   }
 
-  @Mutation((_returns) => ResponseAuthFromGrpc)
+  @Mutation(() => ResponseAuthFromGrpc)
   async register(@Args('inputRegister') inputRegister: InputRegisterRequest) {
     try {
       return await this.authService.register(inputRegister);
@@ -31,7 +30,7 @@ export class AuthResolver {
   }
 
   @UseGuards(new AuthGuard())
-  @Query((_returns) => Boolean)
+  @Query(() => Boolean)
   async isAdmin(@Context() ctx: any): Promise<boolean> {
     const { id, email } = ctx.user;
     try {

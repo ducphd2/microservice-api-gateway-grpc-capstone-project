@@ -1,38 +1,41 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { hash, verify } from 'argon2';
 import { sign } from 'jsonwebtoken';
+import { User } from '../database/entities/user.entity';
 import { resolveError } from '../error/error';
-import { User, UserRole } from './entities/user.entity';
-import { InputLoginRequest } from './interfaces/inputLoginRequest';
-import { InputPermissionRequest } from './interfaces/inputPermissionRequest';
-import { InputRegisterRequest } from './interfaces/inputRegisterRequest';
+import { InputLoginRequest } from '../interfaces/user/input-login.interface';
+import { InputRegisterUserRequest } from '../interfaces/user/input-register.interface';
+import { ProfileService } from '../profile/profile.service';
+import { JWT_PRIVATE_KEY } from '../constants';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: EntityRepository<User>,
+    private readonly profileService: ProfileService,
   ) {}
 
-  async register(registerInput: InputRegisterRequest) {
+  async register(registerInput: InputRegisterUserRequest) {
     const { email, password } = registerInput;
 
     try {
-      const findUser = await this.userRepository.findOne({
+      const currentUser = await this.userRepository.findOne({
         email,
       });
 
-      if (findUser) {
-        throw new RpcException({ message: 'Email is existed', code: 400 });
+      if (currentUser) {
+        throw new RpcException({
+          message: 'Email is existed',
+          code: HttpStatus.BAD_GATEWAY,
+        });
       }
-
-      const hashedPassword = await hash(password);
 
       const newUser = new User();
       newUser.email = email;
-      newUser.password = hashedPassword;
+      newUser.password = password;
 
       const userDb = this.userRepository.create(newUser);
 
@@ -43,8 +46,14 @@ export class UserService {
         email: userDb.email,
       } as User);
 
+      const profile = await this.profileService.create(
+        userDb.id,
+        registerInput,
+      );
+
       return {
         user: userDb,
+        profile,
         accessToken,
       };
     } catch (error) {
@@ -88,35 +97,7 @@ export class UserService {
     }
   }
 
-  async isAdmin({ id, email }: InputPermissionRequest) {
-    try {
-      const findUser = await this.userRepository.findOne({
-        email,
-        id,
-      });
-
-      if (!findUser) {
-        throw new RpcException({
-          message: 'Forbidden',
-          code: 403,
-        });
-      }
-
-      if (findUser.role === UserRole.ADMIN) {
-        return {
-          isAdmin: true,
-        };
-      }
-
-      return {
-        isAdmin: false,
-      };
-    } catch (error) {
-      resolveError(error);
-    }
-  }
-
   async signToken(user: User) {
-    return sign(user, 'abc');
+    return sign(user, JWT_PRIVATE_KEY);
   }
 }

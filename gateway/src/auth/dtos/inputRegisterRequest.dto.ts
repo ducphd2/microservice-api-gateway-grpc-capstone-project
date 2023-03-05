@@ -1,17 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
+  IsInt,
   IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+  Matches,
+  MaxLength,
+  Min,
   MinLength,
-  registerDecorator,
   ValidationArguments,
   ValidationOptions,
+  registerDecorator,
 } from 'class-validator';
 
-export function Match<T>(
-  property: keyof T,
-  validationOptions?: ValidationOptions,
-) {
+export function Match<T>(property: keyof T, validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
     registerDecorator({
       name: 'Match',
@@ -38,17 +42,70 @@ export function Match<T>(
 @InputType()
 export class InputRegisterRequest {
   @Field()
-  @IsNotEmpty()
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @Field()
+  @MaxLength(30)
   @MinLength(5)
+  @IsString()
   @IsNotEmpty()
   password: string;
 
   @Field()
-  @IsNotEmpty()
   @Match('password')
+  @IsNotEmpty()
   confirmPassword: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  fullName: string;
+
+  @Field()
+  @IsPhoneNumber()
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
+
+  @Field()
+  @IsPhoneNumber()
+  @IsString()
+  @IsNotEmpty()
+  merchantPhone: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  merchantName: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  merchantAddress: string;
+
+  @Field()
+  @Min(0)
+  @IsInt()
+  @IsNotEmpty()
+  cityCode: number;
+
+  @Field()
+  @Min(0)
+  @IsInt()
+  @IsNotEmpty()
+  districtCode: number;
+
+  @Field()
+  @Min(0)
+  @IsInt()
+  @IsNotEmpty()
+  wardCode: number;
+
+  @Field()
+  @Matches(/^[a-zA-Z0-9\-]+$/)
+  @IsString()
+  @IsNotEmpty()
+  merchantSubdomain: string;
 }
