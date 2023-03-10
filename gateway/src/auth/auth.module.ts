@@ -29,6 +29,7 @@ import { MerchantModule } from '../merchant/merchant.module';
         },
       },
     ]),
+    MerchantModule,
   ],
   providers: [AuthResolver, AuthService],
   exports: [AuthService],

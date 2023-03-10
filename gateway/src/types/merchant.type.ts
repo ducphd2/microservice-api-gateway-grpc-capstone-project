@@ -4,6 +4,9 @@ import { BaseType } from './base.type';
 @ObjectType()
 export class Merchant extends BaseType {
   @Field(() => String)
+  name: string;
+
+  @Field(() => String)
   phone: string;
 
   @Field(() => String)

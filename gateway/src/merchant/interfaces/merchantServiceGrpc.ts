@@ -13,5 +13,5 @@ export class AuthFromGrpcMerchantResponse {
 }
 
 export interface MerchantServiceGrpc {
-  register(data: InputRegisterRequest): Observable<AuthFromGrpcMerchantResponse>;
+  create(data: InputRegisterRequest): Observable<AuthFromGrpcMerchantResponse>;
 }

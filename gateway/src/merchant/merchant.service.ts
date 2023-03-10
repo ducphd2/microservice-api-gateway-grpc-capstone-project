@@ -14,7 +14,8 @@ export class MerchantService {
     this.merchantService = this.client.getService<MerchantServiceGrpc>('MerchantServiceGrpc');
   }
 
-  async register(registerInput: InputRegisterRequest): Promise<AuthFromGrpcMerchantResponse> {
-    return await lastValueFrom(this.merchantService.register(registerInput));
+  async create(registerInput: InputRegisterRequest): Promise<AuthFromGrpcMerchantResponse> {
+    const a = await lastValueFrom(this.merchantService.create(registerInput));
+    return a;
   }
 }
