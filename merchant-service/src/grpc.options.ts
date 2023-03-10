@@ -6,6 +6,6 @@ export const grpcClientOptions: ClientOptions = {
   options: {
     url: 'localhost:50000',
     package: ['merchant'],
-    protoPath: [join(__dirname + '/protos/merchant.proto')],
+    protoPath: [join(__dirname, 'protos/merchant.proto')],
   },
 };
