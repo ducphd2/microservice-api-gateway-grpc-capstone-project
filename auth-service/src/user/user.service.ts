@@ -2,14 +2,14 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { hash, verify } from 'argon2';
+import { verify } from 'argon2';
 import { sign } from 'jsonwebtoken';
+import { JWT_PRIVATE_KEY } from '../constants';
 import { User } from '../database/entities/user.entity';
 import { resolveError } from '../error/error';
 import { InputLoginRequest } from '../interfaces/user/input-login.interface';
 import { InputRegisterUserRequest } from '../interfaces/user/input-register.interface';
 import { ProfileService } from '../profile/profile.service';
-import { JWT_PRIVATE_KEY } from '../constants';
 
 @Injectable()
 export class UserService {
@@ -29,7 +29,7 @@ export class UserService {
       if (currentUser) {
         throw new RpcException({
           message: 'Email is existed',
-          code: HttpStatus.BAD_GATEWAY,
+          code: HttpStatus.BAD_REQUEST,
         });
       }
 

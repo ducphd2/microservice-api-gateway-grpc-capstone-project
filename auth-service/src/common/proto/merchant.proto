@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package merchant;
+
+service MerchantServiceGrpc {
+    rpc create (InputCreateRequest) returns (CreateResponse) {}
+}
+
+message InputCreateRequest {
+    string phone = 1;
+    string merchantPhone = 2;
+    string merchantName = 3;
+    string merchantAddress = 4;
+    int32 cityCode = 5;
+    int32 districtCode = 6;
+    int32 wardCode = 7;
+    int32 profileId = 8;
+}
+
+message CreateResponse {
+    Merchant merchant = 1;
+    MerchantBranch merchantBranch = 2;
+}
+
+message Merchant {
+    int32 id = 1;
+    string name = 2;
+    string phone = 3;
+    string address = 4;
+    int32 cityCode = 5;
+    int32 districtCode = 6;
+    int32 wardCode = 7;
+    int32 createdAt = 8;
+    int32 updatedAt = 9;
+}
+
+message MerchantBranch {
+    int32 id = 1;
+    string name = 2;
+    string phone = 3;
+    string address = 4;
+    int32 cityCode = 5;
+    int32 districtCode = 6;
+    int32 wardCode = 7;
+    int32 createdAt = 8;
+    int32 updatedAt = 9;
+    int32 merchantId = 10;
+}

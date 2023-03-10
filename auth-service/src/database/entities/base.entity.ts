@@ -1,5 +1,5 @@
 import { Property, PrimaryKey } from '@mikro-orm/core';
-import { getCurrentDateInSecond } from '../../helpers/user';
+import { getCurrentDateInSecond } from '../../helpers';
 
 export abstract class BaseEntity {
   @PrimaryKey({
