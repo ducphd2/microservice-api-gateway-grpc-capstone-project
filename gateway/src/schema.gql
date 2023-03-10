@@ -17,6 +17,31 @@ enum UserRole {
   USER
 }
 
+type Merchant {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+}
+
+type MerchantBranch {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  merchantId: Int!
+}
+
 type Profile {
   id: ID!
   createdAt: Int!
@@ -42,6 +67,8 @@ enum ProfileType {
 type ResponseAuthFromGrpc {
   user: User!
   profile: Profile!
+  merchant: Merchant!
+  merchantBranch: MerchantBranch!
   accessToken: String!
 }
 

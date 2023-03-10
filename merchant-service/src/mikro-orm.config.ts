@@ -1,9 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs';
-import { Merchant } from './entities/cv.entity';
-import { EducationCertification } from './entities/education_certification.entity';
-import { ExperienceProject } from './entities/experience_project.entity';
-import { WorkExperience } from './entities/work_experience.entity';
+import { Merchant, MerchantBranch } from './database/entities';
 
 const configMikroOrm: MikroOrmModuleSyncOptions = {
   type: 'postgresql',
@@ -16,15 +13,10 @@ const configMikroOrm: MikroOrmModuleSyncOptions = {
   discovery: {
     disableDynamicFileAccess: true,
   },
-  entities: [
-    Merchant,
-    EducationCertification,
-    ExperienceProject,
-    WorkExperience,
-  ],
+  entities: [Merchant, MerchantBranch],
   migrations: {
-    path: 'dist/migrations',
-    pathTs: 'src/migrations',
+    path: 'dist/database/migrations',
+    pathTs: 'src/database/migrations',
     disableForeignKeys: false,
   },
   allowGlobalContext: true,

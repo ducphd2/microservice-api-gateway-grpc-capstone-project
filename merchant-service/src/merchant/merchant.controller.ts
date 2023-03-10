@@ -1,17 +1,15 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { Merchant } from '../entities/cv.entity';
-import { InputCvIdRequest } from '../types/inputCvIdRequest';
 import { MerchantService } from './merchant.service';
+import { InputCreateMerchantRequest } from '../interfaces';
 
 @Controller()
 export class MerchantController {
   constructor(private merchantService: MerchantService) {}
 
-  @GrpcMethod('CvServiceGrpc', 'getCv')
-  async getCv(data: InputCvIdRequest): Promise<{ cv: Merchant }> {
-    return {
-      cv: await this.merchantService.findCvById(data.cvId),
-    };
+  @GrpcMethod('MerchantServiceGrpc', 'create')
+  async create(data: InputCreateMerchantRequest) {
+    const result = await this.merchantService.createMerchantAndFirstBranch(data);
+    return result;
   }
 }

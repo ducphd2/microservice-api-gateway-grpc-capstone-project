@@ -1,14 +1,9 @@
-import { Field, ObjectType } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
-import { Merchant, MerchantBranch } from '../../types';
-import { InputRegisterRequest } from '../dtos/inputRegisterRequest.dto';
+import { Merchant, MerchantBranch } from '../../common/types';
+import { InputRegisterRequest } from '../dto/create-merchant.dto';
 
-@ObjectType()
 export class AuthFromGrpcMerchantResponse {
-  @Field(() => Merchant)
   merchant: Merchant;
-
-  @Field(() => MerchantBranch)
   merchantBranch: MerchantBranch;
 }
 

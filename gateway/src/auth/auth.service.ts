@@ -6,19 +6,22 @@ import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputPermissionRequest } from './dtos/inputPermissionRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
 import { AuthServiceGrpc, ResponseAuthFromGrpc, ResponsePermission } from './interfaces/authServiceGrpc';
+import { MerchantService } from '../merchant/merchant.service';
 
 @Injectable()
 export class AuthService {
   private authService: AuthServiceGrpc;
-  private merchantService: MerchantServiceGrpc;
+  // private merchantService: MerchantServiceGrpc;
 
   constructor(
     @Inject('AUTH_PACKAGE') private client: ClientGrpc,
-    @Inject('MERCHANT_PACKAGE') private merchantClient: ClientGrpc,
+    // @Inject('MERCHANT_PACKAGE') private merchantClient: ClientGrpc,
+    private readonly merchantService: MerchantService,
   ) {}
 
   onModuleInit() {
     this.authService = this.client.getService<AuthServiceGrpc>('AuthServiceGrpc');
+    // this.merchantService = this.merchantClient.getService<MerchantServiceGrpc>('MerchantServiceGrpc');
   }
 
   async login(loginInput: InputLoginRequest): Promise<ResponseAuthFromGrpc> {
@@ -26,9 +29,17 @@ export class AuthService {
   }
 
   async register(registerInput: InputRegisterRequest): Promise<ResponseAuthFromGrpc> {
-    const user = await lastValueFrom(this.authService.register(registerInput));
+    const { user, profile, accessToken } = await lastValueFrom(this.authService.register(registerInput));
 
-    return user;
+    const { merchant, merchantBranch } = await this.merchantService.create({ ...registerInput, profileId: profile.id });
+
+    return {
+      merchant,
+      merchantBranch,
+      user,
+      profile,
+      accessToken,
+    };
   }
 
   async isAdmin(dataInput: InputPermissionRequest): Promise<ResponsePermission> {
