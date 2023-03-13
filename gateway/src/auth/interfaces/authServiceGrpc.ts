@@ -25,9 +25,9 @@ export class ResponsePermission {
   isAdmin: boolean;
 }
 
-export interface AuthServiceGrpc {
-  register(data: InputRegisterRequest): Observable<ResponseUserAuthFromGrpc>;
-  login(data: InputLoginRequest): Observable<ResponseAuthFromGrpc>;
+export interface UserServiceGrpc {
+  register(data: InputRegisterRequest): Observable<ResponseAuthFromGrpc>;
+  login(data: InputLoginRequest): Observable<ResponseUserAuthFromGrpc>;
   isAdmin(data: InputPermissionRequest): Observable<ResponsePermission>;
 }
 
@@ -37,7 +37,7 @@ export class ResponseAuthFromGrpc {
   user: User;
 
   @Field(() => Profile)
-  profile: Profile;
+  profile?: Profile;
 
   @Field(() => Merchant)
   merchant?: Merchant;

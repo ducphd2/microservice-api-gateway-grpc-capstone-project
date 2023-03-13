@@ -1,31 +1,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { MerchantServiceGrpc } from '../merchant/interfaces/merchantServiceGrpc';
+import { MerchantService } from '../merchant/merchant.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputPermissionRequest } from './dtos/inputPermissionRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
-import { AuthServiceGrpc, ResponseAuthFromGrpc, ResponsePermission } from './interfaces/authServiceGrpc';
-import { MerchantService } from '../merchant/merchant.service';
+import { UserServiceGrpc, ResponseAuthFromGrpc, ResponsePermission } from './interfaces/authServiceGrpc';
 
 @Injectable()
 export class AuthService {
-  private authService: AuthServiceGrpc;
-  // private merchantService: MerchantServiceGrpc;
+  private authService: UserServiceGrpc;
 
-  constructor(
-    @Inject('AUTH_PACKAGE') private client: ClientGrpc,
-    // @Inject('MERCHANT_PACKAGE') private merchantClient: ClientGrpc,
-    private readonly merchantService: MerchantService,
-  ) {}
+  constructor(@Inject('AUTH_PACKAGE') private client: ClientGrpc, private readonly merchantService: MerchantService) {}
 
   onModuleInit() {
-    this.authService = this.client.getService<AuthServiceGrpc>('AuthServiceGrpc');
-    // this.merchantService = this.merchantClient.getService<MerchantServiceGrpc>('MerchantServiceGrpc');
+    this.authService = this.client.getService<UserServiceGrpc>('UserServiceGrpc');
   }
 
   async login(loginInput: InputLoginRequest): Promise<ResponseAuthFromGrpc> {
-    return await lastValueFrom(await this.authService.login(loginInput));
+    return await lastValueFrom(this.authService.login(loginInput));
   }
 
   async register(registerInput: InputRegisterRequest): Promise<ResponseAuthFromGrpc> {
@@ -36,8 +29,10 @@ export class AuthService {
     return {
       merchant,
       merchantBranch,
-      user,
-      profile,
+      user: {
+        ...user,
+        profile: profile,
+      },
       accessToken,
     };
   }

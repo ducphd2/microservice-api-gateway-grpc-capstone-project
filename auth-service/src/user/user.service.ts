@@ -9,7 +9,11 @@ import { User } from '../database/entities/user.entity';
 import { resolveError } from '../error/error';
 import { InputLoginRequest } from '../interfaces/user/input-login.interface';
 import { InputRegisterUserRequest } from '../interfaces/user/input-register.interface';
+import { IUser } from '../interfaces/user/user.interface';
 import { ProfileService } from '../profile/profile.service';
+
+import { isEmpty } from 'lodash';
+import { wrap } from '@mikro-orm/core';
 
 @Injectable()
 export class UserService {
@@ -99,5 +103,35 @@ export class UserService {
 
   async signToken(user: User) {
     return sign(user, JWT_PRIVATE_KEY);
+  }
+
+  async findById(id: number) {
+    const user = await this.userRepository.findOneOrFail({
+      id,
+    });
+    const profile = await this.profileService.findByUserId(user.id);
+    return {
+      user,
+      profile,
+    };
+  }
+
+  async update(data: IUser) {
+    const user = await this.userRepository.findOneOrFail({
+      id: data.id,
+    });
+
+    if (isEmpty(user)) {
+      throw new RpcException('User not found');
+    }
+
+    const result = wrap(user).assign({ ...data }, { mergeObjects: true });
+    await this.userRepository.persistAndFlush(result);
+
+    const profile = await this.profileService.findByUserId(user.id);
+    return {
+      user,
+      profile,
+    };
   }
 }

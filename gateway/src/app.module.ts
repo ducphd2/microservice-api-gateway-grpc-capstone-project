@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { GqlLoggingInterceptor } from './interceptors/logging.interceptor';
 import { MerchantModule } from './merchant/merchant.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MerchantModule } from './merchant/merchant.module';
     }),
     AuthModule,
     MerchantModule,
+    UserModule,
   ],
   providers: [
     {

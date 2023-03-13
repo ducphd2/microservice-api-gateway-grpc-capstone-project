@@ -2,9 +2,18 @@ syntax = "proto3";
 
 package user;
 
-service AuthServiceGrpc {
+import "commons.proto";
+
+service UserServiceGrpc {
     rpc register (InputRegisterRequest) returns (RegisterResponse) {}
     rpc login (InputLoginRequest) returns (LoginResponse) {}
+    rpc findById (commons.Id) returns (FindByIdResponse) {}
+    rpc update (UpdateUserInput) returns (FindByIdResponse) {}
+}
+
+message UpdateUserInput {
+    string id = 1;
+    User data = 2;
 }
 
 message InputLoginRequest {
@@ -15,6 +24,11 @@ message InputLoginRequest {
 message LoginResponse {
     User user = 1;
     string accessToken = 2;
+}
+
+message FindByIdResponse {
+    User user = 1;
+    Profile profile = 2;
 }
 
 message InputRegisterRequest {
@@ -60,6 +74,7 @@ message User {
     UserRole role = 5;
     int32 createdAt = 6;
     int32 updatedAt = 7;
+    string password = 8;
 }
 
 message Profile {

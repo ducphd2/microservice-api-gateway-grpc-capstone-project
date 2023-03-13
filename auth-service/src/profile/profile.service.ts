@@ -37,4 +37,10 @@ export class ProfileService {
 
     return newProfile;
   }
+
+  async findByUserId(userId: number) {
+    return await this.profileRepository.findOneOrFail({
+      userId,
+    });
+  }
 }
