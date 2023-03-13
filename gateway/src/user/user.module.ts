@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { AuthResolver } from './auth.resolver';
-import { AuthService } from './auth.service';
-import { MerchantModule } from '../merchant/merchant.module';
+import { UserResolver } from './user.resolver';
+import { UserService } from './user.service';
 import { UtilsModule } from '../utils/utils.module';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'AUTH_PACKAGE',
+        name: 'USER_PACKAGE',
         transport: Transport.GRPC,
         options: {
           url: 'localhost:50001',
@@ -19,10 +18,9 @@ import { UtilsModule } from '../utils/utils.module';
         },
       },
     ]),
-    MerchantModule,
     UtilsModule,
   ],
-  providers: [AuthResolver, AuthService],
-  exports: [AuthService],
+  providers: [UserResolver, UserService],
+  exports: [UserService],
 })
-export class AuthModule {}
+export class UserModule {}

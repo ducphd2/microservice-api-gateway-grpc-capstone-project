@@ -2,6 +2,28 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Profile {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  userId: Int!
+  fullName: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  dateOfBirth: Int!
+  monthOfBirth: Int!
+  yearOfBirth: Int!
+  type: ProfileType!
+}
+
+enum ProfileType {
+  CUSTOMER
+  EMPLOYEE
+}
+
 type User {
   id: ID!
   createdAt: Int!
@@ -9,6 +31,7 @@ type User {
   email: String!
   username: String!
   role: UserRole!
+  profile: Profile!
 }
 
 enum UserRole {
@@ -42,26 +65,10 @@ type MerchantBranch {
   merchantId: Int!
 }
 
-type Profile {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  userId: Int!
-  fullName: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  dateOfBirth: Int!
-  monthOfBirth: Int!
-  yearOfBirth: Int!
-  type: ProfileType!
-}
-
-enum ProfileType {
-  CUSTOMER
-  EMPLOYEE
+type ResponseUserAuthFromGrpc {
+  user: User!
+  profile: Profile!
+  accessToken: String!
 }
 
 type ResponseAuthFromGrpc {
@@ -72,13 +79,19 @@ type ResponseAuthFromGrpc {
   accessToken: String!
 }
 
+type UserFindByIdResponse {
+  user: User!
+  profile: Profile!
+}
+
 type Query {
-  isAdmin: Boolean!
+  getUser(id: Float!): User!
 }
 
 type Mutation {
-  login(inputLogin: InputLoginRequest!): ResponseAuthFromGrpc!
+  login(inputLogin: InputLoginRequest!): ResponseUserAuthFromGrpc!
   register(inputRegister: InputRegisterRequest!): ResponseAuthFromGrpc!
+  updatePassword(data: ChangePasswordInput!): UserFindByIdResponse!
 }
 
 input InputLoginRequest {
@@ -99,4 +112,10 @@ input InputRegisterRequest {
   districtCode: Float!
   wardCode: Float!
   merchantSubdomain: String!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
 }

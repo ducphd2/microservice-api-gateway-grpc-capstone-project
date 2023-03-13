@@ -1,5 +1,6 @@
 import { Field, HideField, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BaseType } from './base.type';
+import { Profile } from './profile.type';
 
 export enum UserRole {
   SUPER_ADMIN = 1,
@@ -25,4 +26,7 @@ export class User extends BaseType {
 
   @Field(() => UserRole)
   role: UserRole = UserRole.ADMIN;
+
+  @Field(() => Profile)
+  profile: Profile;
 }
