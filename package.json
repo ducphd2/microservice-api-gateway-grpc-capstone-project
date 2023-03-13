@@ -1,0 +1,13 @@
+{
+  "name": "do-an-1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ducphd2/microservice-api-gateway-grpc-capstone-project.git",
+  "author": "ducph <ducphd2@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "post:install": "./scripts/install.sh",
+    "build": "./scripts/build.sh",
+    "pm2:start":"./scripts/pm2-start.sh"
+  }
+}
