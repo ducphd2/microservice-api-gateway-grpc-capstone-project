@@ -92,8 +92,11 @@ export class UserService {
         email: findUser.email,
       } as User);
 
+      const profile = await this.profileService.findByUserId(findUser.id);
+
       return {
         user: findUser,
+        profile: profile,
         accessToken,
       };
     } catch (error) {
