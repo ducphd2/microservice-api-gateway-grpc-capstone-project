@@ -24,6 +24,7 @@ message InputLoginRequest {
 message LoginResponse {
     User user = 1;
     string accessToken = 2;
+    Profile profile = 3;
 }
 
 message FindByIdResponse {
