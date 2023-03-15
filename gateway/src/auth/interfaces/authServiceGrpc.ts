@@ -5,7 +5,6 @@ import { Profile } from '../../types/profile.type';
 import { InputLoginRequest } from '../dtos/inputLoginRequest.dto';
 import { InputPermissionRequest } from '../dtos/inputPermissionRequest.dto';
 import { InputRegisterRequest } from '../dtos/inputRegisterRequest.dto';
-import { AuthFromGrpcMerchantResponse } from '../../merchant/interfaces/merchantServiceGrpc';
 
 @ObjectType()
 export class ResponseUserAuthFromGrpc {

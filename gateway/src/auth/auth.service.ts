@@ -1,17 +1,22 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { MerchantService } from '../merchant/merchant.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputPermissionRequest } from './dtos/inputPermissionRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
-import { UserServiceGrpc, ResponseAuthFromGrpc, ResponsePermission } from './interfaces/authServiceGrpc';
+import { ResponseAuthFromGrpc, ResponsePermission, UserServiceGrpc } from './interfaces/authServiceGrpc';
+import { MerchantService } from '../modules/merchant/merchant.service';
+import { TestMerchantService } from '../modules/test-merchant/test-merchant.service';
 
 @Injectable()
 export class AuthService {
   private authService: UserServiceGrpc;
 
-  constructor(@Inject('AUTH_PACKAGE') private client: ClientGrpc, private readonly merchantService: MerchantService) {}
+  constructor(
+    @Inject('AUTH_PACKAGE') private client: ClientGrpc,
+    private readonly merchantService: MerchantService,
+    private readonly testMerchantService: TestMerchantService,
+  ) {}
 
   onModuleInit() {
     this.authService = this.client.getService<UserServiceGrpc>('UserServiceGrpc');
@@ -24,7 +29,11 @@ export class AuthService {
   async register(registerInput: InputRegisterRequest): Promise<ResponseAuthFromGrpc> {
     const { user, profile, accessToken } = await lastValueFrom(this.authService.register(registerInput));
 
-    const { merchant, merchantBranch } = await this.merchantService.create({ ...registerInput, profileId: profile.id });
+    // const { merchant, merchantBranch } = await this.merchantService.create({ ...registerInput, profileId: profile.id });
+    const { merchant, merchantBranch } = await this.testMerchantService.authCreateMerchantAndFirstBranch({
+      ...registerInput,
+      profileId: profile.id,
+    });
 
     return {
       merchant,

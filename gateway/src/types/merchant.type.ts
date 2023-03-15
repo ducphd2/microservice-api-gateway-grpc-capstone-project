@@ -20,6 +20,9 @@ export class Merchant extends BaseType {
 
   @Field(() => Int)
   wardCode: number;
+
+  @Field(() => Int)
+  profileId: number;
 }
 
 @ObjectType()
