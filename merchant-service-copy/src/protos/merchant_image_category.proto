@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package merchant_image_category;
+
+import "commons.proto";
+
+message UpdateImageCategoryInput {
+    int32 id = 1;
+    ImageCategory data = 2;
+}
+
+message FindImageCategoryPayload {
+    repeated ImageCategory imageCategories = 1;
+}
+
+message InputCreateRequest {
+    string name = 1;
+    string imageUrl = 2;
+    string imageUrl = 3;
+    optional string description = 4;
+}
+
+message ImageCategory {
+    int32 id = 1;
+    string name = 2;
+    string imageUrl = 3;
+    int32 createdAt = 4;
+    int32 updatedAt = 5;
+    optional string description = 6;
+}
+
+service MerchantCategoryServiceGrpc {
+    rpc find (commons.Query) returns (FindImageCategoryPayload) {}
+    rpc findOne (commons.Query) returns (ImageCategory) {}
+    rpc findById (commons.Id) returns (ImageCategory) {}
+    rpc create (InputCreateRequest) returns (ImageCategory) {}
+    rpc update (UpdateImageCategoryInput) returns (ImageCategory) {}
+    rpc destroy (commons.Query) returns (commons.Count) {}
+    rpc count (InputCreateRequest) returns (commons.Count) {}
+}

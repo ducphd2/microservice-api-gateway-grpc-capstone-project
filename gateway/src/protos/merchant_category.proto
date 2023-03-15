@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package merchant_category;
+
+import "commons.proto";
+
+message UpdateCategoryInput {
+    int32 id = 1;
+    Category data = 2;
+}
+
+message FindCategoryPayload {
+    repeated Category categories = 1;
+}
+
+message InputCreateRequest {
+    string name = 1;
+    string code = 2;
+    optional string imageUrl = 3;
+}
+
+message Category {
+    int32 id = 1;
+    string name = 2;
+    string code = 3;
+    int32 createdAt = 4;
+    int32 updatedAt = 5;
+}
+
+message ImageCategory {
+    int32 id = 1;
+    string name = 2;
+    string imageUrl = 3;
+    int32 createdAt = 4;
+    int32 updatedAt = 5;
+    optional string description = 6;
+}
+
+message CreateCategoryResponse {
+    Category category = 1;
+    optional ImageCategory image = 2;
+}
+
+service MerchantCategoryServiceGrpc {
+    rpc find (commons.Query) returns (FindCategoryPayload) {}
+    rpc findOne (commons.Query) returns (Category) {}
+    rpc findById (commons.Id) returns (Category) {}
+    rpc create (InputCreateRequest) returns (CreateCategoryResponse) {}
+    rpc update (UpdateCategoryInput) returns (Category) {}
+    rpc destroy (commons.Query) returns (commons.Count) {}
+    rpc count (InputCreateRequest) returns (commons.Count) {}
+}

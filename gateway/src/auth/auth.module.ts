@@ -3,8 +3,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { MerchantModule } from '../merchant/merchant.module';
 import { UtilsModule } from '../utils/utils.module';
+import { MerchantModule } from '../modules/merchant/merchant.module';
+import { TestMerchantModule } from '../modules/test-merchant/test-merchant.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UtilsModule } from '../utils/utils.module';
       },
     ]),
     MerchantModule,
+    TestMerchantModule,
     UtilsModule,
   ],
   providers: [AuthResolver, AuthService],
