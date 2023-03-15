@@ -14,17 +14,13 @@ import { UploadService } from './upload.service';
 export class UploadResolver {
   constructor(private readonly uploadService: UploadService) {}
 
-  @Query(returns => String)
-  async item(): Promise<string> {
-    return 'Hello world!';
-  }
   @Mutation(() => ResponseSingleUpload)
   async uploadSingleFiles(@Args() args: UploadInputArgs): Promise<any> {
-    return  this.uploadService.uploadSingleGraphql(args)
+    return this.uploadService.uploadSingleToCloudinaryGraphql(args);
   }
 
   @Mutation(() => [ResponseSingleUpload])
   async uploadMultipleFiles(@Args() args: UploadMultipleInputArgs): Promise<any> {
-    return this.uploadService.uploadMultipleGraphql(args)
+    return this.uploadService.uploadMultipleToCloudinaryGraphql(args);
   }
 }
