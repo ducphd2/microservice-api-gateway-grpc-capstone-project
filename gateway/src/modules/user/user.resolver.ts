@@ -16,10 +16,9 @@ export class UserResolver {
   @UseGuards(AuthGuard)
   async getUser(@Args('id') id: number): Promise<User> {
     try {
-      const { user, profile } = await this.userService.findById({ id });
+      const user = await this.userService.findById({ id });
       return {
         ...user,
-        profile: profile,
       };
     } catch (error) {
       throw new RpcException(error);
@@ -29,7 +28,7 @@ export class UserResolver {
   @Mutation(() => UserFindByIdResponse)
   @UseGuards(AuthGuard)
   async updatePassword(@Context() context: any, @Args('data') data: ChangePasswordInput) {
-    const { user, profile } = await this.userService.findById({ id: context.user.id });
+    const user = await this.userService.findById({ id: context.user.id });
     const isSame: boolean = await this.passwordUtils.compare(data.currentPassword, user.password);
     const isConfirmed: boolean = data.newPassword === data.confirmPassword;
 

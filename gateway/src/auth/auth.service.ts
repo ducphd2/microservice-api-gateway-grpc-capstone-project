@@ -1,52 +1,36 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
-import { InputPermissionRequest } from './dtos/inputPermissionRequest.dto';
-import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
-import { ResponseAuthFromGrpc, ResponsePermission, UserServiceGrpc } from './interfaces/authServiceGrpc';
-import { MerchantService } from '../modules/merchant/merchant.service';
-import { TestMerchantService } from '../modules/test-merchant/test-merchant.service';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../types';
 
 @Injectable()
 export class AuthService {
-  private authService: UserServiceGrpc;
-
   constructor(
-    @Inject('AUTH_PACKAGE') private client: ClientGrpc,
-    private readonly merchantService: MerchantService,
-    private readonly testMerchantService: TestMerchantService,
+    @Inject('JwtAccessTokenService')
+    private readonly accessTokenService: JwtService,
+
+    @Inject('JwtRefreshTokenService')
+    private readonly refreshTokenService: JwtService,
   ) {}
 
-  onModuleInit() {
-    this.authService = this.client.getService<UserServiceGrpc>('UserServiceGrpc');
-  }
-
-  async login(loginInput: InputLoginRequest): Promise<ResponseAuthFromGrpc> {
-    return await lastValueFrom(this.authService.login(loginInput));
-  }
-
-  async register(registerInput: InputRegisterRequest): Promise<ResponseAuthFromGrpc> {
-    const { user, profile, accessToken } = await lastValueFrom(this.authService.register(registerInput));
-
-    // const { merchant, merchantBranch } = await this.merchantService.create({ ...registerInput, profileId: profile.id });
-    const { merchant, merchantBranch } = await this.testMerchantService.authCreateMerchantAndFirstBranch({
-      ...registerInput,
-      profileId: profile.id,
-    });
-
-    return {
-      merchant,
-      merchantBranch,
-      user: {
-        ...user,
-        profile: profile,
+  async generateAccessToken(user: User): Promise<string> {
+    return this.accessTokenService.sign(
+      {
+        user: user.id,
       },
-      accessToken,
-    };
+      {
+        subject: user.id.toString(),
+      },
+    );
   }
 
-  async isAdmin(dataInput: InputPermissionRequest): Promise<ResponsePermission> {
-    return await lastValueFrom(await this.authService.isAdmin(dataInput));
+  async generateRefreshToken(user: User): Promise<string> {
+    return this.refreshTokenService.sign(
+      {
+        user: user.email,
+      },
+      {
+        subject: user.id.toString(),
+      },
+    );
   }
 }

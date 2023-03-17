@@ -2,26 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Profile {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  userId: Int!
-  fullName: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  dateOfBirth: Int!
-  monthOfBirth: Int!
-  yearOfBirth: Int!
-  type: ProfileType!
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
 }
 
-enum ProfileType {
-  CUSTOMER
-  EMPLOYEE
+type ErrorPayload {
+  field: String
+  message: [String!]
 }
 
 type User {
@@ -29,15 +19,21 @@ type User {
   createdAt: Int!
   updatedAt: Int!
   email: String!
-  username: String!
-  role: UserRole!
-  profile: Profile!
+  fullName: String!
+  status: String!
+  role: String!
+  gender: String!
+  contact: String!
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
+  occupation: String
+  avatar: String
 }
 
-enum UserRole {
-  SUPER_ADMIN
-  ADMIN
-  USER
+type UserPayload {
+  errors: [ErrorPayload!]
+  user: User
 }
 
 type Merchant {
@@ -85,18 +81,62 @@ type Category {
   image: ImageCategory
 }
 
-type ResponseUserAuthFromGrpc {
-  user: User!
-  profile: Profile!
-  accessToken: String!
+type Customer {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  email: String!
+  fullName: String!
+  status: String!
+  role: String!
+  gender: String!
+  contact: String!
+  dobDay: Int!
+  dobMonth: Int!
+  dobYear: Int!
+  occupation: String
+  avatar: String
 }
 
-type ResponseAuthFromGrpc {
+type CustomerEdge {
+  node: Customer!
+  cursor: String!
+}
+
+type ResponseLoginGrpc {
   user: User!
-  profile: Profile!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type ResponseRegisterGrpc {
+  user: User!
+  accessToken: String!
+  refreshToken: String!
   merchant: Merchant!
   merchantBranch: MerchantBranch!
-  accessToken: String!
+}
+
+type Profile {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  userId: Int!
+  fullName: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  dateOfBirth: Int!
+  monthOfBirth: Int!
+  yearOfBirth: Int!
+  type: ProfileType!
+}
+
+enum ProfileType {
+  CUSTOMER
+  EMPLOYEE
 }
 
 type UserFindByIdResponse {
@@ -132,8 +172,10 @@ type Query {
 }
 
 type Mutation {
-  login(inputLogin: InputLoginRequest!): ResponseUserAuthFromGrpc!
-  register(inputRegister: InputRegisterRequest!): ResponseAuthFromGrpc!
+  login(data: InputLoginRequest!): ResponseLoginGrpc!
+  register(data: InputRegisterRequest!): ResponseRegisterGrpc!
+  refreshToken: UserPayload!
+  logout: Boolean!
   updatePassword(data: ChangePasswordInput!): UserFindByIdResponse!
   createBranch(data: BranchDto!): MerchantBranch!
   updateBranch(id: Float!, data: BranchDto!): MerchantBranch!
@@ -151,10 +193,19 @@ input InputLoginRequest {
 }
 
 input InputRegisterRequest {
+  fullName: String!
   email: String!
   password: String!
+  status: String!
+  role: String!
+  gender: String!
+  contact: String!
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
+  occupation: String
+  avatar: String
   confirmPassword: String!
-  fullName: String!
   phone: String!
   merchantPhone: String!
   merchantName: String!
