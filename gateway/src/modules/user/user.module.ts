@@ -1,26 +1,38 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientGrpcProxy, ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 import { UtilsModule } from '../../utils/utils.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { EGrpcClientService } from '../../enums/grpc-services.enum';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'USER_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          url: 'localhost:50001',
-          package: 'user',
-          protoPath: join(__dirname, '/../../protos/user.proto'),
-        },
+  imports: [ConfigModule, UtilsModule],
+  providers: [
+    UserResolver,
+    UserService,
+    {
+      provide: EGrpcClientService.USER_SERVICE,
+      useFactory: (configService: ConfigService): ClientGrpcProxy => {
+        return ClientProxyFactory.create({
+          transport: Transport.GRPC,
+          options: {
+            url: configService.get<string>('USERS_SVC_URL'),
+            package: 'user',
+            protoPath: join(__dirname, '/../../protos/user.proto'),
+            loader: {
+              keepCase: true,
+              enums: String,
+              oneofs: true,
+              arrays: true,
+            },
+          },
+        });
       },
-    ]),
-    UtilsModule,
+      inject: [ConfigService],
+    },
   ],
-  providers: [UserResolver, UserService],
-  exports: [UserService],
+  exports: [UserService, EGrpcClientService.USER_SERVICE],
 })
 export class UserModule {}

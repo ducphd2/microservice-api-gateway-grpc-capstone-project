@@ -1,49 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
-import { Merchant, MerchantBranch, User } from '../../types';
-import { Profile } from '../../types/profile.type';
+import { ICount, IId, IQuery } from '../../commons/commons.interface';
+import { CreateUserInputDto, ResponseRegisterGrpc, ResponseLoginGrpc, User } from '../../types';
 import { InputLoginRequest } from '../dtos/inputLoginRequest.dto';
-import { InputPermissionRequest } from '../dtos/inputPermissionRequest.dto';
 import { InputRegisterRequest } from '../dtos/inputRegisterRequest.dto';
 
-@ObjectType()
-export class ResponseUserAuthFromGrpc {
-  @Field(() => User)
-  user: User;
+export interface IUserServiceGrpc {
+  register(data: InputRegisterRequest): Observable<ResponseRegisterGrpc>;
+  login(data: InputLoginRequest): Observable<ResponseLoginGrpc>;
 
-  @Field(() => Profile)
-  profile: Profile;
-
-  @Field(() => String)
-  accessToken: string;
-}
-
-ObjectType();
-export class ResponsePermission {
-  @Field(() => Boolean)
-  isAdmin: boolean;
-}
-
-export interface UserServiceGrpc {
-  register(data: InputRegisterRequest): Observable<ResponseAuthFromGrpc>;
-  login(data: InputLoginRequest): Observable<ResponseUserAuthFromGrpc>;
-  isAdmin(data: InputPermissionRequest): Observable<ResponsePermission>;
-}
-
-@ObjectType()
-export class ResponseAuthFromGrpc {
-  @Field(() => User)
-  user: User;
-
-  @Field(() => Profile)
-  profile?: Profile;
-
-  @Field(() => Merchant)
-  merchant?: Merchant;
-
-  @Field(() => MerchantBranch)
-  merchantBranch?: MerchantBranch;
-
-  @Field(() => String)
-  accessToken: string;
+  findById(id: IId, metadata?: Metadata): Observable<User>;
+  findOne(query: IQuery, metadata?: Metadata): Observable<User>;
+  create(data: CreateUserInputDto): Observable<User>;
+  count(query: IQuery, metadata?: Metadata): Observable<ICount>;
 }

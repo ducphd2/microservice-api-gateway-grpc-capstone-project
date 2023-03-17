@@ -41,6 +41,7 @@ message Merchant {
     optional int32 wardCode = 7;
     int32 createdAt = 8;
     int32 updatedAt = 9;
+    int32 profileId = 10;
 }
 
 // message MerchantBranch {

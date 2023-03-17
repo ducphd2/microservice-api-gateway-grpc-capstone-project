@@ -11,5 +11,10 @@ export interface InputCreateMerchantRequest {
   districtCode: number;
   wardCode: number;
   merchantSubdomain: string;
-  profileId: number;
+  userId: number;
+}
+
+export interface UpdateMerchantInput {
+  id: number;
+  data: Partial<InputCreateMerchantRequest>;
 }

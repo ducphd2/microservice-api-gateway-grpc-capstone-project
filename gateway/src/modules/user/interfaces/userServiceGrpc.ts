@@ -14,7 +14,7 @@ export class ResponsePermission {
 }
 
 export interface IUserServiceGrpc {
-  findById(id: IId, metadata?: Metadata): Observable<UserFindByIdResponse>;
+  findById(id: IId, metadata?: Metadata): Observable<User>;
   isAdmin(data: InputPermissionRequest): Observable<ResponsePermission>;
   update(data: UpdateDataRequest): Observable<UserFindByIdResponse>;
 }

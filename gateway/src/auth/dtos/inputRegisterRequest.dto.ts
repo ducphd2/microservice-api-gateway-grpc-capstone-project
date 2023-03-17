@@ -14,6 +14,7 @@ import {
   ValidationOptions,
   registerDecorator,
 } from 'class-validator';
+import { CreateUserInputDto } from '../../types';
 
 export function Match<T>(property: keyof T, validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
@@ -40,7 +41,7 @@ export function Match<T>(property: keyof T, validationOptions?: ValidationOption
 }
 
 @InputType()
-export class InputRegisterRequest {
+export class InputRegisterRequest extends CreateUserInputDto {
   @Field()
   @IsEmail()
   @IsNotEmpty()
