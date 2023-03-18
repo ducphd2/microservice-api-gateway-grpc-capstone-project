@@ -1,20 +1,29 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { isEmpty } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
-import { Injectable } from '@nestjs/common';
-import { FindOptions } from 'sequelize';
-import { InjectModel } from '@nestjs/sequelize';
+import { FindOptions, Transaction } from 'sequelize';
 
-import { IUsersService } from './users.interface';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../commons/find-and-paginate.interface';
+import { IUsersService } from './users.interface';
 
-import { UserDto } from './user.dto';
+import { Sequelize } from 'sequelize-typescript';
+import { CustomersService } from '../customer/customers.service';
+import { Customer } from '../database/models';
 import { User } from '../database/models/user.model';
-import { IId } from '../interfaces';
-import { makePaginate } from 'sequelize-cursor-pagination';
+import { ErrorHelper } from '../helpers';
+import { ICreateCustomer } from '../interfaces/customers';
+import { IUserDto } from './dto';
+import { EUserRole } from '../enums';
 
 @Injectable()
 export class UsersService implements IUsersService {
-  constructor(@InjectModel(User) private readonly repo: typeof User, private readonly logger: PinoLogger) {
+  constructor(
+    @InjectModel(User) private readonly repo: typeof User,
+    private readonly logger: PinoLogger,
+    private readonly sequelize: Sequelize,
+    private readonly customersService: CustomersService,
+  ) {
     logger.setContext(UsersService.name);
   }
 
@@ -68,17 +77,39 @@ export class UsersService implements IUsersService {
     return result;
   }
 
-  async create(user: UserDto): Promise<User> {
+  async create(user: IUserDto, transaction?: Transaction): Promise<User> {
     this.logger.info('UsersService#create.call %o', user);
 
-    const result: User = await this.repo.create(user);
+    const result: User = await this.repo.create(user, { transaction });
 
     this.logger.info('UsersService#create.result %o', result);
 
-    return result;
+    return result.toJSON();
   }
 
-  async update(id: number, user: UserDto): Promise<User> {
+  async createCustomer(data: ICreateCustomer): Promise<any> {
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      this.logger.info('UsersService#createCustomer.call %o', data);
+
+      const user: User = await this.create({ ...data.user, role: EUserRole.USER }, transaction);
+      const customer: Customer = await this.customersService.create({ ...data.customer, userId: user.id }, transaction);
+
+      await transaction.commit();
+      this.logger.info('UsersService#createCustomer.result %o', user, customer);
+
+      return {
+        user,
+        customer,
+      };
+    } catch (error) {
+      await transaction.rollback();
+      ErrorHelper.BadRequestException('Can not create customer user');
+    }
+  }
+
+  async update(id: number, user: IUserDto): Promise<User> {
     this.logger.info('UsersService#update.call %o', user);
 
     const record: User = await this.repo.findByPk(id);

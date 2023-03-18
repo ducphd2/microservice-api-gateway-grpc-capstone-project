@@ -5,9 +5,10 @@ import { join } from 'path';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
 import { UtilsModule } from '../../utils/utils.module';
 import { CustomersMutationResolver } from './customer-mutation.resolver';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [UtilsModule, ConfigModule],
+  imports: [UtilsModule, ConfigModule, UserModule],
   providers: [
     CustomersMutationResolver,
     {
@@ -16,9 +17,9 @@ import { CustomersMutationResolver } from './customer-mutation.resolver';
         return ClientProxyFactory.create({
           transport: Transport.GRPC,
           options: {
-            url: configService.get<string>('CUSTOMERS_SVC_URL'),
-            package: 'customer',
-            protoPath: join(__dirname, '../../protos/customer.proto'),
+            url: configService.get<string>('USERS_SVC_URL'),
+            package: ['customer', 'user'],
+            protoPath: [join(__dirname, '../../protos/customer.proto'), join(__dirname, '../../protos/user.proto')],
           },
         });
       },

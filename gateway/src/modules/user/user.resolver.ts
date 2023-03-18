@@ -10,8 +10,7 @@ import { User, UsersConnection } from '../../types';
 import { PasswordUtils } from '../../utils/password.utils';
 import { QueryUtils } from '../../utils/query.utils';
 import { ChangePasswordInput } from './dtos';
-import { IUsersConnection } from './interfaces';
-import { IUserServiceGrpc } from './interfaces/userServiceGrpc';
+import { IUserServiceGrpc, IUsersConnection } from './interfaces';
 
 @Resolver()
 export class UserResolver implements OnModuleInit {

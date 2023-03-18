@@ -25,6 +25,9 @@ export class Customer extends BaseType {
   @Field(() => String)
   contact: string;
 
+  @Field(() => String)
+  level: string;
+
   @Field(() => Int)
   dobDay: number;
 
@@ -34,11 +37,23 @@ export class Customer extends BaseType {
   @Field(() => Int)
   dobYear: number;
 
+  @Field(() => Int)
+  userId: number;
+
+  @Field(() => Int, { nullable: true })
+  branchId: number;
+
   @Field(() => String, { nullable: true })
   occupation: string;
 
   @Field(() => String, { nullable: true })
   avatar: string;
+
+  @Field(() => String, { nullable: true })
+  referrer: string;
+
+  @Field(() => String, { nullable: true })
+  referrerCode: string;
 }
 
 @ObjectType()
@@ -65,7 +80,7 @@ export class CustomerPayload {
   errors?: IErrorPayload[];
 
   @Field(() => Customer, { nullable: true })
-  customer?: Customer;
+  customer?: ICustomer;
 }
 
 @ObjectType()
@@ -114,6 +129,21 @@ export class CreateCustomerInputDto {
 
   @Field(() => String, { nullable: true })
   readonly avatar?: string;
+
+  @Field(() => String, { nullable: true })
+  referrer?: string;
+
+  @Field(() => String, { nullable: true })
+  referrerCode?: string;
+
+  @Field(() => Int, { nullable: true })
+  userId?: number;
+
+  @Field(() => String, { nullable: true })
+  level?: string;
+
+  @Field(() => Int, { nullable: true })
+  branchId?: number;
 }
 
 @InputType()

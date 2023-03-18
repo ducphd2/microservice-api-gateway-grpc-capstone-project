@@ -1,17 +1,17 @@
 import Aigle from 'aigle';
 
-import { PinoLogger } from 'nestjs-pino';
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { isEmpty, isNil } from 'lodash';
+import { PinoLogger } from 'nestjs-pino';
 
 import { ICount, IQuery } from '../commons/commons.interface';
 import { IFindPayload } from '../commons/cursor-pagination.interface';
 
-import { ICustomerDto } from './customers.dto';
-import { User } from '../database/models/user.model';
+import { Customer } from '../database/models/customer.model';
+import { EGrpcClientService, EUserRole } from '../enums';
+import { ICustomer } from '../interfaces/customers';
 import { CustomersService } from './customers.service';
-import { EGrpcClientService } from '../enums';
 
 const { map } = Aigle;
 
@@ -22,7 +22,7 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'find')
-  async find(query: IQuery): Promise<IFindPayload<User>> {
+  async find(query: IQuery): Promise<IFindPayload<Customer>> {
     this.logger.info('CustomersController#findAll.call %o', query);
 
     const { results, cursors } = await this.service.find({
@@ -34,10 +34,10 @@ export class CustomersController {
       after: !isEmpty(query.after) ? query.after : undefined,
     });
 
-    const result: IFindPayload<User> = {
-      edges: await map(results, async (comment: User) => ({
-        node: comment,
-        cursor: Buffer.from(JSON.stringify([comment.id])).toString('base64'),
+    const result: IFindPayload<Customer> = {
+      edges: await map(results, async (customer: Customer) => ({
+        node: customer,
+        cursor: Buffer.from(JSON.stringify([customer.id])).toString('base64'),
       })),
       pageInfo: {
         startCursor: cursors.before || '',
@@ -53,10 +53,10 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findById')
-  async findById({ id }): Promise<User> {
+  async findById({ id }): Promise<Customer> {
     this.logger.info('CustomersController#findById.call %o', id);
 
-    const result: User = await this.service.findById(id);
+    const result: Customer = await this.service.findById(id);
 
     this.logger.info('CustomersController#findById.result %o', result);
 
@@ -66,10 +66,10 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findOne')
-  async findOne(query: IQuery): Promise<User> {
+  async findOne(query: IQuery): Promise<Customer> {
     this.logger.info('CustomersController#findOne.call %o', query);
 
-    const result: User = await this.service.findOne({
+    const result: Customer = await this.service.findOne({
       attributes: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
     });
@@ -94,11 +94,11 @@ export class CustomersController {
     return { count };
   }
 
-  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
-  async create(data: ICustomerDto): Promise<User> {
+  // @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
+  async create(data: ICustomer): Promise<Customer> {
     this.logger.info('CustomersController#create.call %o', data);
 
-    const result: User = await this.service.create(data);
+    const result: Customer = await this.service.create({ ...data, role: EUserRole.USER });
 
     this.logger.info('CustomersController#create.result %o', result);
 
@@ -106,10 +106,10 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'update')
-  async update({ id, data }): Promise<User> {
+  async update({ id, data }): Promise<Customer> {
     this.logger.info('CustomersController#update.call %o %o', id, data);
 
-    const result: User = await this.service.update(id, data);
+    const result: Customer = await this.service.update(id, data);
 
     this.logger.info('CustomersController#update.result %o', result);
 

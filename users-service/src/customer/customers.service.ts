@@ -1,14 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { isEmpty } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
-import { Injectable } from '@nestjs/common';
-import { FindOptions } from 'sequelize';
-import { InjectModel } from '@nestjs/sequelize';
+import { FindOptions, Transaction } from 'sequelize';
 
-import { ICustomersService } from './customers.interface';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../commons/find-and-paginate.interface';
 
-import { ICustomerDto } from './customers.dto';
 import { Customer } from '../database/models';
+import { ErrorHelper } from '../helpers';
+import { ICustomer, ICustomersService } from '../interfaces/customers';
 
 @Injectable()
 export class CustomersService implements ICustomersService {
@@ -19,7 +19,8 @@ export class CustomersService implements ICustomersService {
   async find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<Customer>> {
     this.logger.info('CustomersService#findAll.call %o', query);
 
-    const result: any = await this.repo.paginate({
+    // @ts-ignore
+    const result: IFindAndPaginateResult<Customer> = await this.repo.findAndPaginate({
       ...query,
       raw: true,
       paranoid: false,
@@ -65,24 +66,28 @@ export class CustomersService implements ICustomersService {
     return result;
   }
 
-  async create(user: ICustomerDto): Promise<Customer> {
-    this.logger.info('CustomersService#create.call %o', user);
+  async create(customer: ICustomer, transaction?: Transaction): Promise<Customer> {
+    try {
+      this.logger.info('CustomersService#create.call %o', customer);
 
-    const result: Customer = await this.repo.create(user);
+      const result: Customer = await this.repo.create(customer, { transaction });
 
-    this.logger.info('CustomersService#create.result %o', result);
+      this.logger.info('CustomersService#create.result %o', result);
 
-    return result;
+      return result.toJSON();
+    } catch (error) {
+      ErrorHelper.BadRequestException('Can not create customer user');
+    }
   }
 
-  async update(id: number, user: ICustomerDto): Promise<Customer> {
-    this.logger.info('CustomersService#update.call %o', user);
+  async update(id: number, customer: ICustomer): Promise<Customer> {
+    this.logger.info('CustomersService#update.call %o', customer);
 
     const record: Customer = await this.repo.findByPk(id);
 
     if (isEmpty(record)) throw new Error('Record not found.');
 
-    const result: Customer = await record.update(user);
+    const result: Customer = await record.update(customer);
 
     this.logger.info('CustomersService#update.result %o', result);
 
