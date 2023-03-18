@@ -1,19 +1,39 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 export class ErrorHelper {
-  static BadRequestException(msg: string | string[]) {
-    throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+  static BadRequestException(message: string) {
+    throw new RpcException({
+      code: HttpStatus.BAD_REQUEST,
+      message,
+    });
   }
-  static UnauthorizedException(msg: string) {
-    throw new HttpException(msg, HttpStatus.UNAUTHORIZED);
+
+  static UnauthorizedException(message: string) {
+    throw new RpcException({
+      code: HttpStatus.UNAUTHORIZED,
+      message,
+    });
   }
-  static NotFoundException(msg: string) {
-    throw new HttpException(msg, HttpStatus.NOT_FOUND);
+
+  static NotFoundException(message: string) {
+    throw new RpcException({
+      code: HttpStatus.NOT_FOUND,
+      message,
+    });
   }
-  static ForbiddenException(msg: string) {
-    throw new HttpException(msg, HttpStatus.FORBIDDEN);
+
+  static ForbiddenException(message: string) {
+    throw new RpcException({
+      code: HttpStatus.FORBIDDEN,
+      message,
+    });
   }
-  static InternalServerErrorException(msg: string) {
-    throw new HttpException(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+
+  static InternalServerErrorException(message: string) {
+    throw new RpcException({
+      code: HttpStatus.INTERNAL_SERVER_ERROR,
+      message,
+    });
   }
 }

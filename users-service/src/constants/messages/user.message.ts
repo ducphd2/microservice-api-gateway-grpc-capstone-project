@@ -1,3 +1,3 @@
-export const MERCHANT = {
-  MERCHANT_NOT_FOUND: 'The merchant is not found. Please try again!',
+export const USER_MESSAGE = {
+  USER_NOT_FOUND: 'The user not found',
 };

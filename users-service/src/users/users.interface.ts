@@ -3,6 +3,7 @@ import { FindOptions } from 'sequelize';
 import { UserDto } from './user.dto';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../commons/find-and-paginate.interface';
 import { User } from '../database/models/user.model';
+import { IId } from '../interfaces';
 
 export interface IUsersService {
   find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<User>>;

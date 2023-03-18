@@ -6,13 +6,14 @@ import { lastValueFrom } from 'rxjs';
 import { EGrpcClientService } from '../enums/grpc-services.enum';
 import { RefreshAuthGuard } from '../guard';
 import { TestMerchantService } from '../modules/test-merchant/test-merchant.service';
-import { IUserPayload, ResponseLoginGrpc, ResponseRegisterGrpc, User, UserPayload } from '../types';
+import { ResponseLoginGrpc, ResponseRegisterGrpc, User, UserPayload } from '../types';
 import { PasswordUtils } from '../utils/password.utils';
 import { AuthService } from './auth.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
 import { IUserServiceGrpc } from './interfaces/authServiceGrpc';
 import { CurrentUser } from './user.decorator';
+import { IUserPayload } from '../modules/user/interfaces';
 
 @Resolver()
 export class AuthResolver implements OnModuleInit {
@@ -33,34 +34,38 @@ export class AuthResolver implements OnModuleInit {
 
   @Mutation(() => ResponseLoginGrpc)
   async login(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<ResponseLoginGrpc> {
-    const { res } = context;
+    try {
+      const { res } = context;
 
-    const user: any = await lastValueFrom(
-      this.usersService.findOne({
-        where: JSON.stringify({ email: data.email }),
-      }),
-    );
+      const user: any = await lastValueFrom(
+        this.usersService.findOne({
+          where: JSON.stringify({ email: data.email }),
+        }),
+      );
 
-    if (isEmpty(user)) throw new Error('Unable to login');
+      if (isEmpty(user)) throw new Error('Unable to login');
 
-    const isSame: boolean = await this.passwordUtils.compare(data.password, user.password);
+      const isSame: boolean = await this.passwordUtils.compare(data.password, user.password);
 
-    if (!isSame) throw new Error('Unable to login');
+      if (!isSame) throw new Error('Unable to login');
 
-    res.cookie('access-token', await this.authService.generateAccessToken(user), {
-      httpOnly: true,
-      maxAge: 1.8e6,
-    });
-    res.cookie('refresh-token', await this.authService.generateRefreshToken(user), {
-      httpOnly: true,
-      maxAge: 1.728e8,
-    });
+      res.cookie('access-token', await this.authService.generateAccessToken(user), {
+        httpOnly: true,
+        maxAge: 1.8e6,
+      });
+      res.cookie('refresh-token', await this.authService.generateRefreshToken(user), {
+        httpOnly: true,
+        maxAge: 1.728e8,
+      });
 
-    return {
-      user,
-      accessToken: await this.authService.generateAccessToken(user),
-      refreshToken: await this.authService.generateAccessToken(user),
-    };
+      return {
+        user,
+        accessToken: await this.authService.generateAccessToken(user),
+        refreshToken: await this.authService.generateRefreshToken(user),
+      };
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
   @Mutation(() => ResponseRegisterGrpc)

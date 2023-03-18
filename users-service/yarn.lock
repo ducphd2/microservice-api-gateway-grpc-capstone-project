@@ -1259,14 +1259,7 @@
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.13.tgz#da4bfd73f49bd541d28920ab0e2bf0ee80f71c91"
   integrity sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==
 
-"@types/sequelize-cursor-pagination@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@types/sequelize-cursor-pagination/-/sequelize-cursor-pagination-1.2.3.tgz#6638a420dfb20647f1d2dab6fb78ac5ae1d956b3"
-  integrity sha512-+woN3KzHFYwGZX8Au+vzaPhQ68Sajg5iyxV5kBesLxqAm1UBvOQxaQrKHOqY4CPHKoI3lA4XQAvRpnKFigeixg==
-  dependencies:
-    "@types/sequelize" "*"
-
-"@types/sequelize@*", "@types/sequelize@^4.28.14":
+"@types/sequelize@^4.28.14":
   version "4.28.14"
   resolved "https://registry.yarnpkg.com/@types/sequelize/-/sequelize-4.28.14.tgz#70302689ddef09f5d472b548a14e5a150e690aff"
   integrity sha512-O8lTJ8YPVVaoY9xjduchDlo0MOS3w262pro2H1QMuFIo/kc/p1elP/UxLOTP2wcVO2cFd6Gvghg9ZSAiJi0GLA==
@@ -6430,10 +6423,10 @@ send@0.18.0:
     range-parser "~1.2.1"
     statuses "2.0.1"
 
-sequelize-cursor-pagination@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/sequelize-cursor-pagination/-/sequelize-cursor-pagination-3.4.0.tgz#ad1bbe749dfd3129a19149166ec53cc58696525a"
-  integrity sha512-UOF53lpzWM7guzU7TEY9vuDKG9HTyoJ7uVGAr9Mb428DH/EfWxHDW2/TDD+NndhGY/SqJLH9ushP1mab1bK23g==
+sequelize-cursor-pagination@1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/sequelize-cursor-pagination/-/sequelize-cursor-pagination-1.7.0.tgz#c2e9baf431d7be005c02a017bf7a6397f84ddb5f"
+  integrity sha512-O/5SCo4VFC9ruzyDxzSGj2PzPit0hqaZdrDOIJYUUBsnM8B+3jz1jZlkATTYuDbGSuXh/eQymNYTov+4Ptrv2g==
 
 sequelize-pool@^7.1.0:
   version "7.1.0"

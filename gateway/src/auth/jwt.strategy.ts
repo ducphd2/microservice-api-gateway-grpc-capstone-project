@@ -29,11 +29,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') implements On
   }
 
   onModuleInit(): void {
-    this.usersService = this.usersServiceClient.getService<IUserServiceGrpc>('UserServiceGrpc');
+    this.usersService = this.usersServiceClient.getService<IUserServiceGrpc>(EGrpcClientService.USER_SERVICE);
   }
 
   async validate(payload: any): Promise<User> {
-    const user = await lastValueFrom(this.usersService.findById({ id: payload.sub }));
+    const user = await lastValueFrom(this.usersService.findById({ id: Number(payload.sub) }));
     return user;
   }
 }

@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientGrpcProxy, ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { UserResolver } from './user.resolver';
-import { UserService } from './user.service';
 import { UtilsModule } from '../../utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
@@ -11,7 +10,6 @@ import { EGrpcClientService } from '../../enums/grpc-services.enum';
   imports: [ConfigModule, UtilsModule],
   providers: [
     UserResolver,
-    UserService,
     {
       provide: EGrpcClientService.USER_SERVICE,
       useFactory: (configService: ConfigService): ClientGrpcProxy => {
@@ -33,6 +31,6 @@ import { EGrpcClientService } from '../../enums/grpc-services.enum';
       inject: [ConfigService],
     },
   ],
-  exports: [UserService, EGrpcClientService.USER_SERVICE],
+  exports: [EGrpcClientService.USER_SERVICE],
 })
 export class UserModule {}

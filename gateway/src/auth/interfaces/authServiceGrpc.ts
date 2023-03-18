@@ -1,7 +1,7 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
 import { ICount, IId, IQuery } from '../../commons/commons.interface';
-import { CreateUserInputDto, ResponseRegisterGrpc, ResponseLoginGrpc, User } from '../../types';
+import { CreateUserInputDto, ResponseLoginGrpc, ResponseRegisterGrpc, User } from '../../types';
 import { InputLoginRequest } from '../dtos/inputLoginRequest.dto';
 import { InputRegisterRequest } from '../dtos/inputRegisterRequest.dto';
 

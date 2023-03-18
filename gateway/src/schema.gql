@@ -36,6 +36,16 @@ type UserPayload {
   user: User
 }
 
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
 type Merchant {
   id: ID!
   createdAt: Int!
@@ -117,33 +127,6 @@ type ResponseRegisterGrpc {
   merchantBranch: MerchantBranch!
 }
 
-type Profile {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  userId: Int!
-  fullName: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  dateOfBirth: Int!
-  monthOfBirth: Int!
-  yearOfBirth: Int!
-  type: ProfileType!
-}
-
-enum ProfileType {
-  CUSTOMER
-  EMPLOYEE
-}
-
-type UserFindByIdResponse {
-  user: User!
-  profile: Profile!
-}
-
 type FindAllBranches {
   merchantBranches: [MerchantBranch!]!
 }
@@ -163,6 +146,7 @@ type ResponseSingleUpload {
 
 type Query {
   findOneMerchant(id: Float!): Merchant!
+  getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
   getUser(id: Float!): User!
   findBranches: FindAllBranches!
   findBranchById(id: Float!): MerchantBranch!
@@ -175,7 +159,7 @@ type Mutation {
   register(data: InputRegisterRequest!): ResponseRegisterGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
-  updatePassword(data: ChangePasswordInput!): UserFindByIdResponse!
+  updatePassword(data: ChangePasswordInput!): User!
   createBranch(data: BranchDto!): MerchantBranch!
   updateBranch(id: Float!, data: BranchDto!): MerchantBranch!
   deleteBranch(id: Float!): MerchantBranch!

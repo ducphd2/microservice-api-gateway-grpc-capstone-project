@@ -151,15 +151,3 @@ export class UpdateCustomerInputDto {
   @Field()
   readonly contact?: string;
 }
-
-@InputType()
-export class UpdatePasswordInput {
-  @Field()
-  readonly currentPassword?: string;
-
-  @Field()
-  readonly newPassword?: string;
-
-  @Field()
-  readonly confirmPassword?: string;
-}
