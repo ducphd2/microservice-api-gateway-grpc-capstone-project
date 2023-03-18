@@ -60,7 +60,7 @@ const operatorsAliases: OperatorsAliases = {
         typeValidation: true,
         operatorsAliases,
         autoLoadModels: true,
-        synchronize: configService.get<boolean>('DB_SYNC'),
+        synchronize: true,
         define: {
           timestamps: true,
           underscored: true,

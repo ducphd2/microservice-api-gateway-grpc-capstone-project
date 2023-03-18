@@ -101,16 +101,36 @@ type Customer {
   role: String!
   gender: String!
   contact: String!
+  level: String!
   dobDay: Int!
   dobMonth: Int!
   dobYear: Int!
+  userId: Int!
+  branchId: Int
   occupation: String
   avatar: String
+  referrer: String
+  referrerCode: String
+}
+
+type CustomersConnection {
+  edges: [CustomerEdge!]!
+  pageInfo: PageInfo!
 }
 
 type CustomerEdge {
   node: Customer!
   cursor: String!
+}
+
+type CustomerPayload {
+  errors: [ErrorPayload!]
+  customer: Customer
+}
+
+type DeleteCustomerPayload {
+  errors: [ErrorPayload!]
+  count: Int
 }
 
 type ResponseLoginGrpc {
@@ -152,6 +172,7 @@ type Query {
   findBranchById(id: Float!): MerchantBranch!
   findCategories: FindAllCategories!
   findCategoryById(id: Float!): Category!
+  getAllCustomer(q: String!, first: Float!, last: Float!, before: String!, after: String!, orderBy: String!): CustomersConnection!
 }
 
 type Mutation {
@@ -168,6 +189,10 @@ type Mutation {
   deleteCategory(id: Float!): Category!
   uploadSingleFiles(file: Upload!, folder: String): ResponseSingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [ResponseSingleUpload!]!
+  createCustomer(data: CreateCustomerInputDto!): CustomerPayload!
+  updateCustomer(id: Float!, data: UpdateCustomerInputDto!): CustomerPayload!
+  updateCustomerPassword(data: UpdatePasswordInput!): CustomerPayload!
+  deleteCustomer: DeleteCustomerPayload!
 }
 
 input InputLoginRequest {
@@ -226,3 +251,43 @@ input CategoryDto {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input CreateCustomerInputDto {
+  fullName: String!
+  email: String!
+  password: String!
+  status: String!
+  role: String!
+  gender: String!
+  contact: String!
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
+  occupation: String
+  avatar: String
+  referrer: String
+  referrerCode: String
+  userId: Int
+  level: String
+  branchId: Int
+}
+
+input UpdateCustomerInputDto {
+  fullName: String!
+  password: String!
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
+  occupation: String!
+  avatar: String!
+  status: String!
+  role: String!
+  gender: String!
+  contact: String!
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}

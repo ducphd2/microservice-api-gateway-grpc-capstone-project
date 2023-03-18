@@ -8,13 +8,14 @@ import { PinoLogger } from 'nestjs-pino';
 import { ICount, IQuery } from '../commons/commons.interface';
 import { IFindPayload } from '../commons/cursor-pagination.interface';
 
+import { USER_MESSAGE } from '../constants';
 import { User } from '../database/models/user.model';
 import { EGrpcClientService } from '../enums';
-import { UserDto } from './user.dto';
-import { UsersService } from './users.service';
 import { ErrorHelper } from '../helpers';
-import { USER_MESSAGE } from '../constants';
 import { IId } from '../interfaces';
+import { ICreateCustomer } from '../interfaces/customers';
+import { IUserDto } from './dto';
+import { UsersService } from './users.service';
 
 const { map } = Aigle;
 
@@ -22,6 +23,32 @@ const { map } = Aigle;
 export class UsersController {
   constructor(private readonly service: UsersService, private readonly logger: PinoLogger) {
     logger.setContext(UsersController.name);
+  }
+
+  @GrpcMethod(EGrpcClientService.USER_SERVICE, 'create')
+  async create(data: IUserDto): Promise<User> {
+    this.logger.info('UsersController#create.call %o', data);
+
+    const result: User = await this.service.create(data);
+
+    this.logger.info('UsersController#create.result %o', result);
+
+    return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
+  async createCustomer(data: ICreateCustomer): Promise<any> {
+    try {
+      this.logger.info('UsersController#createCustomer.call %o', data);
+
+      const result: any = await this.service.createCustomer(data);
+
+      this.logger.info('UsersController#create.result %o', result);
+
+      return result;
+    } catch (error) {
+      ErrorHelper.BadRequestException('Can not create customer');
+    }
   }
 
   @GrpcMethod(EGrpcClientService.USER_SERVICE, 'find')
@@ -95,17 +122,6 @@ export class UsersController {
     this.logger.info('UsersController#count.result %o', count);
 
     return { count };
-  }
-
-  @GrpcMethod(EGrpcClientService.USER_SERVICE, 'create')
-  async create(data: UserDto): Promise<User> {
-    this.logger.info('UsersController#create.call %o', data);
-
-    const result: User = await this.service.create(data);
-
-    this.logger.info('UsersController#create.result %o', result);
-
-    return result;
   }
 
   @GrpcMethod(EGrpcClientService.USER_SERVICE, 'update')

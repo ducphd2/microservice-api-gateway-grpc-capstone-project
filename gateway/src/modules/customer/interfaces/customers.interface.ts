@@ -3,10 +3,16 @@ import { Observable } from 'rxjs';
 import { ICount, IId, IQuery } from '../../../commons/commons.interface';
 import { Customer, CustomersConnection } from '../../../types';
 import { CustomerDto } from '../dtos';
+import { IUser } from '../../user/interfaces';
 
 export interface UpdateCustomerInput {
   id: number;
   data: CustomerDto;
+}
+
+export interface CreateCustomerInput {
+  user: IUser;
+  customer: ICustomer;
 }
 
 export interface ICustomerServices {
@@ -14,7 +20,7 @@ export interface ICustomerServices {
   findById(id: IId, metadata?: Metadata): Observable<Customer>;
   findOne(query: IQuery, metadata?: Metadata): Observable<Customer>;
   count(query: IQuery, metadata?: Metadata): Observable<ICount>;
-  create(input: CustomerDto, metadata?: Metadata): Observable<Customer>;
+  create(input: CreateCustomerInput, metadata?: Metadata): Observable<CreateCustomerInput>;
   update(input: UpdateCustomerInput): Observable<Customer>;
   destroy(query: IQuery, metadata?: Metadata): Observable<ICount>;
 }
@@ -35,6 +41,10 @@ export interface ICustomer {
   avatar?: string;
   createdAt?: number;
   updatedAt?: number;
+  userId?: number;
+  branchId?: number;
+  referrer?: string;
+  referrerCode?: string;
 }
 
 export interface IPageInfo {

@@ -1,7 +1,7 @@
+import * as paginate from 'sequelize-cursor-pagination';
 import { Column, DataType, Table } from 'sequelize-typescript';
-import { EUserGender, EUserRole, EUserStatus } from '../../enums/user.enum';
+import { ECustomerLevel } from '../../enums';
 import { BaseModel } from './base.model';
-import { PaginateOptions, PaginationConnection, makePaginate } from 'sequelize-cursor-pagination';
 
 @Table({
   modelName: 'customer',
@@ -10,80 +10,35 @@ import { PaginateOptions, PaginationConnection, makePaginate } from 'sequelize-c
 })
 export class Customer extends BaseModel<Customer> {
   @Column({
-    type: DataType.TEXT,
+    type: DataType.ENUM(ECustomerLevel.NORMAL, ECustomerLevel.SILVER, ECustomerLevel.GOLD, ECustomerLevel.PLATINUM),
     allowNull: false,
-    unique: true,
+    defaultValue: ECustomerLevel.NORMAL,
   })
-  email: string;
+  level: string;
 
   @Column({
-    type: DataType.TEXT,
-    allowNull: false,
-  })
-  password: string;
-
-  @Column({
-    type: DataType.TEXT,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  fullName: string;
-
-  @Column({
-    type: DataType.ENUM(EUserStatus.ACTIVE, EUserStatus.BANNED),
-    allowNull: false,
-    defaultValue: EUserStatus.ACTIVE,
-  })
-  status: string;
-
-  @Column({
-    type: DataType.ENUM(EUserRole.USER, EUserRole.ADMIN, EUserRole.SUPER_ADMIN),
-    allowNull: false,
-    defaultValue: EUserRole.USER,
-  })
-  role: string;
-
-  @Column({
-    type: DataType.ENUM(EUserGender.FEMALE, EUserGender.MALE, EUserGender.OTHER),
-    allowNull: false,
-  })
-  gender: string;
-
-  @Column({
-    type: DataType.TEXT,
-  })
-  occupation: string;
-
-  @Column({
-    type: DataType.TEXT,
-  })
-  avatar: string;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: false,
-  })
-  contact: string;
+  userId: number;
 
   @Column({
     type: DataType.INTEGER,
   })
-  dobDay: number;
+  branchId: number;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.TEXT,
   })
-  dobMonth: number;
+  referrer: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.TEXT,
   })
-  dobYear: number;
-
-  public static makePagination() {
-    return makePaginate<Customer>(Customer, {
-      primaryKeyField: 'id',
-    });
-  }
-
-  declare static paginate: (options: PaginateOptions<Customer>) => Promise<PaginationConnection<Customer>>;
+  referrerCode: string;
 }
+
+paginate({
+  methodName: 'findAndPaginate',
+  primaryKeyField: 'id',
+})(Customer);

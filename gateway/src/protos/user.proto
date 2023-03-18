@@ -16,8 +16,8 @@ message User {
   int32 dobDay = 9;
   int32 dobMonth = 10;
   int32 dobYear = 11;
-  string createdAt = 12;
-  string updatedAt = 13;
+  int32 createdAt = 12;
+  int32 updatedAt = 13;
   optional string occupation = 14;
   optional string avatar = 15;
 }

@@ -1,45 +1,102 @@
+// syntax = "proto3";
+
+// package customer;
+
+// import "commons.proto";
+
+// message Customer {
+//   string id = 1;
+//   string fullName = 2;
+//   string email = 3;
+//   string password = 4;
+//   string status = 5;
+//   string role = 6;
+//   string gender = 7;
+//   string contact = 8;
+//   int32 dobDay = 9;
+//   int32 dobMonth = 10;
+//   int32 dobYear = 11;
+//   string createdAt = 12;
+//   string updatedAt = 13;
+//   optional string occupation = 14;
+//   optional string avatar = 15;
+// }
+
+// message UserEdge {
+//   Customer node = 1;
+//   string cursor = 2;
+// }
+
+// message CreateCustomerInput {
+//     string fullName = 2;
+//     string email = 3;
+//     string password = 4;
+//     string status = 5;
+//     string role = 6;
+//     string gender = 7;
+//     string contact = 8;
+//     int32 dobDay = 9;
+//     int32 dobMonth = 10;
+//     int32 dobYear = 11;
+//     optional string occupation = 12;
+//     optional string avatar = 13;
+// }
+
+// message UpdateCustomerInput {
+//   string id = 1;
+//   Customer data = 2;
+// }
+
+// message FindCustomersPayload {
+//   repeated UserEdge edges = 1;
+//   commons.PageInfo pageInfo = 2;
+// }
+
+// service CustomerServiceGrpc {
+//   rpc find (commons.Query) returns (FindCustomersPayload) {}
+//   rpc findById (commons.Id) returns (Customer) {}
+//   rpc findOne (commons.Query) returns (Customer) {}
+//   rpc count (commons.Query) returns (commons.Count) {}
+//   rpc create (CreateCustomerInput) returns (Customer) {}
+//   rpc update (UpdateCustomerInput) returns (Customer) {}
+//   rpc destroy (commons.Query) returns (commons.Count) {}
+// }
+
 syntax = "proto3";
 
 package customer;
 
 import "commons.proto";
+import "user.proto";
 
 message Customer {
   string id = 1;
-  string fullName = 2;
-  string email = 3;
-  string password = 4;
-  string status = 5;
-  string role = 6;
-  string gender = 7;
-  string contact = 8;
-  int32 dobDay = 9;
-  int32 dobMonth = 10;
-  int32 dobYear = 11;
-  string createdAt = 12;
-  string updatedAt = 13;
-  optional string occupation = 14;
-  optional string avatar = 15;
+  string level = 2;
+  int32 userId = 3;
+  int32 createdAt = 4;
+  int32 updatedAt = 5;
+  optional int32 branchId = 6;
+  optional string referrer = 7;
+  optional string referrerCode = 8;
 }
 
-message UserEdge {
+message CustomerInput {
+  string id = 1;
+  string level = 2;
+  int32 userId = 3;
+  optional int32 branchId = 4;
+  optional string referrer = 5;
+  optional string referrerCode = 6;
+}
+
+message CustomerEdge {
   Customer node = 1;
   string cursor = 2;
 }
 
 message CreateCustomerInput {
-    string fullName = 2;
-    string email = 3;
-    string password = 4;
-    string status = 5;
-    string role = 6;
-    string gender = 7;
-    string contact = 8;
-    int32 dobDay = 9;
-    int32 dobMonth = 10;
-    int32 dobYear = 11;
-    optional string occupation = 12;
-    optional string avatar = 13;
+  user.CreateUserInput user = 1;
+  CustomerInput customer = 2;
 }
 
 message UpdateCustomerInput {
@@ -47,8 +104,13 @@ message UpdateCustomerInput {
   Customer data = 2;
 }
 
+message CreateCustomerRes {
+  Customer customer = 1;
+  user.User user = 2;
+}
+
 message FindCustomersPayload {
-  repeated UserEdge edges = 1;
+  repeated CustomerEdge edges = 1;
   commons.PageInfo pageInfo = 2;
 }
 
@@ -57,7 +119,7 @@ service CustomerServiceGrpc {
   rpc findById (commons.Id) returns (Customer) {}
   rpc findOne (commons.Query) returns (Customer) {}
   rpc count (commons.Query) returns (commons.Count) {}
-  rpc create (CreateCustomerInput) returns (Customer) {}
+  rpc create (CreateCustomerInput) returns (CreateCustomerRes) {}
   rpc update (UpdateCustomerInput) returns (Customer) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
 }

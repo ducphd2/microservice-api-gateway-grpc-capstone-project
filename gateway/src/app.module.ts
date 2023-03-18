@@ -11,6 +11,7 @@ import { TestMerchantModule } from './modules/test-merchant/test-merchant.module
 import { UserModule } from './modules/user/user.module';
 import { MerchantBranchModule } from './modules/branch/branch.module';
 import { MerchantCategoryModule } from './modules/category/category.module';
+import { CustomerModule } from './modules/customer/customer.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MerchantCategoryModule } from './modules/category/category.module';
     UserModule,
     MerchantBranchModule,
     MerchantCategoryModule,
+    CustomerModule,
   ],
   providers: [
     {
