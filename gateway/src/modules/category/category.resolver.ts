@@ -5,6 +5,7 @@ import { Category } from '../../types';
 import { MerchantCategoryService } from './category.service';
 import { CategoryDto, UploadInputArgs } from './dtos';
 import { DeleteCategoryPayload, FindAllCategories } from './interfaces/merchant-branch-service-grpc';
+import { RpcException } from '@nestjs/microservices';
 
 @Resolver()
 export class MerchantCategoryResolver {
@@ -25,7 +26,14 @@ export class MerchantCategoryResolver {
   @Mutation(() => Category)
   @UseGuards(AuthGuard)
   async createCategory(@Args() data: UploadInputArgs): Promise<Category> {
-    return await this.merchantService.create(data);
+    try {
+      return await this.merchantService.create(data);
+    } catch (error) {
+      throw new RpcException({
+        message: 'Can not create category',
+        code: 500,
+      });
+    }
   }
 
   @Mutation(() => Category)

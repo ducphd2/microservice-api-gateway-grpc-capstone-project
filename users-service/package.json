@@ -24,7 +24,6 @@
     "@nestjs/microservices": "^9.1.5",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/sequelize": "^9.0.0",
-    "@types/sequelize-cursor-pagination": "^1.2.3",
     "aigle": "1.14.1",
     "argon2": "^0.30.3",
     "grpc": "^1.24.11",
@@ -37,7 +36,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "sequelize": "^6.29.3",
-    "sequelize-cursor-pagination": "^3.4.0",
+    "sequelize-cursor-pagination": "1.7.0",
     "sequelize-typescript": "^2.1.5"
   },
   "devDependencies": {

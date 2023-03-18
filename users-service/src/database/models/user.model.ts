@@ -1,7 +1,7 @@
 import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
 import { EUserGender, EUserRole, EUserStatus } from '../../enums/user.enum';
 import { BaseModel } from './base.model';
-import { PaginateOptions, PaginationConnection, makePaginate } from 'sequelize-cursor-pagination';
+import * as paginate from 'sequelize-cursor-pagination';
 import { hash } from 'argon2';
 
 @Table({
@@ -80,14 +80,6 @@ export class User extends BaseModel<User> {
   })
   dobYear: number;
 
-  public static makePagination() {
-    return makePaginate<User>(User, {
-      primaryKeyField: 'id',
-    });
-  }
-
-  declare static paginate: (options: PaginateOptions<User>) => Promise<PaginationConnection<User>>;
-
   @BeforeCreate
   @BeforeUpdate
   static async hashPassword(user: User) {
@@ -96,4 +88,7 @@ export class User extends BaseModel<User> {
   }
 }
 
-// User.paginate = makePaginate(User);
+paginate({
+  methodName: 'findAndPaginate',
+  primaryKeyField: 'id',
+})(User);

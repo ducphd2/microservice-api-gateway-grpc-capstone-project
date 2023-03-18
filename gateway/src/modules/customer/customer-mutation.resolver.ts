@@ -113,9 +113,7 @@ export class CustomersMutationResolver implements OnModuleInit {
     );
   }
 
-  @Query(() => CustomersConnection, {
-    name: 'getAllCustomer',
-  })
+  @Query(() => CustomersConnection)
   @UseGuards(GqlAuthGuard)
   async getAllCustomer(
     @Args('q') q: string,
@@ -123,14 +121,13 @@ export class CustomersMutationResolver implements OnModuleInit {
     @Args('last') last: number,
     @Args('before') before: string,
     @Args('after') after: string,
-    @Args('filterBy') filterBy: Record<string, any>,
     @Args('orderBy') orderBy: string,
   ): Promise<ICustomersConnection> {
     const query = { where: {} };
 
     if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: q } } });
 
-    merge(query, await this.queryUtils.buildQuery(filterBy, orderBy, first, last, before, after));
+    merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
     const result = await lastValueFrom(
       this.customerService.find({

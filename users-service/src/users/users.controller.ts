@@ -12,6 +12,9 @@ import { User } from '../database/models/user.model';
 import { EGrpcClientService } from '../enums';
 import { UserDto } from './user.dto';
 import { UsersService } from './users.service';
+import { ErrorHelper } from '../helpers';
+import { USER_MESSAGE } from '../constants';
+import { IId } from '../interfaces';
 
 const { map } = Aigle;
 
@@ -35,9 +38,9 @@ export class UsersController {
     });
 
     const result: IFindPayload<User> = {
-      edges: await map(results, async (comment: User) => ({
-        node: comment,
-        cursor: Buffer.from(JSON.stringify([comment.id])).toString('base64'),
+      edges: await map(results, async (user: User) => ({
+        node: user,
+        cursor: Buffer.from(JSON.stringify([user.id])).toString('base64'),
       })),
       pageInfo: {
         startCursor: cursors.before || '',
@@ -53,7 +56,7 @@ export class UsersController {
   }
 
   @GrpcMethod(EGrpcClientService.USER_SERVICE, 'findById')
-  async findById({ id }): Promise<User> {
+  async findById({ id }: IId): Promise<User> {
     this.logger.info('UsersController#findById.call %o', id);
 
     const result: User = await this.service.findById(id);
@@ -76,7 +79,7 @@ export class UsersController {
 
     this.logger.info('UsersController#findOne.result %o', result);
 
-    if (isEmpty(result)) throw new Error('Record not found.');
+    if (isEmpty(result)) ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
 
     return result;
   }

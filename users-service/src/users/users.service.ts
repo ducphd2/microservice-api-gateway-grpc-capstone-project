@@ -9,6 +9,8 @@ import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../commons/find
 
 import { UserDto } from './user.dto';
 import { User } from '../database/models/user.model';
+import { IId } from '../interfaces';
+import { makePaginate } from 'sequelize-cursor-pagination';
 
 @Injectable()
 export class UsersService implements IUsersService {
@@ -19,14 +21,8 @@ export class UsersService implements IUsersService {
   async find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<User>> {
     this.logger.info('UsersService#findAll.call %o', query);
 
-    // // @ts-ignore
-    // const result: IFindAndPaginateResult<User> = await this.repo.findAndPaginate({
-    //   ...query,
-    //   raw: true,
-    //   paranoid: false,
-    // });
-
-    const result: any = await this.repo.paginate({
+    // @ts-ignore
+    const result: IFindAndPaginateResult<User> = await this.repo.findAndPaginate({
       ...query,
       raw: true,
       paranoid: false,
