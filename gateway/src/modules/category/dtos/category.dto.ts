@@ -21,9 +21,9 @@ export class UploadInputArgs {
   @Field(() => CategoryDto)
   data!: CategoryDto;
 
-  @Field(() => UploadParamInput, { nullable: true })
-  setting?: UploadParamInput;
-
   @Field(() => GraphQLUpload, { nullable: true })
   file?: Promise<Upload>;
+
+  @Field(() => String, { nullable: true })
+  folder?: string;
 }

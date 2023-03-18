@@ -28,19 +28,15 @@ export class MerchantCategoryService {
 
   async create(data: UploadInputArgs): Promise<Category> {
     let uploadRes: any = {};
-    if (data.file && data.setting) {
-      uploadRes = await this.uploadService.uploadSingleGraphql({ file: data.file, setting: data.setting });
-    }
-    let dataImage = {} as any;
-    if (!isEmpty(uploadRes)) {
-      dataImage.url = uploadRes.url;
+    if (data.file) {
+      uploadRes = await this.uploadService.uploadSingleToCloudinaryGraphql({ file: data.file, folder: data?.folder });
     }
     const response = await lastValueFrom(
-      this.merchantCategoryServiceGrpc.create({ ...data.data, imageUrl: uploadRes.url }),
+      this.merchantCategoryServiceGrpc.create({ ...data.data, imageUrl: uploadRes?.url }),
     );
     return {
       ...response.category,
-      image: response.image,
+      image: response?.image,
     };
   }
 

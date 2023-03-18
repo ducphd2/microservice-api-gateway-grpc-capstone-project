@@ -4,28 +4,26 @@ Author: devhoangkien
 Website: https://devhoangkien.com
 ------------------------------------------------------------------------------
 */
-import {GraphQLUpload, Upload } from 'graphql-upload-minimal';
+import { GraphQLUpload, Upload } from 'graphql-upload-minimal';
 
-import {  Field, ArgsType } from '@nestjs/graphql';
-import { UploadParamInput } from './upload-type.dto';
+import { ArgsType, Field } from '@nestjs/graphql';
+import { IsString } from 'class-validator';
 
 @ArgsType()
 export class UploadInputArgs {
- 
-  @Field(() => UploadParamInput, { nullable: false })
-  setting!: UploadParamInput
-
   @Field(() => GraphQLUpload)
   file!: Promise<Upload>;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  folder?: string;
 }
-
-
 
 @ArgsType()
 export class UploadMultipleInputArgs {
- 
-  @Field(() => UploadParamInput, { nullable: false })
-  setting!: UploadParamInput
+  @Field(() => String, { nullable: true })
+  @IsString()
+  folder?: string;
 
   @Field(() => [GraphQLUpload])
   files!: Promise<[Upload]>;
