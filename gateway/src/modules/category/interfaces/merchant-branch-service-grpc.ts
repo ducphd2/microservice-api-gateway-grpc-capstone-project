@@ -1,9 +1,9 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
-import { ICount, IId, IQuery } from '../../../commons/commons.interface';
-import { Category, ImageCategory } from '../../../types';
+import { Category, CategoryImage } from '../../../types';
 import { CategoryDto } from '../dtos';
+import { ICount, IId, IQuery } from '../../../interfaces';
 
 export interface UpdateCategoryInput {
   id: number;
@@ -32,7 +32,7 @@ export class CreateCategoryResponse {
   category: Category;
 
   @Field(() => Category, { nullable: true })
-  image: ImageCategory;
+  images: CategoryImage;
 }
 
 export interface MerchantCategoryServiceGrpc {

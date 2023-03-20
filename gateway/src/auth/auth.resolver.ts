@@ -3,17 +3,17 @@ import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
 import { lastValueFrom } from 'rxjs';
+import { CurrentUser } from '../common/decorators';
 import { EGrpcClientService } from '../enums/grpc-services.enum';
 import { RefreshAuthGuard } from '../guard';
-import { TestMerchantService } from '../modules/test-merchant/test-merchant.service';
-import { ResponseLoginGrpc, ResponseRegisterGrpc, User, UserPayload } from '../types';
+import { MerchantService } from '../modules/merchant/merchant.service';
+import { IUserPayload } from '../modules/user/interfaces';
+import { ResponseAuthGrpc, User, UserPayload } from '../types';
 import { PasswordUtils } from '../utils/password.utils';
 import { AuthService } from './auth.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
 import { IUserServiceGrpc } from './interfaces/authServiceGrpc';
-import { CurrentUser } from './user.decorator';
-import { IUserPayload } from '../modules/user/interfaces';
 
 @Resolver()
 export class AuthResolver implements OnModuleInit {
@@ -23,7 +23,7 @@ export class AuthResolver implements OnModuleInit {
     private authService: AuthService,
     @Inject(EGrpcClientService.USER_SERVICE)
     private readonly usersServiceClient: ClientGrpcProxy,
-    private readonly merchantService: TestMerchantService,
+    private readonly merchantService: MerchantService,
 
     private readonly passwordUtils: PasswordUtils,
   ) {}
@@ -32,8 +32,8 @@ export class AuthResolver implements OnModuleInit {
     this.usersService = this.usersServiceClient.getService<IUserServiceGrpc>(EGrpcClientService.USER_SERVICE);
   }
 
-  @Mutation(() => ResponseLoginGrpc)
-  async login(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<ResponseLoginGrpc> {
+  @Mutation(() => ResponseAuthGrpc)
+  async login(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<ResponseAuthGrpc> {
     try {
       const { res } = context;
 
@@ -68,7 +68,7 @@ export class AuthResolver implements OnModuleInit {
     }
   }
 
-  @Mutation(() => ResponseRegisterGrpc)
+  @Mutation(() => ResponseAuthGrpc)
   async register(@Args('data') data: InputRegisterRequest) {
     try {
       const { count } = await lastValueFrom(
@@ -77,19 +77,28 @@ export class AuthResolver implements OnModuleInit {
         }),
       );
 
-      if (count >= 1) throw new Error('Email taken');
+      if (count >= 1) throw new Error('The email is taken');
 
       const user = await lastValueFrom(this.usersService.create(data));
 
-      const { merchant, merchantBranch } = await this.merchantService.authCreateMerchantAndFirstBranch({
+      const { merchant, branch } = await this.merchantService.register({
         ...data,
+        address: data.merchantAddress,
+        name: data.merchantName,
+        phone: data.merchantPhone,
         userId: user.id,
       });
 
       return {
-        merchant,
-        merchantBranch,
-        user: user,
+        user: {
+          ...user,
+          merchants: [
+            {
+              ...merchant,
+              branches: [branch],
+            },
+          ],
+        },
         accessToken: await this.authService.generateAccessToken(user),
         refreshToken: await this.authService.generateRefreshToken(user),
       };

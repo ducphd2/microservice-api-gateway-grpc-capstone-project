@@ -44,7 +44,7 @@ export class InputRegisterRequest {
   @Min(0)
   @IsInt()
   @IsNotEmpty()
-  profileId: number;
+  userId: number;
 
   @Field()
   @IsEmail()

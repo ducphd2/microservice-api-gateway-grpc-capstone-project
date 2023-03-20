@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { BaseType } from './base.type';
 
 @ObjectType()
@@ -21,8 +21,11 @@ export class Merchant extends BaseType {
   @Field(() => Int)
   wardCode: number;
 
-  @Field(() => Int)
-  profileId: number;
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => [MerchantBranch], { nullable: 'itemsAndList' })
+  branches: MerchantBranch[];
 }
 
 @ObjectType()

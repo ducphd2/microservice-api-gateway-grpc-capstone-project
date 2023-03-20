@@ -1,9 +1,9 @@
 import { Metadata } from 'grpc';
 import { Observable } from 'rxjs';
-import { ICount, IId, IQuery } from '../../../commons/commons.interface';
-import { Customer, CustomersConnection } from '../../../types';
-import { CustomerDto } from '../dtos';
+import { Customer } from '../../../types';
 import { IUser } from '../../user/interfaces';
+import { CustomerDto } from '../dtos';
+import { ICount, IId, IQuery } from '../../../interfaces';
 
 export interface UpdateCustomerInput {
   id: number;

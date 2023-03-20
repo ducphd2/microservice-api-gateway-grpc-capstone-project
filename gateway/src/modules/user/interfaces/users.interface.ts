@@ -1,3 +1,4 @@
+import { IModelConnection, IModelEdge, IPageInfo } from '../../../interfaces';
 import { IErrorPayload } from '../../../types/base.type';
 
 export interface IUser {
@@ -18,24 +19,12 @@ export interface IUser {
   updatedAt?: number;
 }
 
-export interface IPageInfo {
-  startCursor?: string;
-  endCursor?: string;
-  hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
-}
-
-export interface IUserEdge {
-  node: IUser;
-  cursor: string;
-}
-
-export interface IUsersConnection {
-  edges: IUserEdge[];
-  pageInfo: IPageInfo;
-}
-
 export interface IUserPayload {
   errors?: IErrorPayload[];
   user?: IUser;
+}
+
+export interface IUserConn extends IModelConnection<IUser> {
+  edges: IModelEdge<IUser>[];
+  pageInfo: IPageInfo;
 }

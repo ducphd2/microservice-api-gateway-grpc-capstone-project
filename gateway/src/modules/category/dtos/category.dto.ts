@@ -1,5 +1,4 @@
 import { ArgsType, Field, InputType } from '@nestjs/graphql';
-import { UploadParamInput } from '../../upload/upload-type.dto';
 import { GraphQLUpload, Upload } from 'graphql-upload-minimal';
 
 @InputType()

@@ -31,12 +31,12 @@ export class MerchantCategoryService {
     if (data.file) {
       uploadRes = await this.uploadService.uploadSingleToCloudinaryGraphql({ file: data.file, folder: data?.folder });
     }
-    const response = await lastValueFrom(
+    const { category, images } = await lastValueFrom(
       this.merchantCategoryServiceGrpc.create({ ...data.data, imageUrl: uploadRes?.url }),
     );
     return {
-      ...response.category,
-      image: response?.image,
+      ...category,
+      images: [images],
     };
   }
 

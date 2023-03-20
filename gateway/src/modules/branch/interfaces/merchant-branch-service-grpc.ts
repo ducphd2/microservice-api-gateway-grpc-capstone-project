@@ -1,22 +1,17 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
-import { ICount, IId, IQuery } from '../../../commons/commons.interface';
 import { MerchantBranch } from '../../../types';
 import { BranchDto } from '../dtos';
+import { ICount, IErrorPayload, IId, IQuery } from '../../../interfaces';
 
-export interface UpdateBranchInput {
+export interface IUpdateBranchInput {
   id: number;
   data: BranchDto;
 }
 
-export interface ErrorPayload {
-  field?: string;
-  message?: string[];
-}
-
 export interface DeleteBranchPayload {
-  errors?: ErrorPayload[];
+  errors?: IErrorPayload[];
   count?: number;
 }
 
@@ -32,7 +27,7 @@ export interface MerchantBranchServiceGrpc {
   findOne(query?: IQuery, metadata?: Metadata): Observable<MerchantBranch>;
   count(query?: IQuery, metadata?: Metadata): Observable<ICount>;
   create(input: BranchDto, metadata?: Metadata): Observable<MerchantBranch>;
-  update(input: UpdateBranchInput): Observable<MerchantBranch>;
+  update(input: IUpdateBranchInput): Observable<MerchantBranch>;
   destroy(query?: IQuery, metadata?: Metadata): Observable<ICount>;
   delete(id: IId, metadata?: Metadata): Observable<ICount>;
 }

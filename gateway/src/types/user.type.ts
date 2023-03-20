@@ -1,16 +1,10 @@
-import { ArgsType, Field, HideField, InputType, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, HideField, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { EUserGender, EUserRole } from '../enums';
+import { IUser, IUserConn, IUserPayload } from '../modules/user/interfaces';
 import { BaseType, ErrorPayload, IErrorPayload, PageInfo } from './base.type';
-import { IPageInfo, IUser, IUserEdge, IUserPayload } from '../modules/user/interfaces';
-
-export enum UserRole {
-  SUPER_ADMIN = 1,
-  ADMIN = 2,
-  USER = 3,
-}
-
-registerEnumType(UserRole, {
-  name: 'UserRole',
-});
+import { Device } from './device.type';
+import { Merchant } from './merchant.type';
+import { IModelEdge, IPageInfo } from '../interfaces';
 
 @ObjectType()
 export class User extends BaseType {
@@ -26,11 +20,11 @@ export class User extends BaseType {
   @Field()
   readonly status: string;
 
-  @Field()
-  readonly role: string;
+  @Field(() => EUserRole, { defaultValue: EUserRole.user })
+  readonly role: EUserRole;
 
-  @Field()
-  readonly gender: string;
+  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
+  readonly gender: EUserGender;
 
   @Field()
   readonly contact: string;
@@ -49,6 +43,12 @@ export class User extends BaseType {
 
   @Field(() => String, { nullable: true })
   readonly avatar?: string;
+
+  @Field(() => [Merchant], { nullable: 'itemsAndList' })
+  merchants: Merchant[];
+
+  @Field(() => [Device], { nullable: true })
+  devices: Device[];
 }
 
 @InputType()
@@ -100,16 +100,16 @@ export class UserPayload implements IUserPayload {
 }
 
 @ObjectType()
-export class UsersConnection {
+export class UsersConnection implements IUserConn {
   @Field(() => [UserEdge])
-  edges: IUserEdge[];
+  edges: UserEdge[];
 
   @Field(() => PageInfo)
   pageInfo: IPageInfo;
 }
 
 @ObjectType()
-export class UserEdge {
+export class UserEdge implements IModelEdge<IUser> {
   @Field(() => User)
   node: IUser;
 
@@ -127,40 +127,7 @@ export class DeleteUserPayload {
 }
 
 @InputType()
-export class UpdateUserInputDto {
-  @Field()
-  readonly fullName?: string;
-
-  @Field()
-  readonly password?: string;
-
-  @Field()
-  readonly dobDay?: number;
-
-  @Field()
-  readonly dobMonth?: number;
-
-  @Field()
-  readonly dobYear?: number;
-
-  @Field()
-  readonly occupation?: string;
-
-  @Field()
-  readonly avatar?: string;
-
-  @Field()
-  readonly status?: string;
-
-  @Field()
-  readonly role?: string;
-
-  @Field()
-  readonly gender?: string;
-
-  @Field()
-  readonly contact?: string;
-}
+export class UpdateUserInputDto extends User {}
 
 @InputType()
 export class UpdatePasswordInput {

@@ -6,12 +6,11 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { GqlLoggingInterceptor } from './interceptors/logging.interceptor';
-import { MerchantModule } from './modules/merchant/merchant.module';
-import { TestMerchantModule } from './modules/test-merchant/test-merchant.module';
-import { UserModule } from './modules/user/user.module';
 import { MerchantBranchModule } from './modules/branch/branch.module';
 import { MerchantCategoryModule } from './modules/category/category.module';
 import { CustomerModule } from './modules/customer/customer.module';
+import { MerchantModule } from './modules/merchant/merchant.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -31,9 +30,8 @@ import { CustomerModule } from './modules/customer/customer.module';
       },
     }),
     AuthModule,
-    MerchantModule,
-    TestMerchantModule,
     UserModule,
+    MerchantModule,
     MerchantBranchModule,
     MerchantCategoryModule,
     CustomerModule,

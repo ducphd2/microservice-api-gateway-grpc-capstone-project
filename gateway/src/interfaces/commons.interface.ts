@@ -14,3 +14,25 @@ export interface IPageInfo {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
 }
+
+export interface IId {
+  id: number;
+}
+
+export interface IQuery {
+  select?: string[];
+  where?: string;
+  orderBy?: string[];
+  limit?: number;
+  before?: string;
+  after?: string;
+}
+
+export interface ICount {
+  count: number;
+}
+
+export interface IErrorPayload {
+  field?: string;
+  message?: string[];
+}

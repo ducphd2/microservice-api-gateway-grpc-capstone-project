@@ -44,7 +44,7 @@ export class MerchantsService {
     return this.merchantsRepository.delete(removeByIdConditions);
   }
 
-  async findMerchantByProfileId(userId: number): Promise<Merchant> {
+  async findMerchantByUserId(userId: number): Promise<Merchant> {
     return await this.merchantsRepository.findOne({
       where: {
         userId,
@@ -52,30 +52,20 @@ export class MerchantsService {
     });
   }
 
-  async createMerchantAndFirstBranch(data: InputCreateMerchantRequest) {
-    const existedMerchant = await this.findMerchantByProfileId(data.userId);
+  async register(data: InputCreateMerchantRequest) {
+    const existedMerchant = await this.findMerchantByUserId(data.userId);
 
     if (existedMerchant) {
       ErrorHelper.BadRequestException('The merchant has already existed');
     }
 
-    const createData = {
-      name: data.merchantName,
-      phone: data.merchantPhone,
-      address: data.merchantAddress,
-      cityCode: data.cityCode,
-      districtCode: data.districtCode,
-      wardCode: data.wardCode,
-      userId: data.userId,
-    } as Merchant;
+    const merchant = await this.createMerchant(data);
 
-    const merchant = await this.createMerchant(createData);
-
-    const branch = await this.merchantBranchesService.createMerchantBranch({ ...createData, merchantId: merchant.id });
+    const branch = await this.merchantBranchesService.createMerchantBranch({ ...data, merchantId: merchant.id });
 
     return {
-      merchant: merchant,
-      merchantBranch: branch,
+      merchant,
+      branch,
     };
   }
 }

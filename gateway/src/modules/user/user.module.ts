@@ -5,10 +5,15 @@ import { UserResolver } from './user.resolver';
 import { UtilsModule } from '../../utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
+import { UserQueryResolver } from './user-query.resolver';
+import { UserFieldResolver } from './user-field.resolver';
+import { MerchantModule } from '../merchant/merchant.module';
 
 @Module({
-  imports: [ConfigModule, UtilsModule],
+  imports: [ConfigModule, UtilsModule, MerchantModule],
   providers: [
+    UserFieldResolver,
+    UserQueryResolver,
     UserResolver,
     {
       provide: EGrpcClientService.USER_SERVICE,

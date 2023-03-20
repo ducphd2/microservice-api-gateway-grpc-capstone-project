@@ -14,6 +14,48 @@ type ErrorPayload {
   message: [String!]
 }
 
+type Device {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  ownerId: ID!
+  os: Int!
+  deviceId: String!
+  token: String!
+}
+
+type Merchant {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  userId: ID!
+  branches: [MerchantBranch]
+  merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): [Merchant!]!
+}
+
+type MerchantBranch {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  userId: ID!
+  branches: [MerchantBranch]
+  merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): [Merchant!]!
+  merchantId: Int!
+}
+
 type User {
   id: ID!
   createdAt: Int!
@@ -21,14 +63,28 @@ type User {
   email: String!
   fullName: String!
   status: String!
-  role: String!
-  gender: String!
+  role: EUserRole!
+  gender: EUserGender!
   contact: String!
   dobDay: Float!
   dobMonth: Float!
   dobYear: Float!
   occupation: String
   avatar: String
+  merchants: [Merchant]
+  devices: [Device!]
+}
+
+enum EUserRole {
+  super_admin
+  admin
+  user
+}
+
+enum EUserGender {
+  male
+  female
+  other
 }
 
 type UserPayload {
@@ -46,40 +102,37 @@ type UserEdge {
   cursor: String!
 }
 
-type Merchant {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  name: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  profileId: Int!
-}
-
-type MerchantBranch {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  name: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  profileId: Int!
-  merchantId: Int!
-}
-
-type ImageCategory {
+type CategoryImage {
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   name: String!
   imageUrl: String!
+  categoryId: ID!
   description: String
+}
+
+type ProductImage {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  name: String!
+  imageUrl: String!
+  productId: ID!
+  description: String
+}
+
+type Product {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  code: String!
+  name: String!
+  description: String!
+  sku: String
+  qrCode: String
+  quantity: Int!
+  images: [ProductImage!]
 }
 
 type Category {
@@ -88,7 +141,8 @@ type Category {
   updatedAt: Int!
   name: String!
   code: String!
-  image: ImageCategory
+  images: [CategoryImage!]
+  products: [Product!]
 }
 
 type Customer {
@@ -98,19 +152,26 @@ type Customer {
   email: String!
   fullName: String!
   status: String!
-  role: String!
-  gender: String!
+  role: EUserRole!
+  gender: EUserGender!
   contact: String!
-  level: String!
-  dobDay: Int!
-  dobMonth: Int!
-  dobYear: Int!
-  userId: Int!
-  branchId: Int
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
   occupation: String
   avatar: String
+  merchants: [Merchant]
+  devices: [Device!]
+  level: ECustomerLevel!
   referrer: String
   referrerCode: String
+}
+
+enum ECustomerLevel {
+  normal
+  silver
+  gold
+  platinum
 }
 
 type CustomersConnection {
@@ -133,18 +194,10 @@ type DeleteCustomerPayload {
   count: Int
 }
 
-type ResponseLoginGrpc {
+type ResponseAuthGrpc {
   user: User!
   accessToken: String!
   refreshToken: String!
-}
-
-type ResponseRegisterGrpc {
-  user: User!
-  accessToken: String!
-  refreshToken: String!
-  merchant: Merchant!
-  merchantBranch: MerchantBranch!
 }
 
 type FindAllBranches {
@@ -168,6 +221,8 @@ type Query {
   findOneMerchant(id: Float!): Merchant!
   getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
   getUser(id: Float!): User!
+  userCount(q: String): Float!
+  me: User!
   findBranches: FindAllBranches!
   findBranchById(id: Float!): MerchantBranch!
   findCategories: FindAllCategories!
@@ -176,8 +231,8 @@ type Query {
 }
 
 type Mutation {
-  login(data: InputLoginRequest!): ResponseLoginGrpc!
-  register(data: InputRegisterRequest!): ResponseRegisterGrpc!
+  login(data: InputLoginRequest!): ResponseAuthGrpc!
+  register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): User!
