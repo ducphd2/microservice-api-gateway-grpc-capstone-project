@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Attributes, WhereOptions } from 'sequelize';
+import { WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { ErrorHelper } from '../../helpers';
 import { IPaginationRes } from '../../interfaces';
@@ -18,7 +18,7 @@ export class CategoriesService {
     return this.categoriesRepository.paginate(getAllCondition, page, limit);
   }
 
-  async createCategory(data: Attributes<Category>): Promise<CreateCategoryResponse> {
+  async createCategory(data: any): Promise<CreateCategoryResponse> {
     const category = await this.categoriesRepository.create(data);
     let categoryImage: CategoryImage = null;
     if (data.imageUrl) {
@@ -35,23 +35,23 @@ export class CategoriesService {
   }
 
   async findById(id: number): Promise<Category> {
-    return this.categoriesRepository.findById(id);
+    return await this.categoriesRepository.findById(id);
   }
 
-  async updateCategory(id: number, params: Attributes<Category>): Promise<Category> {
-    const merchant = await this.findById(id);
-    if (!merchant) {
+  async updateCategory(id: number, params: any): Promise<Category> {
+    const category = await this.findById(id);
+    if (!category) {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
     }
 
-    const updateByIdConditions: WhereOptions<Category> = { id: merchant.id };
+    const updateByIdConditions: WhereOptions = { id: category.id };
     const affectedRows = await this.categoriesRepository.update({ ...params }, updateByIdConditions);
 
     return affectedRows[0];
   }
 
   async deleteCategory(id: number): Promise<number> {
-    const removeByIdConditions: WhereOptions<Category> = { id };
+    const removeByIdConditions: WhereOptions = { id };
 
     return this.categoriesRepository.delete(removeByIdConditions);
   }

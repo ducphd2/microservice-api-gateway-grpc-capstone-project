@@ -21,20 +21,48 @@ export class CreateMerchantRequestInputDto {
   profileId: number;
 
   @Field()
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @Field()
+  @MaxLength(30)
+  @MinLength(5)
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Field()
+  @Match('password')
+  @IsNotEmpty()
+  confirmPassword: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  fullName: string;
+
+  @Field()
   @IsPhoneNumber()
   @IsString()
   @IsNotEmpty()
   phone: string;
 
   @Field()
+  @IsPhoneNumber()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  merchantPhone: string;
 
   @Field()
   @IsString()
   @IsNotEmpty()
-  address: string;
+  merchantName: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  merchantAddress: string;
 
   @Field()
   @Min(0)
@@ -58,5 +86,5 @@ export class CreateMerchantRequestInputDto {
   @Matches(/^[a-zA-Z0-9\-]+$/)
   @IsString()
   @IsNotEmpty()
-  subdomain: string;
+  merchantSubdomain: string;
 }

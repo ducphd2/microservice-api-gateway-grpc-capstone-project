@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
-import { LoggerModule, PinoLogger } from 'nestjs-pino';
+import { Logger, LoggerModule, PinoLogger } from 'nestjs-pino';
 import { Op } from 'sequelize';
 import { OperatorsAliases } from 'sequelize';
 
@@ -49,14 +49,14 @@ const operatorsAliases: OperatorsAliases = {
   imports: [
     SequelizeModule.forRootAsync({
       imports: [ConfigModule, LoggerModule],
-      useFactory: async (configService: ConfigService, logger: PinoLogger): Promise<SequelizeModuleOptions> => ({
+      useFactory: async (configService: ConfigService, logger: Logger): Promise<SequelizeModuleOptions> => ({
         dialect: 'postgres',
         host: configService.get<string>('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        logging: logger.info.bind(logger),
+        logging: true,
         typeValidation: true,
         operatorsAliases,
         autoLoadModels: true,

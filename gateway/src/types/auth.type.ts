@@ -1,10 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from './user.type';
-import { Merchant, MerchantBranch } from './merchant.type';
-import { Profile } from './profile.type';
 
 @ObjectType()
-export class ResponseLoginGrpc {
+export class ResponseAuthGrpc {
   @Field(() => User)
   user: User;
 
@@ -13,13 +11,4 @@ export class ResponseLoginGrpc {
 
   @Field(() => String)
   refreshToken: string;
-}
-
-@ObjectType()
-export class ResponseRegisterGrpc extends ResponseLoginGrpc {
-  @Field(() => Merchant)
-  merchant?: Merchant;
-
-  @Field(() => MerchantBranch)
-  merchantBranch?: MerchantBranch;
 }

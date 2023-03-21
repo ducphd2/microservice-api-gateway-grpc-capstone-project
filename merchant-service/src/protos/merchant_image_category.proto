@@ -24,8 +24,8 @@ message ImageCategory {
     int32 id = 1;
     string name = 2;
     string imageUrl = 3;
-    int32 createdAt = 4;
-    int32 updatedAt = 5;
+    string createdAt = 4;
+    string updatedAt = 5;
     optional string description = 6;
 }
 

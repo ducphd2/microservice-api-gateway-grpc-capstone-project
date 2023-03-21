@@ -1,16 +1,11 @@
 export interface InputCreateMerchantRequest {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  fullName: string;
+  name: string;
   phone: string;
-  merchantPhone: string;
-  merchantName: string;
-  merchantAddress: string;
+  address: string;
   cityCode: number;
   districtCode: number;
   wardCode: number;
-  merchantSubdomain: string;
+  subdomain: string;
   userId: number;
 }
 

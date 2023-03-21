@@ -1,4 +1,4 @@
-import { Attributes, FindAndCountOptions, FindOptions, WhereOptions } from 'sequelize';
+import { FindAndCountOptions, FindOptions, WhereOptions } from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 import { FIRST_PAGE, LIMIT_PAGE } from 'src/constants';
 
@@ -7,23 +7,23 @@ import { IPaginationRes } from '../interfaces';
 export class BaseRepository<T extends Model> {
   constructor(readonly model: Repository<T>) {}
 
-  async find(options?: FindOptions<T>): Promise<T[]> {
+  async find(options?: FindOptions): Promise<T[]> {
     return this.model.findAll(options);
   }
 
-  async findOne(options?: FindOptions<T>): Promise<T> {
+  async findOne(options?: FindOptions): Promise<T> {
     return this.model.findOne(options);
   }
 
-  async findById(id: number, options?: FindOptions<T>): Promise<T> {
+  async findById(id: number, options?: FindOptions): Promise<T> {
     return this.model.findByPk(id, options);
   }
 
   async paginate(
-    options?: WhereOptions<T>,
+    options?: WhereOptions,
     page = FIRST_PAGE,
     limit = LIMIT_PAGE,
-    opts?: FindOptions<T>,
+    opts?: FindOptions,
   ): Promise<IPaginationRes<T>> {
     const offset = (page - 1) * limit;
     const { rows, count } = await this.rawPaginate({
@@ -48,11 +48,11 @@ export class BaseRepository<T extends Model> {
     return await this.model.findAndCountAll(options);
   }
 
-  async create(entity: Attributes<T>): Promise<T> {
-    return (await this.model.create(entity)).toJSON();
+  async create(entity: any): Promise<T> {
+    return await this.model.create(entity);
   }
 
-  async update(entity: Attributes<T>, conditions: WhereOptions<T>) {
+  async update(entity: any, conditions: WhereOptions) {
     const [affectedCount, affectedRows] = await this.model.update(entity, {
       where: { ...conditions },
       returning: true,
@@ -60,11 +60,11 @@ export class BaseRepository<T extends Model> {
     return affectedRows;
   }
 
-  async updateItem(item: T, entity: Attributes<T>) {
+  async updateItem(item: T, entity: any) {
     return await item.update(entity);
   }
 
-  async delete(conditions: WhereOptions<T>): Promise<number> {
+  async delete(conditions: WhereOptions): Promise<number> {
     return this.model.destroy({ where: conditions });
   }
 

@@ -5,7 +5,7 @@ import { BaseModel } from './base.model';
   tableName: 'appointments',
   underscored: true,
 })
-export class Appointment extends BaseModel {
+export class Appointment extends BaseModel<Appointment> {
   @Column({
     type: DataType.ENUM('pending', 'approve', 'cancelled'),
     allowNull: false,

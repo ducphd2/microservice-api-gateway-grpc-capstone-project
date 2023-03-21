@@ -1,10 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Metadata } from 'grpc';
 import { Observable } from 'rxjs';
-import { IId } from '../../../commons/commons.interface';
 import { User } from '../../../types';
-import { Profile } from '../../../types/profile.type';
 import { CustomerDto } from '../dtos';
+import { IId } from '../../../interfaces';
 
 ObjectType();
 export class ResponsePermission {
@@ -21,9 +20,6 @@ export interface IUserServiceGrpc {
 export class UserFindByIdResponse {
   @Field(() => User)
   user: User;
-
-  @Field(() => Profile)
-  profile: Profile;
 }
 
 export class UpdateDataRequest {

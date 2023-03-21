@@ -1,44 +1,20 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Transform } from 'class-transformer';
 import {
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   Matches,
   MaxLength,
   Min,
   MinLength,
-  ValidationArguments,
-  ValidationOptions,
-  registerDecorator,
 } from 'class-validator';
+import { Match } from '../../common/validators';
+import { EDeviceOs } from '../../enums';
 import { CreateUserInputDto } from '../../types';
-
-export function Match<T>(property: keyof T, validationOptions?: ValidationOptions) {
-  return (object: any, propertyName: string) => {
-    registerDecorator({
-      name: 'Match',
-      target: object.constructor,
-      propertyName,
-      constraints: [property],
-      options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as any)[relatedPropertyName];
-          return value === relatedValue;
-        },
-
-        defaultMessage(args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
-          return `${propertyName} must match ${relatedPropertyName} exactly`;
-        },
-      },
-    });
-  };
-}
 
 @InputType()
 export class InputRegisterRequest extends CreateUserInputDto {
@@ -108,4 +84,19 @@ export class InputRegisterRequest extends CreateUserInputDto {
   @IsString()
   @IsNotEmpty()
   merchantSubdomain: string;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  deviceId: string;
+
+  @Field(() => EDeviceOs, { nullable: true })
+  @IsEnum(EDeviceOs)
+  @IsOptional()
+  os: string;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  token: string;
 }

@@ -1,20 +1,23 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
+@ObjectType({ isAbstract: true })
 export class BaseType {
   @Field(() => ID)
   id: number;
 
-  @Field(() => Int)
-  createdAt: number;
+  @Field(() => String)
+  createdAt: string;
 
-  @Field(() => Int)
-  updatedAt: number;
+  @Field(() => String)
+  updatedAt: string;
 }
 
 @ObjectType()
 export class PageInfo {
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
+  startCursor?: string;
+
+  @Field(() => String)
   endCursor?: string;
 
   @Field(() => Boolean)
@@ -22,9 +25,6 @@ export class PageInfo {
 
   @Field(() => Boolean)
   hasPreviousPage: boolean;
-
-  @Field(() => String, { nullable: true })
-  startCursor?: string;
 }
 
 @ObjectType()

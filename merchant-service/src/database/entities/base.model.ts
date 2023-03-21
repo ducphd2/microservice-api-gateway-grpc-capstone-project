@@ -1,7 +1,6 @@
 import { Column, DataType, Model } from 'sequelize-typescript';
-import { getCurrentDateInSecond } from '../../helpers';
 
-export abstract class BaseModel extends Model {
+export abstract class BaseModel<T> extends Model<T> {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -10,16 +9,16 @@ export abstract class BaseModel extends Model {
   id: number;
 
   @Column({
-    type: DataType.BIGINT,
-    defaultValue: getCurrentDateInSecond,
+    type: DataType.TEXT,
+    defaultValue: () => `${new Date().toISOString()}`,
     allowNull: false,
   })
-  createdAt: number;
+  createdAt: string;
 
   @Column({
-    type: DataType.BIGINT,
-    defaultValue: getCurrentDateInSecond,
+    type: DataType.TEXT,
+    defaultValue: () => `${new Date().toISOString()}`,
     allowNull: false,
   })
-  updatedAt: number;
+  updatedAt: string;
 }

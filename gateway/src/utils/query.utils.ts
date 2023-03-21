@@ -1,7 +1,6 @@
 import { isEmpty, isNil, merge } from 'lodash';
 import { Injectable } from '@nestjs/common';
-
-import { IQuery } from '../commons/commons.interface';
+import { IQuery } from '../interfaces';
 
 @Injectable()
 export class QueryUtils {

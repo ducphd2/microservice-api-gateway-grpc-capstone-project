@@ -6,7 +6,7 @@ import { Category } from './category.model';
   tableName: 'category_images',
   underscored: true,
 })
-export class CategoryImage extends BaseModel {
+export class CategoryImage extends BaseModel<CategoryImage> {
   @Column({
     type: DataType.TEXT,
     allowNull: false,

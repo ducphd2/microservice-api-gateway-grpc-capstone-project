@@ -5,7 +5,7 @@ import { BaseModel } from './base.model';
   tableName: 'appointment_products',
   underscored: true,
 })
-export class AppointmentProduct extends BaseModel {
+export class AppointmentProduct extends BaseModel<AppointmentProduct> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,

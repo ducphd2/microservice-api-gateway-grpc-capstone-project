@@ -3,10 +3,10 @@
 # ------------------------------------------------------
 
 type PageInfo {
-  endCursor: String
+  startCursor: String!
+  endCursor: String!
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
-  startCursor: String
 }
 
 type ErrorPayload {
@@ -14,21 +14,103 @@ type ErrorPayload {
   message: [String!]
 }
 
+type Device {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  userId: ID!
+  os: String!
+  deviceId: String!
+  token: String!
+}
+
+type DeviceEdge {
+  node: Device!
+  cursor: String!
+}
+
+type DeviceConnection {
+  edges: [DeviceEdge!]!
+  pageInfo: PageInfo!
+}
+
+type MerchantBranch {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  userId: ID!
+  merchantId: Int!
+}
+
+type MerchantBranchEdge {
+  node: MerchantBranch!
+  cursor: String!
+}
+
+type MerchantBranchConnection {
+  edges: [MerchantBranchEdge!]!
+  pageInfo: PageInfo!
+}
+
+type Merchant {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  phone: String!
+  address: String!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Int!
+  userId: ID!
+  branches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantBranchConnection!
+}
+
+type MerchantEdge {
+  node: Merchant!
+  cursor: String!
+}
+
+type MerchantConnection {
+  edges: [MerchantEdge!]!
+  pageInfo: PageInfo!
+}
+
 type User {
   id: ID!
-  createdAt: Int!
-  updatedAt: Int!
+  createdAt: String!
+  updatedAt: String!
   email: String!
   fullName: String!
   status: String!
-  role: String!
-  gender: String!
+  role: EUserRole!
+  gender: EUserGender!
   contact: String!
   dobDay: Float!
   dobMonth: Float!
   dobYear: Float!
   occupation: String
   avatar: String
+  merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
+  devices: DeviceConnection!
+}
+
+enum EUserRole {
+  super_admin
+  admin
+  user
+}
+
+enum EUserGender {
+  male
+  female
+  other
 }
 
 type UserPayload {
@@ -36,81 +118,86 @@ type UserPayload {
   user: User
 }
 
-type UsersConnection {
-  edges: [UserEdge!]!
-  pageInfo: PageInfo!
-}
-
 type UserEdge {
   node: User!
   cursor: String!
 }
 
-type Merchant {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  name: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  profileId: Int!
+type UsersConnection {
+  edges: [UserEdge!]!
+  pageInfo: PageInfo!
 }
 
-type MerchantBranch {
+type CategoryImage {
   id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  name: String!
-  phone: String!
-  address: String!
-  cityCode: Int!
-  districtCode: Int!
-  wardCode: Int!
-  profileId: Int!
-  merchantId: Int!
-}
-
-type ImageCategory {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
+  createdAt: String!
+  updatedAt: String!
   name: String!
   imageUrl: String!
+  categoryId: ID!
   description: String
+}
+
+type ProductImage {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  imageUrl: String!
+  productId: ID!
+  description: String
+}
+
+type Product {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  code: String!
+  name: String!
+  description: String!
+  sku: String
+  qrCode: String
+  quantity: Int!
+  images: [ProductImage!]
 }
 
 type Category {
   id: ID!
-  createdAt: Int!
-  updatedAt: Int!
+  createdAt: String!
+  updatedAt: String!
   name: String!
   code: String!
-  image: ImageCategory
+  images: [CategoryImage!]
+  products: [Product!]
 }
 
 type Customer {
   id: ID!
-  createdAt: Int!
-  updatedAt: Int!
+  createdAt: String!
+  updatedAt: String!
   email: String!
   fullName: String!
   status: String!
-  role: String!
-  gender: String!
+  role: EUserRole!
+  gender: EUserGender!
   contact: String!
-  level: String!
-  dobDay: Int!
-  dobMonth: Int!
-  dobYear: Int!
-  userId: Int!
-  branchId: Int
+  dobDay: Float!
+  dobMonth: Float!
+  dobYear: Float!
   occupation: String
   avatar: String
+  merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
+  devices: DeviceConnection!
+  level: ECustomerLevel!
   referrer: String
   referrerCode: String
+}
+
+enum ECustomerLevel {
+  normal
+  silver
+  gold
+  platinum
 }
 
 type CustomersConnection {
@@ -133,22 +220,10 @@ type DeleteCustomerPayload {
   count: Int
 }
 
-type ResponseLoginGrpc {
+type ResponseAuthGrpc {
   user: User!
   accessToken: String!
   refreshToken: String!
-}
-
-type ResponseRegisterGrpc {
-  user: User!
-  accessToken: String!
-  refreshToken: String!
-  merchant: Merchant!
-  merchantBranch: MerchantBranch!
-}
-
-type FindAllBranches {
-  merchantBranches: [MerchantBranch!]!
 }
 
 type FindAllCategories {
@@ -166,24 +241,22 @@ type ResponseSingleUpload {
 
 type Query {
   findOneMerchant(id: Float!): Merchant!
+  findMerchantBranchById(id: Float!): Merchant!
   getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
   getUser(id: Float!): User!
-  findBranches: FindAllBranches!
-  findBranchById(id: Float!): MerchantBranch!
+  userCount(q: String): Float!
+  me: User!
   findCategories: FindAllCategories!
   findCategoryById(id: Float!): Category!
   getAllCustomer(q: String!, first: Float!, last: Float!, before: String!, after: String!, orderBy: String!): CustomersConnection!
 }
 
 type Mutation {
-  login(data: InputLoginRequest!): ResponseLoginGrpc!
-  register(data: InputRegisterRequest!): ResponseRegisterGrpc!
+  login(data: InputLoginRequest!): ResponseAuthGrpc!
+  register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
   updatePassword(data: ChangePasswordInput!): User!
-  createBranch(data: BranchDto!): MerchantBranch!
-  updateBranch(id: Float!, data: BranchDto!): MerchantBranch!
-  deleteBranch(id: Float!): MerchantBranch!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
   updateCategory(id: Float!, data: CategoryDto!): Category!
   deleteCategory(id: Float!): Category!
@@ -204,9 +277,9 @@ input InputRegisterRequest {
   fullName: String!
   email: String!
   password: String!
-  status: String!
-  role: String!
-  gender: String!
+  status: EUserStatus!
+  role: EUserRole!
+  gender: EUserGender!
   contact: String!
   dobDay: Float!
   dobMonth: Float!
@@ -222,25 +295,25 @@ input InputRegisterRequest {
   districtCode: Float!
   wardCode: Float!
   merchantSubdomain: String!
+  deviceId: String
+  os: EDeviceOs
+  token: String
+}
+
+enum EUserStatus {
+  active
+  banned
+}
+
+enum EDeviceOs {
+  android
+  ios
 }
 
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
   confirmPassword: String!
-}
-
-input BranchDto {
-  name: String!
-  phone: String!
-  address: String!
-  cityCode: Float!
-  districtCode: Float!
-  wardCode: Float!
-  profileId: Float!
-  merchantId: Float!
-  createdAt: Float!
-  updatedAt: Float!
 }
 
 input CategoryDto {

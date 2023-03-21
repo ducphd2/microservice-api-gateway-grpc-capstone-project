@@ -3,6 +3,7 @@ syntax = "proto3";
 package user;
 
 import "commons.proto";
+import "device.proto";
 
 message User {
   int32 id = 1;
@@ -16,8 +17,8 @@ message User {
   int32 dobDay = 9;
   int32 dobMonth = 10;
   int32 dobYear = 11;
-  int32 createdAt = 12;
-  int32 updatedAt = 13;
+  string createdAt = 12;
+  string updatedAt = 13;
   optional string occupation = 14;
   optional string avatar = 15;
 }
@@ -40,6 +41,9 @@ message CreateUserInput {
   int32 dobYear = 11;
   optional string occupation = 12;
   optional string avatar = 13;
+  optional string os = 14;
+  optional string deviceId = 15;
+  optional string token = 16;
 }
 
 message UpdateUserInput {
@@ -60,4 +64,7 @@ service UserServiceGrpc {
   rpc create (CreateUserInput) returns (User) {}
   rpc update (UpdateUserInput) returns (User) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
+
+  rpc findDevices (commons.Query) returns (device.FindDevicesPayload) {}
+
 }

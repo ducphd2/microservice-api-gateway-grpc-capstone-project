@@ -1,21 +1,36 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpcProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
-import { MerchantServiceGrpc, AuthFromGrpcMerchantResponse } from './interfaces/merchantServiceGrpc';
+import { EGrpcClientService } from '../../enums';
+import { IId } from '../../interfaces';
+import { IMerchantServiceGrpc, IRegisterInput, IRegisterResponse } from '../../interfaces/merchants';
+import { Merchant } from '../../types';
+import { UpdateMerchantRequestInputDto } from './dtos/merchant';
 
 @Injectable()
 export class MerchantService {
-  private merchantService: MerchantServiceGrpc;
+  private merchantService: IMerchantServiceGrpc;
 
-  constructor(@Inject('MERCHANT_PACKAGE') private client: ClientGrpc) {}
+  constructor(@Inject(EGrpcClientService.MERCHANT_SERVICE) private readonly merchantsServiceClient: ClientGrpcProxy) {}
 
   onModuleInit() {
-    this.merchantService = this.client.getService<MerchantServiceGrpc>('MerchantServiceGrpc');
+    this.merchantService = this.merchantsServiceClient.getService<IMerchantServiceGrpc>(
+      EGrpcClientService.MERCHANT_SERVICE,
+    );
   }
 
-  async create(registerInput: InputRegisterRequest): Promise<AuthFromGrpcMerchantResponse> {
-    const a = await lastValueFrom(this.merchantService.create(registerInput));
-    return a;
+  async register(input: IRegisterInput): Promise<Merchant> {
+    const result = await lastValueFrom(this.merchantService.create(input));
+    return result;
+  }
+
+  async findMerchantById(data: IId): Promise<Merchant> {
+    const result = await lastValueFrom(this.merchantService.findMerchantById(data));
+    return result;
+  }
+
+  async updateMerchant(input: UpdateMerchantRequestInputDto): Promise<Merchant> {
+    const result = await lastValueFrom(this.merchantService.updateMerchant(input));
+    return result;
   }
 }

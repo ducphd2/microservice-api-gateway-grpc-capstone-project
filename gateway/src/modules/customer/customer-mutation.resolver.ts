@@ -1,11 +1,11 @@
 import { Inject, OnModuleInit, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
+import { isEmpty, merge } from 'lodash';
 import { lastValueFrom } from 'rxjs';
-import { CurrentUser } from '../../auth/user.decorator';
+import { CurrentUser } from '../../common/decorators';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
 import { GqlAuthGuard } from '../../guard';
-import { PasswordUtils } from '../../utils/password.utils';
 import {
   CreateCustomerInputDto,
   Customer,
@@ -15,10 +15,10 @@ import {
   UpdateCustomerInputDto,
   UpdatePasswordInput,
 } from '../../types';
-import { CreateCustomerInput, ICustomerServices, ICustomersConnection } from './interfaces';
-import { isEmpty, merge } from 'lodash';
+import { PasswordUtils } from '../../utils/password.utils';
 import { QueryUtils } from '../../utils/query.utils';
 import { IUserServiceGrpc } from '../user/interfaces';
+import { CreateCustomerInput, ICustomerServices, ICustomersConnection } from './interfaces';
 
 @Resolver()
 export class CustomersMutationResolver implements OnModuleInit {
@@ -137,7 +137,7 @@ export class CustomersMutationResolver implements OnModuleInit {
   ): Promise<ICustomersConnection> {
     const query = { where: {} };
 
-    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: q } } });
+    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
 
     merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
