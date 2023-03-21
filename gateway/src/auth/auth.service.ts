@@ -26,7 +26,7 @@ export class AuthService {
   async generateRefreshToken(user: User): Promise<string> {
     return this.refreshTokenService.sign(
       {
-        user: user.email,
+        user: user.id,
       },
       {
         subject: user.id.toString(),

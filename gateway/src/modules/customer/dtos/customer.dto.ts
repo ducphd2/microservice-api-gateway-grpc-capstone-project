@@ -5,8 +5,8 @@ export interface ICustomerDto {
   readonly fullName?: string;
   readonly email?: string;
   readonly password?: string;
-  readonly createdAt?: number;
-  readonly updatedAt?: number;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
   readonly version?: number;
   readonly dobDay?: number;
   readonly dobMonth?: number;
@@ -34,10 +34,10 @@ export class CustomerDto implements ICustomerDto {
   readonly password?: string;
 
   @Field()
-  readonly createdAt?: number;
+  readonly createdAt?: string;
 
   @Field()
-  readonly updatedAt?: number;
+  readonly updatedAt?: string;
 
   @Field()
   readonly version?: number;

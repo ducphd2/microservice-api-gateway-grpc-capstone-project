@@ -1,8 +1,9 @@
-import { BeforeCreate, BeforeUpdate, Column, DataType, Table } from 'sequelize-typescript';
+import { hash } from 'argon2';
+import * as paginate from 'sequelize-cursor-pagination';
+import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Table } from 'sequelize-typescript';
 import { EUserGender, EUserRole, EUserStatus } from '../../enums/user.enum';
 import { BaseModel } from './base.model';
-import * as paginate from 'sequelize-cursor-pagination';
-import { hash } from 'argon2';
+import { Device } from './device.model';
 
 @Table({
   modelName: 'user',
@@ -86,6 +87,9 @@ export class User extends BaseModel<User> {
     if (!user.password) return;
     user.password = await hash(user.password);
   }
+
+  @HasMany(() => Device)
+  devices: Device[];
 }
 
 paginate({

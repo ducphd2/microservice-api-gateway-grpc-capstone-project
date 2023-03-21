@@ -4,7 +4,6 @@ import { ProductImage } from '../../database/entities/product-image.model';
 import { IPaginationRes } from '../../interfaces';
 import { CategoryImagesRepository } from './repository/category-image.repository';
 import { ProductImagesRepository } from './repository/product-image.repository';
-import { Attributes } from 'sequelize';
 
 @Injectable()
 export class ImagesService {
@@ -23,11 +22,11 @@ export class ImagesService {
     return this.categoryImagesRepository.paginate(getAllCondition, page, limit);
   }
 
-  async createProductImage(data: Attributes<ProductImage>): Promise<ProductImage> {
+  async createProductImage(data: any): Promise<ProductImage> {
     return await this.productImagesRepository.create(data);
   }
 
-  async createCategoryImage(data: Attributes<CategoryImage>): Promise<CategoryImage> {
+  async createCategoryImage(data: any): Promise<CategoryImage> {
     return await this.categoryImagesRepository.create(data);
   }
 }

@@ -26,7 +26,7 @@ import { MerchantModule } from '../modules/merchant/merchant.module';
           signOptions: {
             audience: configService.get<string>('JWT_AUDIENCE'),
             issuer: configService.get<string>('JWT_ISSUER'),
-            expiresIn: '30min',
+            expiresIn: '30d',
           },
         });
       },
@@ -40,7 +40,7 @@ import { MerchantModule } from '../modules/merchant/merchant.module';
           signOptions: {
             audience: configService.get<string>('JWT_AUDIENCE'),
             issuer: configService.get<string>('JWT_ISSUER'),
-            expiresIn: '1d',
+            expiresIn: '30d',
           },
         });
       },

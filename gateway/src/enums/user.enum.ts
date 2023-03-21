@@ -12,10 +12,19 @@ export enum EUserGender {
   other = 'other',
 }
 
+export enum EUserStatus {
+  active = 'active',
+  banned = 'banned',
+}
+
 registerEnumType(EUserRole, {
   name: 'EUserRole',
 });
 
 registerEnumType(EUserGender, {
   name: 'EUserGender',
+});
+
+registerEnumType(EUserStatus, {
+  name: 'EUserStatus',
 });

@@ -9,8 +9,8 @@ message Customer {
   string id = 1;
   string level = 2;
   int32 userId = 3;
-  int32 createdAt = 4;
-  int32 updatedAt = 5;
+  string createdAt = 4;
+  string updatedAt = 5;
   optional int32 branchId = 6;
   optional string referrer = 7;
   optional string referrerCode = 8;

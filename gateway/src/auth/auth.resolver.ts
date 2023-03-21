@@ -81,7 +81,7 @@ export class AuthResolver implements OnModuleInit {
 
       const user = await lastValueFrom(this.usersService.create(data));
 
-      const { merchant, branch } = await this.merchantService.register({
+      const merchant = await this.merchantService.register({
         ...data,
         address: data.merchantAddress,
         name: data.merchantName,
@@ -92,12 +92,7 @@ export class AuthResolver implements OnModuleInit {
       return {
         user: {
           ...user,
-          merchants: [
-            {
-              ...merchant,
-              branches: [branch],
-            },
-          ],
+          merchants: [merchant],
         },
         accessToken: await this.authService.generateAccessToken(user),
         refreshToken: await this.authService.generateRefreshToken(user),

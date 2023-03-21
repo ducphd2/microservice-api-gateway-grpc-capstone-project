@@ -5,7 +5,7 @@ import { BaseModel } from './base.model';
   tableName: 'stocks',
   underscored: true,
 })
-export class Stock extends BaseModel {
+export class Stock extends BaseModel<Stock> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,

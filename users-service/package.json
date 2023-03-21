@@ -23,7 +23,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^9.1.5",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/sequelize": "^9.0.0",
+    "@nestjs/sequelize": "0.1.0",
     "aigle": "1.14.1",
     "argon2": "^0.30.3",
     "grpc": "^1.24.11",
@@ -35,9 +35,9 @@
     "pino-pretty": "^10.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
-    "sequelize": "^6.29.3",
+    "sequelize": "5.21.11",
     "sequelize-cursor-pagination": "1.7.0",
-    "sequelize-typescript": "^2.1.5"
+    "sequelize-typescript": "1.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -48,7 +48,7 @@
     "@types/jest": "28.1.8",
     "@types/lodash": "4.14.153",
     "@types/node": "^16.0.0",
-    "@types/sequelize": "^4.28.14",
+    "@types/sequelize": "4.28.9",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

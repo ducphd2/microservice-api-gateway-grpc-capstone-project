@@ -5,7 +5,7 @@ import { BaseModel } from './base.model';
   tableName: 'product_images',
   underscored: true,
 })
-export class ProductImage extends BaseModel {
+export class ProductImage extends BaseModel<ProductImage> {
   @Column({
     type: DataType.TEXT,
     allowNull: false,

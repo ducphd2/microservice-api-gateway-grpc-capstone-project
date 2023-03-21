@@ -1,10 +1,10 @@
 import { Field, HideField, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { EUserGender, EUserRole } from '../enums';
-import { IUser, IUserConn, IUserPayload } from '../modules/user/interfaces';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import { EUserGender, EUserRole, EUserStatus } from '../enums';
+import { IUser } from '../modules/user/interfaces';
 import { BaseType, ErrorPayload, IErrorPayload, PageInfo } from './base.type';
 import { Device } from './device.type';
-import { Merchant } from './merchant.type';
-import { IModelEdge, IPageInfo } from '../interfaces';
+import { MerchantConnection } from './merchant.type';
 
 @ObjectType()
 export class User extends BaseType {
@@ -44,8 +44,8 @@ export class User extends BaseType {
   @Field(() => String, { nullable: true })
   readonly avatar?: string;
 
-  @Field(() => [Merchant], { nullable: 'itemsAndList' })
-  merchants: Merchant[];
+  @Field(() => [MerchantConnection], { nullable: true })
+  merchants: MerchantConnection;
 
   @Field(() => [Device], { nullable: true })
   devices: Device[];
@@ -62,13 +62,19 @@ export class CreateUserInputDto {
   @Field()
   readonly password: string;
 
-  @Field()
+  @Field(() => EUserStatus)
+  @IsEnum(EUserStatus)
+  @IsNotEmpty()
   readonly status: string;
 
-  @Field()
+  @Field(() => EUserRole)
+  @IsEnum(EUserRole)
+  @IsNotEmpty()
   readonly role: string;
 
-  @Field()
+  @Field(() => EUserGender)
+  @IsEnum(EUserGender)
+  @IsNotEmpty()
   readonly gender: string;
 
   @Field()
@@ -91,7 +97,7 @@ export class CreateUserInputDto {
 }
 
 @ObjectType()
-export class UserPayload implements IUserPayload {
+export class UserPayload {
   @Field(() => [ErrorPayload], { nullable: true })
   errors?: IErrorPayload[];
 
@@ -100,30 +106,21 @@ export class UserPayload implements IUserPayload {
 }
 
 @ObjectType()
-export class UsersConnection implements IUserConn {
-  @Field(() => [UserEdge])
-  edges: UserEdge[];
-
-  @Field(() => PageInfo)
-  pageInfo: IPageInfo;
-}
-
-@ObjectType()
-export class UserEdge implements IModelEdge<IUser> {
+export class UserEdge {
   @Field(() => User)
-  node: IUser;
+  node: User;
 
   @Field(() => String)
   cursor: string;
 }
 
 @ObjectType()
-export class DeleteUserPayload {
-  @Field(() => [ErrorPayload], { nullable: true })
-  errors?: ErrorPayload[];
+export class UsersConnection {
+  @Field(() => [UserEdge])
+  edges: UserEdge[];
 
-  @Field(() => Int, { nullable: true })
-  count?: number;
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
 }
 
 @InputType()
@@ -139,4 +136,13 @@ export class UpdatePasswordInput {
 
   @Field()
   readonly confirmPassword?: string;
+}
+
+@ObjectType()
+export class DeleteUserPayload {
+  @Field(() => [ErrorPayload], { nullable: true })
+  errors?: ErrorPayload[];
+
+  @Field(() => Int, { nullable: true })
+  count?: number;
 }

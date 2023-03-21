@@ -19,18 +19,13 @@ export class MerchantService {
     );
   }
 
-  async register(input: IRegisterInput): Promise<IRegisterResponse> {
+  async register(input: IRegisterInput): Promise<Merchant> {
     const result = await lastValueFrom(this.merchantService.create(input));
     return result;
   }
 
   async findMerchantById(data: IId): Promise<Merchant> {
     const result = await lastValueFrom(this.merchantService.findMerchantById(data));
-    return result;
-  }
-
-  async findMerchants(): Promise<Merchant[]> {
-    const result = await lastValueFrom(this.merchantService.findMerchants());
     return result;
   }
 

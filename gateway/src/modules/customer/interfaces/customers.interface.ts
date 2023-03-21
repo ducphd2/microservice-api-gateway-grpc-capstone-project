@@ -39,8 +39,8 @@ export interface ICustomer {
   dobYear?: number;
   occupation?: string;
   avatar?: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
   userId?: number;
   branchId?: number;
   referrer?: string;

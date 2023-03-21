@@ -3,20 +3,10 @@ syntax = "proto3";
 package merchant;
 
 import "commons.proto";
-import "./merchant_branch.proto";
 
 message UpdateMerchantInput {
     int32 id = 1;
     Merchant data = 2;
-}
-
-message FindMerchantPayload {
-    repeated Merchant merchants = 1;
-}
-
-message RegisterResponse {
-    Merchant merchant = 1;
-    merchant_branch.MerchantBranch branch = 2;
 }
 
 message InputCreateRequest {
@@ -34,17 +24,27 @@ message Merchant {
     string name = 2;
     string phone = 3;
     string address = 4;
-    int32 createdAt = 5;
-    int32 updatedAt = 6;
+    string createdAt = 5;
+    string updatedAt = 6;
     int32 userId = 7;
     optional int32 cityCode =  8;
     optional int32 districtCode =  9;
     optional int32 wardCode = 10;
 }
 
+message MerchantEdge {
+    Merchant node = 1;
+    string cursor = 2;
+}  
+
+message FindMerchantsPayload {
+    repeated MerchantEdge edges = 1;
+    commons.PageInfo pageInfo = 2;
+}
+
 service MerchantServiceGrpc {
-    rpc create (InputCreateRequest) returns (RegisterResponse) {}
-    rpc findMerchants (commons.Query) returns (FindMerchantPayload) {}
+    rpc find (commons.Query) returns (FindMerchantsPayload) {}
     rpc findOneMerchant (InputCreateRequest) returns (Merchant) {}
+    rpc create (InputCreateRequest) returns (Merchant) {}
     rpc countMerchants (InputCreateRequest) returns (commons.Count) {}
 }

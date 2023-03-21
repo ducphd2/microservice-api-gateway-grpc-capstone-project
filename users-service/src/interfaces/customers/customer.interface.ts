@@ -7,8 +7,8 @@ export interface ICustomer extends IUser {
   fullName?: string;
   email?: string;
   password?: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
   version?: number;
   dobDay?: number;
   dobMonth?: number;

@@ -4,8 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 
 import { PostgresqlModule } from './database/postgresql.module';
-import { UsersModule } from './users/users.module';
-import { CustomersModule } from './customer/customers.module';
+import { UsersModule } from './modules/users/users.module';
+import { CustomersModule } from './modules/customers/customers.module';
 
 @Module({
   imports: [

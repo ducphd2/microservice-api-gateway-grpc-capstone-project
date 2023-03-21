@@ -1,7 +1,9 @@
 import { IModelConnection, IModelEdge, IPageInfo } from '../../../interfaces';
 import { IErrorPayload } from '../../../types/base.type';
+import { InputRegisterRequest } from '../dtos/inputRegisterRequest.dto';
 
 export interface IUser {
+  id?: number;
   email?: string;
   password?: string;
   fullName?: string;
@@ -14,9 +16,8 @@ export interface IUser {
   dobYear?: number;
   occupation?: string;
   avatar?: string;
-  id?: number;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IUserPayload {
@@ -27,4 +28,9 @@ export interface IUserPayload {
 export interface IUserConn extends IModelConnection<IUser> {
   edges: IModelEdge<IUser>[];
   pageInfo: IPageInfo;
+}
+
+export class UpdateDataRequest {
+  id: number;
+  data: Partial<InputRegisterRequest>;
 }

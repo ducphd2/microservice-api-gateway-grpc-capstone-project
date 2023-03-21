@@ -6,7 +6,7 @@ import { MerchantBranch } from './merchant-branch.model';
   tableName: 'branch_services',
   underscored: true,
 })
-export class BranchServices extends BaseModel {
+export class BranchServices extends BaseModel<BranchServices> {
   @Column({
     type: DataType.TEXT,
     allowNull: false,

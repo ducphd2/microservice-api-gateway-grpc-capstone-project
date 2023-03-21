@@ -15,8 +15,8 @@ export interface IUser {
   occupation?: string;
   avatar?: string;
   id?: number;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IPageInfo {

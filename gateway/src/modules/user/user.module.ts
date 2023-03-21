@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
-import { ClientGrpcProxy, ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
-import { UserResolver } from './user.resolver';
-import { UtilsModule } from '../../utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { join } from 'path';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
-import { UserQueryResolver } from './user-query.resolver';
-import { UserFieldResolver } from './user-field.resolver';
+import { UtilsModule } from '../../utils/utils.module';
+import { MerchantBranchModule } from '../merchant-branch/merchant-branch.module';
 import { MerchantModule } from '../merchant/merchant.module';
+import { UserFieldResolver } from './user-field.resolver';
+import { UserMutationResolver } from './user-mutation.resolver';
+import { UserQueryResolver } from './user-query.resolver';
 
 @Module({
-  imports: [ConfigModule, UtilsModule, MerchantModule],
+  imports: [ConfigModule, UtilsModule, MerchantModule, MerchantBranchModule],
   providers: [
     UserFieldResolver,
     UserQueryResolver,
-    UserResolver,
+    UserMutationResolver,
     {
       provide: EGrpcClientService.USER_SERVICE,
       useFactory: (configService: ConfigService): ClientGrpcProxy => {

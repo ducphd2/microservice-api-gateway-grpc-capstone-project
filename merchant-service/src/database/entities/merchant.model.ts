@@ -2,11 +2,14 @@ import { Column, DataType, HasMany, Table } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
 import { MerchantBranch } from './merchant-branch.model';
 
+import * as paginate from 'sequelize-cursor-pagination';
+
 @Table({
+  modelName: 'merchant',
   tableName: 'merchants',
   underscored: true,
 })
-export class Merchant extends BaseModel {
+export class Merchant extends BaseModel<Merchant> {
   @Column({
     type: DataType.TEXT,
     allowNull: false,
@@ -49,3 +52,8 @@ export class Merchant extends BaseModel {
   @HasMany(() => MerchantBranch)
   branches: MerchantBranch[];
 }
+
+paginate({
+  methodName: 'findAndPaginate',
+  primaryKeyField: 'id',
+})(Merchant);

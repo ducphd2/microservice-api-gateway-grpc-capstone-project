@@ -137,7 +137,7 @@ export class CustomersMutationResolver implements OnModuleInit {
   ): Promise<ICustomersConnection> {
     const query = { where: {} };
 
-    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: q } } });
+    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
 
     merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 

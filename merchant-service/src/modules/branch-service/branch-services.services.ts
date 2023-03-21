@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Attributes, WhereOptions } from 'sequelize';
+import { WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { ErrorHelper } from '../../helpers';
 import { IPaginationRes } from '../../interfaces';
@@ -15,7 +15,7 @@ export class BranchServicesService {
     return this.branchServicesRepository.paginate(getAllCondition, page, limit);
   }
 
-  async create(data: Attributes<BranchServices>): Promise<BranchServices> {
+  async create(data: any): Promise<BranchServices> {
     return await this.branchServicesRepository.create(data);
   }
 
@@ -23,7 +23,7 @@ export class BranchServicesService {
     return this.branchServicesRepository.findById(id);
   }
 
-  async updateMerchantBranch(id: number, params: Attributes<BranchServices>): Promise<BranchServices> {
+  async updateMerchantBranch(id: number, params: any): Promise<BranchServices> {
     const branchService = await this.findById(id);
     if (!branchService) {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
@@ -33,7 +33,7 @@ export class BranchServicesService {
   }
 
   async delete(id: number): Promise<number> {
-    const removeByIdConditions: WhereOptions<BranchServices> = { id };
+    const removeByIdConditions: WhereOptions = { id };
 
     return this.branchServicesRepository.delete(removeByIdConditions);
   }

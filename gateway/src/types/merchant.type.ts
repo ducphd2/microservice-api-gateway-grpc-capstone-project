@@ -1,5 +1,6 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BaseType } from './base.type';
+import { BaseType, PageInfo } from './base.type';
+import { MerchantBranchConnection } from './merchant-branch.type';
 
 @ObjectType()
 export class Merchant extends BaseType {
@@ -24,12 +25,24 @@ export class Merchant extends BaseType {
   @Field(() => ID)
   userId: number;
 
-  @Field(() => [MerchantBranch], { nullable: 'itemsAndList' })
-  branches: MerchantBranch[];
+  @Field(() => [MerchantBranchConnection], { nullable: true })
+  branches: MerchantBranchConnection;
 }
 
 @ObjectType()
-export class MerchantBranch extends Merchant {
-  @Field(() => Int)
-  merchantId: number;
+export class MerchantEdge {
+  @Field(() => Merchant)
+  node: Merchant;
+
+  @Field(() => String)
+  cursor: string;
+}
+
+@ObjectType()
+export class MerchantConnection {
+  @Field(() => [MerchantEdge])
+  edges: MerchantEdge[];
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
 }

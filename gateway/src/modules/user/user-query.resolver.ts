@@ -33,10 +33,10 @@ export class UserQueryResolver implements OnModuleInit {
     @Args('before', { nullable: true }) before?: string,
     @Args('after', { nullable: true }) after?: string,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-  ): Promise<IUserConn> {
+  ): Promise<UsersConnection> {
     const query = { where: {} };
 
-    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: q } } });
+    if (!isEmpty(q)) merge(query, { where: { fullName: { _iLike: `%${q}%` } } });
 
     merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
@@ -68,7 +68,7 @@ export class UserQueryResolver implements OnModuleInit {
 
     const query = { where: {} };
 
-    if (!isEmpty(q)) merge(query, { where: { name: { _iLike: q } } });
+    if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
 
     const { count } = await lastValueFrom(
       this.userService.count({
