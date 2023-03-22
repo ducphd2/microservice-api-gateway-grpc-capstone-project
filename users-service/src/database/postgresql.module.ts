@@ -61,6 +61,9 @@ const operatorsAliases: OperatorsAliases = {
         operatorsAliases,
         autoLoadModels: true,
         synchronize: true,
+        query: {
+          raw: true,
+        },
         define: {
           timestamps: true,
           underscored: true,

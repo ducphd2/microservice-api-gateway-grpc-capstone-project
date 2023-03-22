@@ -1,4 +1,5 @@
 import { IModelConnection, IModelEdge, IPageInfo } from '../../../interfaces';
+import { PartialUpdateBranch } from '../../../types';
 import { IErrorPayload } from '../../../types/base.type';
 
 export interface IMerchantBranch {
@@ -27,4 +28,9 @@ export interface IIMerchantBranchPayload {
 export interface IUserConn extends IModelConnection<IMerchantBranch> {
   edges: IModelEdge<IMerchantBranch>[];
   pageInfo: IPageInfo;
+}
+
+export interface IUpdateMerchantBranch {
+  id: number;
+  data: PartialUpdateBranch;
 }

@@ -1,5 +1,5 @@
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { BaseType, ErrorPayload, PageInfo } from './base.type';
+import { Field, ID, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 
 @ObjectType()
 export class MerchantBranch extends BaseType {
@@ -18,14 +18,14 @@ export class MerchantBranch extends BaseType {
   @Field(() => Int)
   districtCode: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   wardCode: number;
-
-  @Field(() => ID)
-  userId: number;
 
   @Field(() => Int)
   merchantId: number;
+
+  @Field(() => Int)
+  userId: number;
 }
 
 @ObjectType()
@@ -58,8 +58,38 @@ export class MerchantBranchPayload {
 @InputType()
 export class CreateBranchInput {
   @Field()
-  fullName: string;
+  name: string;
 
-  @Field(() => String, { nullable: true })
-  relatedUserPhone?: string;
+  @Field()
+  phone: string;
+
+  @Field()
+  address: string;
+
+  @Field(() => Int)
+  merchantId: number;
+
+  @Field(() => Int)
+  userId: number;
+
+  @Field(() => Int)
+  cityCode: number;
+
+  @Field(() => Int)
+  districtCode: number;
+
+  @Field({ nullable: true })
+  wardCode: number;
+}
+
+@InputType()
+export class PartialUpdateBranch extends PartialType<CreateBranchInput>(CreateBranchInput) {}
+
+@InputType()
+export class UpdateBranchInput {
+  @Field()
+  id: number;
+
+  @Field(() => PartialUpdateBranch)
+  data: PartialUpdateBranch;
 }

@@ -46,14 +46,14 @@ export class MerchantBranch extends BaseModel<MerchantBranch> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  userId: number;
+  @ForeignKey(() => Merchant)
+  merchantId: number;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  @ForeignKey(() => Merchant)
-  merchantId: number;
+  userId: number;
 
   @BelongsTo(() => Merchant)
   merchant: Merchant;

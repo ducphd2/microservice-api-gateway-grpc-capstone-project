@@ -6,3 +6,4 @@ export * from './customer.type';
 export * from './auth.type';
 export * from './merchant-branch.type';
 export * from './device.type';
+export * from './base.type';
