@@ -1,28 +1,15 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Metadata } from 'grpc';
+import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
-import { User } from '../../../types';
-import { CustomerDto } from '../dtos';
-import { IId } from '../../../interfaces';
+import { ICount, IId, IQuery } from '../../../interfaces';
+import { CreateCustomerInput, Customer, UpdateCustomerInput } from '../../../types';
+import { ICustomersConnection } from './customers.interface';
 
-ObjectType();
-export class ResponsePermission {
-  @Field(() => Boolean)
-  isAdmin: boolean;
-}
-
-export interface IUserServiceGrpc {
-  findById(id: IId, metadata?: Metadata): Observable<UserFindByIdResponse>;
-  update(data: UpdateDataRequest): Observable<UserFindByIdResponse>;
-}
-
-@ObjectType()
-export class UserFindByIdResponse {
-  @Field(() => User)
-  user: User;
-}
-
-export class UpdateDataRequest {
-  id: number;
-  data: CustomerDto;
+export interface ICustomerServices {
+  find(query: IQuery, metadata?: Metadata): Observable<ICustomersConnection>;
+  findById(id: IId, metadata?: Metadata): Observable<Customer>;
+  findOne(query: IQuery, metadata?: Metadata): Observable<Customer>;
+  count(query: IQuery, metadata?: Metadata): Observable<ICount>;
+  create(input: CreateCustomerInput, metadata?: Metadata): Observable<Customer>;
+  update(input: UpdateCustomerInput): Observable<Customer>;
+  destroy(query: IQuery, metadata?: Metadata): Observable<ICount>;
 }

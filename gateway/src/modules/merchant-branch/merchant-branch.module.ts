@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientGrpcProxy, ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { MerchantResolver } from './merchant-branch.resolver';
+import { MerchantResolver } from './merchant-branch-mutation.resolver';
 import { MerchantBranchService } from './merchant-branch.service';
 import { MerchantQueryResolver } from './merchant-branch-query.resolver';
 import { EGrpcClientService } from '../../enums';
