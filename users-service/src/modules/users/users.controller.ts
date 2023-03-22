@@ -13,7 +13,7 @@ import { User } from '../../database/models/user.model';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
 import { IId, IUser } from '../../interfaces';
-import { ICreateCustomer } from '../../interfaces/customers';
+import { ICreateCustomer, ICustomer } from '../../interfaces/customers';
 import { IUserDto } from './dto';
 import { UsersService } from './users.service';
 import { Device } from '../../database/models';
@@ -38,11 +38,11 @@ export class UsersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
-  async createCustomer(data: ICreateCustomer): Promise<any> {
+  async createCustomer(data: ICreateCustomer): Promise<ICustomer> {
     try {
       this.logger.info('UsersController#createCustomer.call %o', data);
 
-      const result: any = await this.service.createCustomer(data);
+      const result = await this.service.createCustomer(data);
 
       this.logger.info('UsersController#create.result %o', result);
 

@@ -1,40 +1,116 @@
-import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { ECustomerLevel, EUserRole } from '../enums';
-import { ICustomer, ICustomerEdge, IPageInfo } from '../modules/customer/interfaces';
+import { Field, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
+import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '../enums';
 import { ErrorPayload, IErrorPayload, PageInfo } from './base.type';
-import { User } from './user.type';
 
 @ObjectType()
-export class Customer extends User {
-  @Field(() => EUserRole, { defaultValue: EUserRole.user })
-  role: EUserRole;
+export class Customer {
+  @Field()
+  email: string;
 
-  @Field(() => String)
-  contact: string;
+  @HideField()
+  password: string;
+
+  @Field()
+  fullName: string;
+
+  @Field(() => EUserStatus, { defaultValue: EUserStatus.active })
+  status: string;
 
   @Field(() => ECustomerLevel, { defaultValue: ECustomerLevel.normal })
   level: ECustomerLevel;
+
+  @Field(() => EUserRole, { defaultValue: EUserRole.user })
+  role: EUserRole;
+
+  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
+  gender: EUserGender;
+
+  @Field()
+  contact: string;
+
+  @Field(() => Int, { nullable: true })
+  dobDay: number;
+
+  @Field(() => Int, { nullable: true })
+  dobMonth: number;
+
+  @Field(() => Int, { nullable: true })
+  dobYear: number;
+
+  @Field(() => String, { nullable: true })
+  occupation?: string;
+
+  @Field(() => String, { nullable: true })
+  avatar?: string;
 
   @Field(() => String, { nullable: true })
   referrer: string;
 
   @Field(() => String, { nullable: true })
   referrerCode: string;
+
+  @Field(() => Int, { nullable: true })
+  branchId?: number;
+
+  @Field(() => String, { nullable: true })
+  customerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  facebook?: string;
+
+  @Field(() => String, { nullable: true })
+  zaloPhone?: string;
+
+  @Field(() => Int, { nullable: true })
+  height?: number;
+
+  @Field(() => Int, { nullable: true })
+  weight?: number;
+
+  @Field(() => Int, { nullable: true })
+  memberCardNo?: number;
+
+  @Field(() => String, { nullable: true })
+  address?: string;
+
+  @Field(() => Int, { nullable: true })
+  cityCode?: number;
+
+  @Field(() => Int, { nullable: true })
+  districtCode?: number;
+
+  @Field(() => String, { nullable: true })
+  company?: string;
+
+  @Field(() => String, { nullable: true })
+  taxNo?: string;
+
+  @Field(() => String, { nullable: true })
+  note?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUser?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserRole?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserPhone?: string;
 }
 
 @ObjectType()
 export class CustomersConnection {
   @Field(() => [CustomerEdge])
-  edges: ICustomerEdge[];
+  edges: CustomerEdge[];
 
   @Field(() => PageInfo)
-  pageInfo: IPageInfo;
+  pageInfo: PageInfo;
 }
 
 @ObjectType()
 export class CustomerEdge {
   @Field(() => Customer)
-  node: ICustomer;
+  node: Customer;
 
   @Field(() => String)
   cursor: string;
@@ -46,7 +122,7 @@ export class CustomerPayload {
   errors?: IErrorPayload[];
 
   @Field(() => Customer, { nullable: true })
-  customer?: ICustomer;
+  customer?: Customer;
 }
 
 @ObjectType()
@@ -59,42 +135,39 @@ export class DeleteCustomerPayload {
 }
 
 @InputType()
-export class CreateCustomerInputDto {
+export class CreateCustomerInput {
   @Field()
-  readonly fullName: string;
+  fullName: string;
 
   @Field()
-  readonly email: string;
+  email: string;
 
   @Field()
-  readonly password: string;
+  password: string;
+
+  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
+  gender: string;
 
   @Field()
-  readonly status: string;
+  contact: string;
 
-  @Field()
-  readonly role: string;
+  @Field(() => Int)
+  branchId?: number;
 
-  @Field()
-  readonly gender: string;
+  @Field(() => Int, { nullable: true })
+  dobDay: number;
 
-  @Field()
-  readonly contact: string;
+  @Field(() => Int, { nullable: true })
+  dobMonth: number;
 
-  @Field()
-  readonly dobDay: number;
-
-  @Field()
-  readonly dobMonth: number;
-
-  @Field()
-  readonly dobYear: number;
+  @Field(() => Int, { nullable: true })
+  dobYear: number;
 
   @Field(() => String, { nullable: true })
-  readonly occupation?: string;
+  occupation?: string;
 
   @Field(() => String, { nullable: true })
-  readonly avatar?: string;
+  avatar?: string;
 
   @Field(() => String, { nullable: true })
   referrer?: string;
@@ -102,48 +175,63 @@ export class CreateCustomerInputDto {
   @Field(() => String, { nullable: true })
   referrerCode?: string;
 
-  @Field(() => Int, { nullable: true })
-  userId?: number;
-
   @Field(() => String, { nullable: true })
   level?: string;
 
+  @Field(() => String, { nullable: true })
+  customerCode?: string;
+
+  @Field(() => String, { nullable: true })
+  facebook?: string;
+
+  @Field(() => String, { nullable: true })
+  zaloPhone?: string;
+
   @Field(() => Int, { nullable: true })
-  branchId?: number;
+  height?: number;
+
+  @Field(() => Int, { nullable: true })
+  weight?: number;
+
+  @Field(() => String, { nullable: true })
+  memberCardNo?: string;
+
+  @Field(() => String, { nullable: true })
+  address?: string;
+
+  @Field(() => Int, { nullable: true })
+  cityCode?: number;
+
+  @Field(() => Int, { nullable: true })
+  districtCode?: number;
+
+  @Field(() => String, { nullable: true })
+  company?: string;
+
+  @Field(() => String, { nullable: true })
+  taxNo?: string;
+
+  @Field(() => String, { nullable: true })
+  note?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUser?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserRole?: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserPhone?: string;
 }
 
 @InputType()
-export class UpdateCustomerInputDto {
-  @Field()
-  readonly fullName?: string;
+export class PartialUpdateCustomer extends PartialType<CreateCustomerInput>(CreateCustomerInput) {}
 
+@InputType()
+export class UpdateCustomerInput {
   @Field()
-  readonly password?: string;
+  id: number;
 
-  @Field()
-  readonly dobDay?: number;
-
-  @Field()
-  readonly dobMonth?: number;
-
-  @Field()
-  readonly dobYear?: number;
-
-  @Field()
-  readonly occupation?: string;
-
-  @Field()
-  readonly avatar?: string;
-
-  @Field()
-  readonly status?: string;
-
-  @Field()
-  readonly role?: string;
-
-  @Field()
-  readonly gender?: string;
-
-  @Field()
-  readonly contact?: string;
+  @Field(() => PartialUpdateCustomer)
+  data: PartialUpdateCustomer;
 }

@@ -81,6 +81,21 @@ export class User extends BaseModel<User> {
   })
   dobYear: number;
 
+  @Column({
+    type: DataType.TEXT,
+  })
+  address: string;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  cityCode: number;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  districtCode: number;
+
   @BeforeCreate
   @BeforeUpdate
   static async hashPassword(user: User) {

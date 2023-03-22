@@ -58,6 +58,11 @@ type MerchantBranchConnection {
   pageInfo: PageInfo!
 }
 
+type MerchantBranchPayload {
+  errors: [ErrorPayload!]
+  branch: MerchantBranch
+}
+
 type Merchant {
   id: ID!
   createdAt: String!
@@ -172,25 +177,41 @@ type Category {
 }
 
 type Customer {
-  id: ID!
-  createdAt: String!
-  updatedAt: String!
   email: String!
   fullName: String!
-  status: String!
+  status: EUserStatus!
+  level: ECustomerLevel!
   role: EUserRole!
   gender: EUserGender!
   contact: String!
-  dobDay: Float!
-  dobMonth: Float!
-  dobYear: Float!
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
   occupation: String
   avatar: String
-  merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
-  devices: DeviceConnection!
-  level: ECustomerLevel!
   referrer: String
   referrerCode: String
+  branchId: Int
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: Int
+  weight: Int
+  memberCardNo: Int
+  address: String
+  cityCode: Int
+  districtCode: Int
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
+}
+
+enum EUserStatus {
+  active
+  banned
 }
 
 enum ECustomerLevel {
@@ -256,16 +277,15 @@ type Mutation {
   register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
+  createCustomer(data: CreateCustomerInput!): CustomerPayload!
   updatePassword(data: ChangePasswordInput!): User!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
   updateCategory(id: Float!, data: CategoryDto!): Category!
   deleteCategory(id: Float!): Category!
   uploadSingleFiles(file: Upload!, folder: String): ResponseSingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [ResponseSingleUpload!]!
-  createCustomer(data: CreateCustomerInputDto!): CustomerPayload!
-  updateCustomer(id: Float!, data: UpdateCustomerInputDto!): CustomerPayload!
-  updateCustomerPassword(data: UpdatePasswordInput!): CustomerPayload!
-  deleteCustomer: DeleteCustomerPayload!
+  updateCustomer(id: Float!, data: PartialUpdateCustomer!): CustomerPayload!
+  deleteCustomer(id: Float!): DeleteCustomerPayload!
 }
 
 input InputLoginRequest {
@@ -300,14 +320,41 @@ input InputRegisterRequest {
   token: String
 }
 
-enum EUserStatus {
-  active
-  banned
-}
-
 enum EDeviceOs {
   android
   ios
+}
+
+input CreateCustomerInput {
+  fullName: String!
+  email: String!
+  password: String!
+  gender: EUserGender = female
+  contact: String!
+  branchId: Int!
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
+  occupation: String
+  avatar: String
+  referrer: String
+  referrerCode: String
+  level: String
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: Int
+  weight: Int
+  memberCardNo: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
 }
 
 input ChangePasswordInput {
@@ -325,42 +372,34 @@ input CategoryDto {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input CreateCustomerInputDto {
-  fullName: String!
-  email: String!
-  password: String!
-  status: String!
-  role: String!
-  gender: String!
-  contact: String!
-  dobDay: Float!
-  dobMonth: Float!
-  dobYear: Float!
+input PartialUpdateCustomer {
+  fullName: String
+  email: String
+  password: String
+  gender: EUserGender = female
+  contact: String
+  branchId: Int
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
   occupation: String
   avatar: String
   referrer: String
   referrerCode: String
-  userId: Int
   level: String
-  branchId: Int
-}
-
-input UpdateCustomerInputDto {
-  fullName: String!
-  password: String!
-  dobDay: Float!
-  dobMonth: Float!
-  dobYear: Float!
-  occupation: String!
-  avatar: String!
-  status: String!
-  role: String!
-  gender: String!
-  contact: String!
-}
-
-input UpdatePasswordInput {
-  currentPassword: String!
-  newPassword: String!
-  confirmPassword: String!
+  customerCode: String
+  facebook: String
+  zaloPhone: String
+  height: Int
+  weight: Int
+  memberCardNo: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  company: String
+  taxNo: String
+  note: String
+  relatedUser: String
+  relatedUserRole: String
+  relatedUserPhone: String
 }

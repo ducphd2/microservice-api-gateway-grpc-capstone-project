@@ -1,24 +1,22 @@
 import { Inject, OnModuleInit, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, PartialType, Query, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { lastValueFrom } from 'rxjs';
-import { CurrentUser } from '../../common/decorators';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
 import { GqlAuthGuard } from '../../guard';
 import {
-  CreateCustomerInputDto,
+  CreateCustomerInput,
   Customer,
   CustomerPayload,
   CustomersConnection,
   DeleteCustomerPayload,
-  UpdateCustomerInputDto,
-  UpdatePasswordInput,
+  PartialUpdateCustomer,
 } from '../../types';
 import { PasswordUtils } from '../../utils/password.utils';
 import { QueryUtils } from '../../utils/query.utils';
 import { IUserServiceGrpc } from '../user/interfaces';
-import { CreateCustomerInput, ICustomerServices, ICustomersConnection } from './interfaces';
+import { ICustomerServices, ICustomersConnection } from './interfaces';
 
 @Resolver()
 export class CustomersMutationResolver implements OnModuleInit {
@@ -38,12 +36,13 @@ export class CustomersMutationResolver implements OnModuleInit {
     this.customerService = this.customersServiceClient.getService<ICustomerServices>(
       EGrpcClientService.CUSTOMER_SERVICE,
     );
+
     this.userService = this.usersServiceClient.getService<IUserServiceGrpc>(EGrpcClientService.USER_SERVICE);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => CustomerPayload)
-  async createCustomer(@Args('data') data: CreateCustomerInputDto): Promise<CustomerPayload> {
+  async createCustomer(@Args('data') data: CreateCustomerInput): Promise<CustomerPayload> {
     try {
       const { count } = await lastValueFrom(
         this.userService.count({
@@ -53,18 +52,10 @@ export class CustomersMutationResolver implements OnModuleInit {
 
       if (count >= 1) throw new Error('The email is taken');
 
-      const { customer, user }: CreateCustomerInput = await lastValueFrom(
-        this.customerService.create({
-          user: data,
-          customer: data,
-        }),
-      );
+      const customer: Customer = await lastValueFrom(this.customerService.create(data));
 
       return {
-        customer: {
-          ...user,
-          ...customer,
-        },
+        customer,
       };
     } catch (error) {
       throw new RpcException(error);
@@ -73,7 +64,11 @@ export class CustomersMutationResolver implements OnModuleInit {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => CustomerPayload)
-  async updateCustomer(@Args('id') id: number, @Args('data') data: UpdateCustomerInputDto): Promise<CustomerPayload> {
+  async updateCustomer(
+    @Args('id') id: number,
+    @Args('data', { type: () => PartialUpdateCustomer })
+    data: Partial<CreateCustomerInput>,
+  ): Promise<CustomerPayload> {
     const updatedCustomer: Customer = await lastValueFrom(
       this.customerService.update({
         id,
@@ -86,40 +81,13 @@ export class CustomersMutationResolver implements OnModuleInit {
     return { customer: updatedCustomer };
   }
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => CustomerPayload)
-  async updateCustomerPassword(
-    @CurrentUser() customer: Customer,
-    @Args('data') data: UpdatePasswordInput,
-  ): Promise<CustomerPayload> {
-    const isSame: boolean = await this.passwordUtils.compare(data.currentPassword, customer.password);
-    const isConfirmed: boolean = data.newPassword === data.confirmPassword;
-
-    if (!isSame || !isConfirmed) {
-      throw new Error('Error updating password. Kindly check your passwords.');
-    }
-
-    const password: string = await this.passwordUtils.hash(data.newPassword);
-
-    const updatedCustomer: Customer = await lastValueFrom(
-      this.customerService.update({
-        id: customer.id,
-        data: {
-          password,
-        },
-      }),
-    );
-
-    return { customer: updatedCustomer };
-  }
-
   @Mutation(() => DeleteCustomerPayload)
   @UseGuards(GqlAuthGuard)
-  async deleteCustomer(@CurrentUser() customer: Customer): Promise<DeleteCustomerPayload> {
+  async deleteCustomer(@Args('id') id: number): Promise<DeleteCustomerPayload> {
     return await lastValueFrom(
       this.customerService.destroy({
         where: JSON.stringify({
-          id: customer.id,
+          id: id,
         }),
       }),
     );

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { isEmpty } from 'lodash';
+import { isEmpty, pick } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
 import { FindOptions, Transaction } from 'sequelize';
 
@@ -12,7 +12,8 @@ import { Customer, Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
 import { EUserRole } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { ICreateCustomer } from '../../interfaces/customers';
+import { IDevice } from '../../interfaces';
+import { ICreateCustomer, ICustomer } from '../../interfaces/customers';
 import { CustomersService } from '../customers/customers.service';
 import { DevicesService } from '../devices/devices.service';
 import { IUserDto } from './dto';
@@ -83,29 +84,35 @@ export class UsersService implements IUsersService {
     this.logger.info('UsersService#create.call %o', userInput);
 
     const user: User = await this.repo.create(userInput, { transaction });
-    const device: Device = await this.devicesService.create({ ...userInput, userId: user.id }, transaction);
+
+    const devicePayload: IDevice = pick(userInput, ['os', 'deviceId', 'token']);
+    if (!isEmpty(devicePayload)) {
+      const device: Device = await this.devicesService.create({ ...userInput, userId: user.id }, transaction);
+    }
 
     this.logger.info('UsersService#create.result %o', user);
 
     return user;
   }
 
-  async createCustomer(data: ICreateCustomer): Promise<any> {
+  async createCustomer(data: ICreateCustomer): Promise<ICustomer> {
     const transaction = await this.sequelize.transaction();
 
     try {
       this.logger.info('UsersService#createCustomer.call %o', data);
 
-      const user: User = await this.create({ ...data.user, role: EUserRole.USER }, transaction);
-      const customer: Customer = await this.customersService.create({ ...data.customer, userId: user.id }, transaction);
+      const user: User = await this.create({ ...data, role: EUserRole.USER }, transaction);
+      const customer: Customer = await this.customersService.create({ ...data, userId: user.id }, transaction);
 
       await transaction.commit();
       this.logger.info('UsersService#createCustomer.result %o', user, customer);
 
-      return {
-        user,
-        customer,
+      const res = {
+        ...user.toJSON(),
+        ...customer.toJSON(),
       };
+
+      return res;
     } catch (error) {
       await transaction.rollback();
       ErrorHelper.BadRequestException('Can not create customer user');

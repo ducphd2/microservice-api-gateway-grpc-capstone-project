@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BaseType, PageInfo } from './base.type';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { BaseType, ErrorPayload, PageInfo } from './base.type';
 
 @ObjectType()
 export class MerchantBranch extends BaseType {
@@ -44,4 +44,22 @@ export class MerchantBranchConnection {
 
   @Field(() => PageInfo)
   pageInfo: PageInfo;
+}
+
+@ObjectType()
+export class MerchantBranchPayload {
+  @Field(() => [ErrorPayload], { nullable: true })
+  errors?: ErrorPayload[];
+
+  @Field(() => MerchantBranch, { nullable: true })
+  branch?: MerchantBranch;
+}
+
+@InputType()
+export class CreateBranchInput {
+  @Field()
+  fullName: string;
+
+  @Field(() => String, { nullable: true })
+  relatedUserPhone?: string;
 }

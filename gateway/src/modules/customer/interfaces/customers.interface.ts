@@ -1,9 +1,4 @@
-import { Metadata } from 'grpc';
-import { Observable } from 'rxjs';
-import { Customer } from '../../../types';
-import { IUser } from '../../user/interfaces';
 import { CustomerDto } from '../dtos';
-import { ICount, IId, IQuery } from '../../../interfaces';
 
 export interface UpdateCustomerInput {
   id: number;
@@ -11,18 +6,34 @@ export interface UpdateCustomerInput {
 }
 
 export interface CreateCustomerInput {
-  user: IUser;
-  customer: ICustomer;
-}
-
-export interface ICustomerServices {
-  find(query: IQuery, metadata?: Metadata): Observable<ICustomersConnection>;
-  findById(id: IId, metadata?: Metadata): Observable<Customer>;
-  findOne(query: IQuery, metadata?: Metadata): Observable<Customer>;
-  count(query: IQuery, metadata?: Metadata): Observable<ICount>;
-  create(input: CreateCustomerInput, metadata?: Metadata): Observable<CreateCustomerInput>;
-  update(input: UpdateCustomerInput): Observable<Customer>;
-  destroy(query: IQuery, metadata?: Metadata): Observable<ICount>;
+  fullName?: string;
+  email?: string;
+  password?: string;
+  contact?: string;
+  branchId?: number;
+  dobDay?: number;
+  dobMonth?: number;
+  dobYear?: number;
+  occupation?: string;
+  avatar?: string;
+  referrer?: string;
+  referrerCode?: string;
+  level?: string;
+  customerCode?: string;
+  facebook?: string;
+  zaloPhone?: string;
+  height?: number;
+  weight?: number;
+  memberCardNo?: string;
+  address?: string;
+  cityCode?: number;
+  districtCode?: number;
+  company?: string;
+  taxNo?: string;
+  note?: string;
+  relatedUser?: string;
+  relatedUserRole?: string;
+  relatedUserPhone?: string;
 }
 
 export interface ICustomer {
