@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { WhereOptions } from 'sequelize';
-import { MERCHANT } from '../../constants';
+import { MERCHANT, MERCHANT_BRANCH } from '../../constants';
 import { MerchantBranch } from '../../database/entities/merchant-branch.model';
 import { ErrorHelper } from '../../helpers';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../interfaces';
 import { MerchantBranchesRepository } from './merchant-branches.repository';
+import { IMerchantBranch } from '../../interfaces/merchant-branch';
 
 @Injectable()
 export class MerchantBranchesService {
@@ -16,8 +17,9 @@ export class MerchantBranchesService {
     return result;
   }
 
-  async createMerchantBranch(data: any): Promise<MerchantBranch> {
-    return await this.merchantBranchesRepository.create(data);
+  async createMerchantBranch(data: any): Promise<IMerchantBranch> {
+    const branch = await this.merchantBranchesRepository.create(data);
+    return branch.toJSON();
   }
 
   async findById(id: number): Promise<MerchantBranch> {
@@ -27,10 +29,12 @@ export class MerchantBranchesService {
   async updateMerchantBranch(id: number, params: any): Promise<MerchantBranch> {
     const branch = await this.findById(id);
     if (!branch) {
-      ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
+      ErrorHelper.BadRequestException(MERCHANT_BRANCH.MERCHANT_NOT_FOUND);
     }
 
-    return await this.merchantBranchesRepository.updateItem(branch, params);
+    const updateByIdConditions: WhereOptions = { id };
+    const affectedRows = await this.merchantBranchesRepository.update({ ...params }, updateByIdConditions);
+    return affectedRows[0];
   }
 
   async deleteBranch(id: number): Promise<number> {

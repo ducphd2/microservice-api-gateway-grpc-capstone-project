@@ -1,10 +1,14 @@
-import { InputCreateMerchantRequest } from '../merchant/create-merchant.interface';
-
-export interface CreateMerchantBranchRequestInput extends InputCreateMerchantRequest {
-  merchantId: number;
+export interface CreateMerchantBranchInput {
+  name?: string;
+  phone?: string;
+  address?: string;
+  cityCode?: number;
+  districtCode?: number;
+  wardCode?: number;
+  merchantId?: number;
 }
 
 export interface UpdateMerchantBranchInput {
   id: number;
-  data: Partial<CreateMerchantBranchRequestInput>;
+  data: Partial<CreateMerchantBranchInput>;
 }

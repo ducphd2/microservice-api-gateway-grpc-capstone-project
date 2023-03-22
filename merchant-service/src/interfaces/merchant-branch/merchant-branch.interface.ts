@@ -8,6 +8,5 @@ export interface IMerchantBranch {
   wardCode?: number;
   createdAt?: string;
   updatedAt?: string;
-  userId?: number;
   merchantId?: number;
 }

@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ isAbstract: true })
 export class BaseType {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field(() => String)
@@ -39,4 +39,13 @@ export class ErrorPayload {
 export interface IErrorPayload {
   field?: string;
   message?: string[];
+}
+
+@ObjectType()
+export class DeletePayload {
+  @Field(() => [ErrorPayload], { nullable: true })
+  errors?: ErrorPayload[];
+
+  @Field(() => Int, { nullable: true })
+  count?: number;
 }

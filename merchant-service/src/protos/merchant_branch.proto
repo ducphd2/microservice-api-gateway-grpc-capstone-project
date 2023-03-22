@@ -15,8 +15,8 @@ message InputCreateRequest {
     string address = 3;
     int32 userId = 4;
     int32 merchantId = 5;
-    optional int32 cityCode = 6;
-    optional int32 districtCode = 7;
+    int32 cityCode = 6;
+    int32 districtCode = 7;
     optional int32 wardCode = 8;
 }
 
@@ -27,10 +27,10 @@ message MerchantBranch {
     string address = 4;
     string createdAt = 5;
     string updatedAt = 6;
-    int32 merchantId = 7;
-    int32 userId = 8;
-    optional int32 cityCode = 9;
-    optional int32 districtCode = 10;
+    int32 userId = 7;
+    int32 merchantId = 8;
+    int32 cityCode = 9;
+    int32 districtCode = 10;
     optional int32 wardCode = 11;
 }
 
@@ -48,8 +48,9 @@ service MerchantBranchServiceGrpc {
     rpc find (commons.Query) returns (FindMerchantBranchesPayload) {}
     rpc findOne (commons.Query) returns (MerchantBranch) {}
     rpc findById (commons.Id) returns (MerchantBranch) {}
+    rpc findByUserId (commons.Query) returns (FindMerchantBranchesPayload) {}
     rpc create (InputCreateRequest) returns (MerchantBranch) {}
     rpc update (UpdateMerchantBranchInput) returns (MerchantBranch) {}
-    rpc destroy (commons.Query) returns (commons.Count) {}
+    rpc destroy (commons.Id) returns (commons.Count) {}
     rpc count (InputCreateRequest) returns (commons.Count) {}
 }

@@ -1,4 +1,4 @@
-import { FindAndCountOptions, FindOptions, WhereOptions } from 'sequelize';
+import { FindAndCountOptions, FindOptions, Transaction, WhereOptions } from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 import { FIRST_PAGE, LIMIT_PAGE } from 'src/constants';
 
@@ -60,8 +60,9 @@ export class BaseRepository<T extends Model> {
     return affectedRows;
   }
 
-  async updateItem(item: T, entity: any) {
-    return await item.update(entity);
+  async updateItem(item: T, entity: any, transaction?: Transaction) {
+    const a = await item.update(entity);
+    return a;
   }
 
   async delete(conditions: WhereOptions): Promise<number> {

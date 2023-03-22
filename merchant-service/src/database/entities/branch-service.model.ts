@@ -34,6 +34,12 @@ export class BranchServices extends BaseModel<BranchServices> {
     type: DataType.INTEGER,
     allowNull: false,
   })
+  userId: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
   @ForeignKey(() => MerchantBranch)
   branchId: number;
 

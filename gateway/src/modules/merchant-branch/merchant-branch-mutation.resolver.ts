@@ -1,15 +1,21 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { MerchantBranchService } from './merchant-branch.service';
-import { EGrpcClientService } from '../../enums';
-import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { Inject, OnModuleInit, UseGuards } from '@nestjs/common';
-import { IMerchantBranchServiceGrpc } from './interfaces';
-import { GqlAuthGuard } from '../../guard';
-import { CreateBranchInput, MerchantBranch, MerchantBranchPayload } from '../../types';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
+import { EGrpcClientService } from '../../enums';
+import { GqlAuthGuard } from '../../guard';
+import { ICount } from '../../interfaces';
+import {
+  CreateBranchInput,
+  DeletePayload,
+  MerchantBranch,
+  MerchantBranchPayload,
+  PartialUpdateBranch,
+} from '../../types';
+import { IMerchantBranchServiceGrpc } from './interfaces';
 
 @Resolver()
-export class MerchantResolver implements OnModuleInit {
+export class BranchMutationResolver implements OnModuleInit {
   private merchantService: IMerchantBranchServiceGrpc;
 
   constructor(
@@ -25,11 +31,35 @@ export class MerchantResolver implements OnModuleInit {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => MerchantBranchPayload)
-  async createCustomer(@Args('data') data: CreateBranchInput): Promise<MerchantBranchPayload> {
+  async createBranch(@Args('data') data: CreateBranchInput): Promise<MerchantBranchPayload> {
     try {
       const branch: MerchantBranch = await lastValueFrom(this.merchantService.create(data));
 
       return { branch };
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => MerchantBranchPayload)
+  async updateBranch(@Args('id') id: number, @Args('data') data: PartialUpdateBranch): Promise<MerchantBranchPayload> {
+    try {
+      const branch: MerchantBranch = await lastValueFrom(this.merchantService.update({ id, data }));
+
+      return { branch };
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => DeletePayload)
+  async deleteBranch(@Args('id') id: number): Promise<ICount> {
+    try {
+      const result: ICount = await lastValueFrom(this.merchantService.destroy({ id }));
+
+      return result;
     } catch (error) {
       throw new RpcException(error);
     }

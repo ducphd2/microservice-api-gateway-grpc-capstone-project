@@ -14,8 +14,13 @@ type ErrorPayload {
   message: [String!]
 }
 
+type DeletePayload {
+  errors: [ErrorPayload!]
+  count: Int
+}
+
 type Device {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   userId: ID!
@@ -35,7 +40,7 @@ type DeviceConnection {
 }
 
 type MerchantBranch {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -43,9 +48,9 @@ type MerchantBranch {
   address: String!
   cityCode: Int!
   districtCode: Int!
-  wardCode: Int!
-  userId: ID!
+  wardCode: Int
   merchantId: Int!
+  userId: Int!
 }
 
 type MerchantBranchEdge {
@@ -64,7 +69,7 @@ type MerchantBranchPayload {
 }
 
 type Merchant {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -88,7 +93,7 @@ type MerchantConnection {
 }
 
 type User {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   email: String!
@@ -134,7 +139,7 @@ type UsersConnection {
 }
 
 type CategoryImage {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -144,7 +149,7 @@ type CategoryImage {
 }
 
 type ProductImage {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -154,7 +159,7 @@ type ProductImage {
 }
 
 type Product {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   code: String!
@@ -167,7 +172,7 @@ type Product {
 }
 
 type Category {
-  id: ID!
+  id: Int!
   createdAt: String!
   updatedAt: String!
   name: String!
@@ -262,7 +267,8 @@ type ResponseSingleUpload {
 
 type Query {
   findOneMerchant(id: Float!): Merchant!
-  findMerchantBranchById(id: Float!): Merchant!
+  findMerchantBranchById(id: Float!): MerchantBranch!
+  findAllBranches(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantBranchConnection!
   getUsers(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): UsersConnection!
   getUser(id: Float!): User!
   userCount(q: String): Float!
@@ -277,13 +283,16 @@ type Mutation {
   register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
-  createCustomer(data: CreateCustomerInput!): CustomerPayload!
+  createBranch(data: CreateBranchInput!): MerchantBranchPayload!
+  updateBranch(id: Float!, data: PartialUpdateBranch!): MerchantBranchPayload!
+  deleteBranch(id: Float!): DeletePayload!
   updatePassword(data: ChangePasswordInput!): User!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
   updateCategory(id: Float!, data: CategoryDto!): Category!
   deleteCategory(id: Float!): Category!
   uploadSingleFiles(file: Upload!, folder: String): ResponseSingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [ResponseSingleUpload!]!
+  createCustomer(data: CreateCustomerInput!): CustomerPayload!
   updateCustomer(id: Float!, data: PartialUpdateCustomer!): CustomerPayload!
   deleteCustomer(id: Float!): DeleteCustomerPayload!
 }
@@ -325,6 +334,43 @@ enum EDeviceOs {
   ios
 }
 
+input CreateBranchInput {
+  name: String!
+  phone: String!
+  address: String!
+  merchantId: Int!
+  userId: Int!
+  cityCode: Int!
+  districtCode: Int!
+  wardCode: Float
+}
+
+input PartialUpdateBranch {
+  name: String
+  phone: String
+  address: String
+  merchantId: Int
+  userId: Int
+  cityCode: Int
+  districtCode: Int
+  wardCode: Float
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmPassword: String!
+}
+
+input CategoryDto {
+  name: String!
+  code: String!
+  imageUrl: String
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input CreateCustomerInput {
   fullName: String!
   email: String!
@@ -356,21 +402,6 @@ input CreateCustomerInput {
   relatedUserRole: String
   relatedUserPhone: String
 }
-
-input ChangePasswordInput {
-  currentPassword: String!
-  newPassword: String!
-  confirmPassword: String!
-}
-
-input CategoryDto {
-  name: String!
-  code: String!
-  imageUrl: String
-}
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input PartialUpdateCustomer {
   fullName: String

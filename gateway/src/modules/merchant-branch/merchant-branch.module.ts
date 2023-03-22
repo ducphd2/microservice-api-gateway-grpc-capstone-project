@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ClientGrpcProxy, ClientProxyFactory, ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
-import { MerchantResolver } from './merchant-branch-mutation.resolver';
-import { MerchantBranchService } from './merchant-branch.service';
-import { MerchantQueryResolver } from './merchant-branch-query.resolver';
-import { EGrpcClientService } from '../../enums';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { join } from 'path';
+import { EGrpcClientService } from '../../enums';
 import { UtilsModule } from '../../utils/utils.module';
+import { BranchMutationResolver } from './merchant-branch-mutation.resolver';
+import { BranchQueryResolver } from './merchant-branch-query.resolver';
+import { MerchantBranchService } from './merchant-branch.service';
 
 @Module({
   imports: [ConfigModule, UtilsModule],
   providers: [
-    MerchantResolver,
-    MerchantQueryResolver,
+    BranchMutationResolver,
+    BranchQueryResolver,
     MerchantBranchService,
     {
       provide: EGrpcClientService.MERCHANT_BRANCH_SERVICE,
