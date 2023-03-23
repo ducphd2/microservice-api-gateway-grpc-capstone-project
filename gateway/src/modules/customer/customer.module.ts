@@ -4,12 +4,14 @@ import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microser
 import { join } from 'path';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
 import { UtilsModule } from '../../utils/utils.module';
-import { CustomersMutationResolver } from './customer-mutation.resolver';
 import { UserModule } from '../user/user.module';
+import { CustomersMutationResolver } from './customer-mutation.resolver';
+import { CustomerQueryResolver } from './customer-query.resolver';
 
 @Module({
   imports: [UtilsModule, ConfigModule, UserModule],
   providers: [
+    CustomerQueryResolver,
     CustomersMutationResolver,
     {
       provide: EGrpcClientService.CUSTOMER_SERVICE,

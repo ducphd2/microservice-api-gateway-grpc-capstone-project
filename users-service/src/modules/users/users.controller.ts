@@ -9,14 +9,13 @@ import { ICount, IQuery } from '../../commons/commons.interface';
 import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
 import { USER_MESSAGE } from '../../constants';
+import { Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
 import { IId, IUser } from '../../interfaces';
-import { ICreateCustomer, ICustomer } from '../../interfaces/customers';
 import { IUserDto } from './dto';
 import { UsersService } from './users.service';
-import { Device } from '../../database/models';
 
 const { map } = Aigle;
 
@@ -35,21 +34,6 @@ export class UsersController {
     this.logger.info('UsersController#create.result %o', result);
 
     return result;
-  }
-
-  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
-  async createCustomer(data: ICreateCustomer): Promise<ICustomer> {
-    try {
-      this.logger.info('UsersController#createCustomer.call %o', data);
-
-      const result = await this.service.createCustomer(data);
-
-      this.logger.info('UsersController#create.result %o', result);
-
-      return result;
-    } catch (error) {
-      ErrorHelper.BadRequestException('Can not create customer');
-    }
   }
 
   @GrpcMethod(EGrpcClientService.USER_SERVICE, 'find')

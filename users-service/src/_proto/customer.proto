@@ -41,41 +41,33 @@ message Customer {
   optional string relatedUserPhone = 33;
 }
 
+message CustomerInput {
+  string level = 1;
+  int32 branchId = 2;
+  optional string referrer = 3;
+  optional string referrerCode = 4;
+  optional string customerCode = 5;
+  optional string facebook = 6;
+  optional string zaloPhone = 7;
+  optional int32 height = 8;
+  optional int32 weight = 9;
+  optional string memberCardNo = 10;
+  optional string company = 11;
+  optional string taxNo = 12;
+  optional string note = 13;
+  optional string relatedUser = 14;
+  optional string relatedUserRole = 15;
+  optional string relatedUserPhone = 16;
+}
+
 message CreateCustomerInput {
-  string fullName = 1;
-  string email = 2;
-  string password = 3;
-  string contact = 4;
-  string level = 5;
-  string gender = 6;
-  int32 branchId = 7;
-  optional int32 dobDay = 8;
-  optional int32 dobMonth = 9;
-  optional int32 dobYear = 10;
-  optional string occupation = 11;
-  optional string avatar = 12;
-  optional string referrer = 13;
-  optional string referrerCode = 14;
-  optional string customerCode = 15;
-  optional string facebook = 16;
-  optional string zaloPhone = 17;
-  optional int32 height = 18;
-  optional int32 weight = 19;
-  optional string memberCardNo = 20;
-  optional string address = 21;
-  optional int32 cityCode = 22;
-  optional int32 districtCode = 23;
-  optional string company = 24;
-  optional string taxNo = 25;
-  optional string note = 26;
-  optional string relatedUser = 27;
-  optional string relatedUserRole = 28;
-  optional string relatedUserPhone = 29;
+  user.CreateUserInput userInput = 1;
+  CustomerInput customerInput = 2;
 }
 
 message UpdateCustomerInput {
-  string id = 1;
-  Customer data = 2;
+  int32 id = 1;
+  CreateCustomerInput data = 2;
 }
 
 message CustomerEdge {

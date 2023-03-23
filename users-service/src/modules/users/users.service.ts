@@ -8,13 +8,9 @@ import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/f
 import { IUsersService } from './users.interface';
 
 import { Sequelize } from 'sequelize-typescript';
-import { Customer, Device } from '../../database/models';
+import { Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
-import { EUserRole } from '../../enums';
-import { ErrorHelper } from '../../helpers';
 import { IDevice } from '../../interfaces';
-import { ICreateCustomer, ICustomer } from '../../interfaces/customers';
-import { CustomersService } from '../customers/customers.service';
 import { DevicesService } from '../devices/devices.service';
 import { IUserDto } from './dto';
 
@@ -24,7 +20,6 @@ export class UsersService implements IUsersService {
     @InjectModel(User) private readonly repo: typeof User,
     private readonly logger: PinoLogger,
     private readonly sequelize: Sequelize,
-    private readonly customersService: CustomersService,
     private readonly devicesService: DevicesService,
   ) {
     logger.setContext(UsersService.name);
@@ -95,42 +90,22 @@ export class UsersService implements IUsersService {
     return user;
   }
 
-  async createCustomer(data: ICreateCustomer): Promise<ICustomer> {
-    const transaction = await this.sequelize.transaction();
-
-    try {
-      this.logger.info('UsersService#createCustomer.call %o', data);
-
-      const user: User = await this.create({ ...data, role: EUserRole.USER }, transaction);
-      const customer: Customer = await this.customersService.create({ ...data, userId: user.id }, transaction);
-
-      await transaction.commit();
-      this.logger.info('UsersService#createCustomer.result %o', user, customer);
-
-      const res = {
-        ...user.toJSON(),
-        ...customer.toJSON(),
-      };
-
-      return res;
-    } catch (error) {
-      await transaction.rollback();
-      ErrorHelper.BadRequestException('Can not create customer user');
-    }
-  }
-
-  async update(id: number, user: IUserDto): Promise<User> {
+  async update(id: number, user: IUserDto, transaction?: Transaction): Promise<User> {
     this.logger.info('UsersService#update.call %o', user);
 
     const record: User = await this.repo.findByPk(id);
 
     if (isEmpty(record)) throw new Error('Record not found.');
 
-    const result: User = await record.update(user);
+    const [affectedCount, affectedRows] = await this.repo.update(user, {
+      where: { id },
+      returning: true,
+      transaction,
+    });
 
-    this.logger.info('UsersService#update.result %o', result);
+    this.logger.info('UsersService#update.result %o', affectedCount, affectedRows);
 
-    return result;
+    return affectedRows[0];
   }
 
   async destroy(query?: FindOptions): Promise<number> {

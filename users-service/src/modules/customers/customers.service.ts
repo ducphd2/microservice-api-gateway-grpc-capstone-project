@@ -2,17 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { isEmpty } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
-import { FindOptions, Transaction } from 'sequelize';
+import { FindOptions, Transaction, WhereOptions } from 'sequelize';
 
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/find-and-paginate.interface';
 
-import { Customer } from '../../database/models';
+import { Customer, User } from '../../database/models';
 import { ErrorHelper } from '../../helpers';
-import { ICustomer, ICustomersService } from '../../interfaces/customers';
+import { ICreateCustomer, ICustomer, ICustomersService, IUpdateCustomer } from '../../interfaces/customers';
+import { Sequelize } from 'sequelize-typescript';
+import { UsersService } from '../users/users.service';
+import { EUserRole } from '../../enums';
 
 @Injectable()
 export class CustomersService implements ICustomersService {
-  constructor(@InjectModel(Customer) private readonly repo: typeof Customer, private readonly logger: PinoLogger) {
+  constructor(
+    @InjectModel(Customer) private readonly repo: typeof Customer,
+    private readonly logger: PinoLogger,
+    private readonly sequelize: Sequelize,
+    private readonly usersService: UsersService,
+  ) {
     logger.setContext(CustomersService.name);
   }
 
@@ -22,7 +30,11 @@ export class CustomersService implements ICustomersService {
     // @ts-ignore
     const result: IFindAndPaginateResult<Customer> = await this.repo.findAndPaginate({
       ...query,
+      include: {
+        model: User,
+      },
       raw: true,
+      nest: true,
       paranoid: false,
     });
 
@@ -31,16 +43,25 @@ export class CustomersService implements ICustomersService {
     return result;
   }
 
-  async findById(id: number): Promise<Customer> {
+  async findById(id: number): Promise<ICustomer> {
     this.logger.info('CustomersService#findById.call %o', id);
 
     const result: Customer = await this.repo.findByPk(id, {
+      include: [
+        {
+          model: User,
+        },
+      ],
       raw: true,
+      nest: true,
     });
 
     this.logger.info('CustomersService#findById.result %o', result);
 
-    return result;
+    return {
+      ...result.user,
+      ...result,
+    };
   }
 
   async findOne(query: FindOptions): Promise<Customer> {
@@ -66,32 +87,119 @@ export class CustomersService implements ICustomersService {
     return result;
   }
 
-  async create(customer: ICustomer, transaction?: Transaction): Promise<Customer> {
+  async createCustomer(data: ICustomer, transaction?: Transaction): Promise<ICustomer> {
+    this.logger.info('UsersService#createCustomer.call %o', data);
+
+    const customer: Customer = await this.repo.create({ ...data }, { transaction });
+
+    return customer.toJSON();
+  }
+
+  async create(data: ICreateCustomer): Promise<ICustomer> {
+    const transaction = await this.sequelize.transaction();
+
     try {
-      this.logger.info('CustomersService#create.call %o', customer);
+      this.logger.info('UsersService#createCustomer.call %o', data);
 
-      const result: Customer = await this.repo.create(customer, { transaction });
+      const user: User = await this.usersService.create({ ...data.userInput, role: EUserRole.USER }, transaction);
+      const customer: ICustomer = await this.createCustomer({ ...data.customerInput, userId: user.id }, transaction);
 
-      this.logger.info('CustomersService#create.result %o', result);
+      await transaction.commit();
+      this.logger.info('UsersService#createCustomer.result %o', user, customer);
 
-      return result;
+      const res = {
+        ...user.toJSON(),
+        ...customer,
+      };
+
+      return res;
     } catch (error) {
+      await transaction.rollback();
       ErrorHelper.BadRequestException('Can not create customer user');
     }
   }
 
-  async update(id: number, customer: ICustomer): Promise<Customer> {
-    this.logger.info('CustomersService#update.call %o', customer);
+  async updateCustomer(id: number, data: ICustomer, transaction?: Transaction): Promise<ICustomer> {
+    this.logger.info('CustomersService#updateCustomer.call %o', data);
 
     const record: Customer = await this.repo.findByPk(id);
 
-    if (isEmpty(record)) throw new Error('Record not found.');
+    if (isEmpty(record)) throw new Error('The customer not found');
 
-    const result: Customer = await record.update(customer);
+    const [affectedCount, affectedRows] = await this.repo.update(data, {
+      where: { id },
+      returning: true,
+      transaction,
+    });
+
+    this.logger.info('CustomersService#updateCustomer.result %o', affectedCount, affectedRows[0]);
+
+    return affectedRows[0];
+  }
+
+  async update(id: number, { customerInput, userInput }: IUpdateCustomer): Promise<ICustomer> {
+    this.logger.info('CustomersService#update.call %o', { customerInput, userInput });
+
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      const record: Customer = await this.repo.findByPk(id);
+
+      if (isEmpty(record)) throw new Error('The customer not found');
+
+      const user: User = await this.usersService.update(
+        record.userId,
+        { ...userInput, role: EUserRole.USER },
+        transaction,
+      );
+      const customer: ICustomer = await this.updateCustomer(id, { ...customerInput, userId: user.id }, transaction);
+
+      await transaction.commit();
+      this.logger.info('UsersService#createCustomer.result %o', user, customer);
+
+      const res = {
+        ...user,
+        ...customer,
+      };
+
+      return res;
+    } catch (error) {
+      console.log(error);
+
+      await transaction.rollback();
+      ErrorHelper.BadRequestException('Can not create customer user');
+    }
+
+    const record: Customer = await this.repo.findByPk(id, {
+      include: [{ model: User }],
+      raw: true,
+      nest: true,
+    });
+
+    if (isEmpty(record)) throw new Error('The customer not found');
+
+    const a = await this.repo.update(
+      { ...customerInput },
+      {
+        where: {
+          id,
+        },
+        returning: true,
+      },
+    );
+
+    const result: Customer = await this.repo.findByPk(id, {
+      include: [{ model: User }],
+      raw: true,
+      nest: true,
+    });
 
     this.logger.info('CustomersService#update.result %o', result);
 
-    return result;
+    return {
+      ...result.user,
+      ...result,
+    };
   }
 
   async destroy(query?: FindOptions): Promise<number> {

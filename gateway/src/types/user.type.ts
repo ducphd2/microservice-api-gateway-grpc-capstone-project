@@ -1,4 +1,4 @@
-import { Field, HideField, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { EUserGender, EUserRole, EUserStatus } from '../enums';
 import { IUser } from '../modules/user/interfaces';
@@ -17,10 +17,10 @@ export class User extends BaseType {
   @Field()
   readonly fullName: string;
 
-  @Field()
-  readonly status: string;
+  @Field(() => EUserStatus)
+  readonly status: EUserStatus;
 
-  @Field(() => EUserRole, { defaultValue: EUserRole.user })
+  @Field(() => EUserRole)
   readonly role: EUserRole;
 
   @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
@@ -65,12 +65,12 @@ export class CreateUserInputDto {
   @Field(() => EUserStatus)
   @IsEnum(EUserStatus)
   @IsNotEmpty()
-  readonly status: string;
+  readonly status: EUserStatus;
 
   @Field(() => EUserRole)
   @IsEnum(EUserRole)
   @IsNotEmpty()
-  readonly role: string;
+  readonly role: EUserRole;
 
   @Field(() => EUserGender)
   @IsEnum(EUserGender)
@@ -80,13 +80,13 @@ export class CreateUserInputDto {
   @Field()
   readonly contact: string;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   readonly dobDay: number;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   readonly dobMonth: number;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   readonly dobYear: number;
 
   @Field(() => String, { nullable: true })
@@ -94,6 +94,15 @@ export class CreateUserInputDto {
 
   @Field(() => String, { nullable: true })
   readonly avatar?: string;
+
+  @Field(() => String, { nullable: true })
+  address?: string;
+
+  @Field(() => Int, { nullable: true })
+  cityCode?: number;
+
+  @Field(() => Int, { nullable: true })
+  districtCode?: number;
 }
 
 @ObjectType()
@@ -124,7 +133,7 @@ export class UsersConnection {
 }
 
 @InputType()
-export class UpdateUserInputDto extends User {}
+export class UpdateUserInputDto extends PartialType<CreateUserInputDto>(CreateUserInputDto) {}
 
 @InputType()
 export class UpdatePasswordInput {
