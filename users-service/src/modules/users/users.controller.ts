@@ -9,14 +9,13 @@ import { ICount, IQuery } from '../../commons/commons.interface';
 import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
 import { USER_MESSAGE } from '../../constants';
+import { Customer, Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { IId, IUser } from '../../interfaces';
-import { ICreateCustomer, ICustomer } from '../../interfaces/customers';
+import { ICustomer, IId, IUser, IUserIncludeCustomer } from '../../interfaces';
 import { IUserDto } from './dto';
 import { UsersService } from './users.service';
-import { Device } from '../../database/models';
 
 const { map } = Aigle;
 
@@ -35,21 +34,6 @@ export class UsersController {
     this.logger.info('UsersController#create.result %o', result);
 
     return result;
-  }
-
-  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
-  async createCustomer(data: ICreateCustomer): Promise<ICustomer> {
-    try {
-      this.logger.info('UsersController#createCustomer.call %o', data);
-
-      const result = await this.service.createCustomer(data);
-
-      this.logger.info('UsersController#create.result %o', result);
-
-      return result;
-    } catch (error) {
-      ErrorHelper.BadRequestException('Can not create customer');
-    }
   }
 
   @GrpcMethod(EGrpcClientService.USER_SERVICE, 'find')
@@ -137,6 +121,22 @@ export class UsersController {
     });
 
     this.logger.info('UsersController#findOne.result %o', result);
+
+    if (isEmpty(result)) ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
+
+    return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.USER_SERVICE, 'findOneCustomer')
+  async findOneCustomer(query: IQuery): Promise<IUserIncludeCustomer> {
+    this.logger.info('UsersController#findOne.call %o', query);
+
+    const result: IUserIncludeCustomer = await this.service.findOneCustomer({
+      attributes: !isEmpty(query.select) ? query.select : undefined,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    this.logger.info('UsersController#findOneCustomer.result %o', result);
 
     if (isEmpty(result)) ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
 

@@ -84,12 +84,3 @@ export class CreateBranchInput {
 
 @InputType()
 export class PartialUpdateBranch extends PartialType<CreateBranchInput>(CreateBranchInput) {}
-
-@InputType()
-export class UpdateBranchInput {
-  @Field()
-  id: number;
-
-  @Field(() => PartialUpdateBranch)
-  data: PartialUpdateBranch;
-}

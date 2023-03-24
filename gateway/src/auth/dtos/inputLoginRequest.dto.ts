@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty } from 'class-validator';
+import { DeviceInputDto } from '../../types';
 
 @InputType()
 export class InputLoginRequest {
@@ -11,4 +12,7 @@ export class InputLoginRequest {
   @Field()
   @IsNotEmpty()
   password: string;
+
+  @Field(() => DeviceInputDto, { nullable: true })
+  device: DeviceInputDto;
 }

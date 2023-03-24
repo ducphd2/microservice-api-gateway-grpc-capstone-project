@@ -1,7 +1,8 @@
 import * as paginate from 'sequelize-cursor-pagination';
-import { Column, DataType, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasOne, Table } from 'sequelize-typescript';
 import { ECustomerLevel } from '../../enums';
 import { BaseModel } from './base.model';
+import { User } from './user.model';
 
 @Table({
   modelName: 'customer',
@@ -20,6 +21,7 @@ export class Customer extends BaseModel<Customer> {
     type: DataType.INTEGER,
     allowNull: false,
   })
+  @ForeignKey(() => User)
   userId: number;
 
   @Column({
@@ -91,6 +93,9 @@ export class Customer extends BaseModel<Customer> {
     type: DataType.TEXT,
   })
   relatedUserPhone?: string;
+
+  @BelongsTo(() => User, { foreignKey: 'userId' })
+  user: User;
 }
 
 paginate({

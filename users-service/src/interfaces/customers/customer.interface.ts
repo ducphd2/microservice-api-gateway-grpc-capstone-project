@@ -2,10 +2,7 @@ import { FindOptions } from 'sequelize';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/find-and-paginate.interface';
 import { IUser } from '../users';
 
-export interface ICustomer extends IUser {
-  referrer?: string;
-  referrerCode?: string;
-  userId?: number;
+export interface ICustomerInput {
   level?: string;
   branchId?: number;
   customerCode?: string;
@@ -23,43 +20,43 @@ export interface ICustomer extends IUser {
   relatedUser?: string;
   relatedUserRole?: string;
   relatedUserPhone?: string;
+  referrer?: string;
+  referrerCode?: string;
 }
 
-export interface ICreateCustomer {
+export interface ICustomer extends ICustomerInput {
+  id?: number;
   fullName?: string;
   email?: string;
   password?: string;
-  contact?: string;
-  address?: string;
-  cityCode?: number;
-  districtCode?: number;
-  gender?: string;
+  createdAt?: string;
+  updatedAt?: string;
   dobDay?: number;
   dobMonth?: number;
   dobYear?: number;
   occupation?: string;
   avatar?: string;
-
-  level?: string;
-  branchId?: number;
-  referrer?: string;
-  referrerCode?: string;
-  customerCode?: string;
-
-  facebook?: string;
-  zaloPhone?: string;
-  height?: number;
-  weight?: number;
-  memberCardNo?: string;
-  company?: string;
-  taxNo?: string;
-  note?: string;
-  relatedUser?: string;
-  relatedUserRole?: string;
-  relatedUserPhone?: string;
+  status?: string;
+  role?: string;
+  gender?: string;
+  contact?: string;
+  userId?: number;
 }
 
-export type IUpdateCustomer = Partial<ICreateCustomer>;
+export interface ICreateCustomer {
+  userInput: IUser;
+  customerInput: ICustomerInput;
+}
+
+export interface IUpdateCustomer {
+  userInput: Partial<IUser>;
+  customerInput: Partial<ICustomerInput>;
+}
+
+export interface IUpdateCustomerInput {
+  id: number;
+  data: IUpdateCustomer;
+}
 
 export interface ICustomersService {
   find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<ICustomer>>;

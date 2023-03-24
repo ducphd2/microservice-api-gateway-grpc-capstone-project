@@ -1,3 +1,4 @@
+import { PartialUpdateCustomer, TestUserInput } from '../../../types';
 import { CustomerDto } from '../dtos';
 
 export interface UpdateCustomerInput {
@@ -5,7 +6,7 @@ export interface UpdateCustomerInput {
   data: CustomerDto;
 }
 
-export interface CreateCustomerInput {
+export interface ICreateCustomer {
   fullName?: string;
   email?: string;
   password?: string;
@@ -73,4 +74,19 @@ export interface ICustomerEdge {
 export interface ICustomersConnection {
   edges: ICustomerEdge[];
   pageInfo: IPageInfo;
+}
+
+export interface ICreateCustomerInput {
+  userInput: TestUserInput;
+  customerInput: ICreateCustomer;
+}
+
+export interface IPartialUpdateCustomerInput {
+  userInput: Partial<TestUserInput>;
+  customerInput: Partial<ICreateCustomer>;
+}
+
+export interface IUpdateCustomerInput {
+  id: number;
+  data: IPartialUpdateCustomerInput;
 }

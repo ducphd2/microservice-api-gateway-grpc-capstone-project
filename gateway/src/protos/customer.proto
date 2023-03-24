@@ -13,69 +13,64 @@ message Customer {
   string password = 5;
   string contact = 6;
   string level = 7;
-  string gender = 8;
-  int32 branchId = 9;
-  string createdAt = 10;
-  string updatedAt = 11;
-  optional int32 dobDay = 12;
-  optional int32 dobMonth = 13;
-  optional int32 dobYear = 14;
-  optional string occupation = 15;
-  optional string avatar = 16;
-  optional string referrer = 17;
-  optional string referrerCode = 18;
-  optional string customerCode = 19;
-  optional string facebook = 20;
-  optional string zaloPhone = 21;
-  optional int32 height = 22;
-  optional int32 weight = 23;
-  optional string memberCardNo = 24;
-  optional string address = 25;
-  optional int32 cityCode = 26;
-  optional int32 districtCode = 27;
-  optional string company = 28;
-  optional string taxNo = 29;
-  optional string note = 30;
-  optional string relatedUser = 31;
-  optional string relatedUserRole = 32;
-  optional string relatedUserPhone = 33;
+  string status = 8;
+  string role = 9;
+  string gender = 10;
+  int32 branchId = 11;
+  string createdAt = 12;
+  string updatedAt = 13;
+  optional int32 dobDay = 14;
+  optional int32 dobMonth = 15;
+  optional int32 dobYear = 16;
+  optional string occupation = 17;
+  optional string avatar = 18;
+  optional string referrer = 19;
+  optional string referrerCode = 20;
+  optional string customerCode = 21;
+  optional string facebook = 22;
+  optional string zaloPhone = 23;
+  optional int32 height = 24;
+  optional int32 weight = 25;
+  optional string memberCardNo = 26;
+  optional string address = 27;
+  optional int32 cityCode = 28;
+  optional int32 districtCode = 29;
+  optional string company = 30;
+  optional string taxNo = 31;
+  optional string note = 32;
+  optional string relatedUser = 33;
+  optional string relatedUserRole = 34;
+  optional string relatedUserPhone = 35;
+  optional int32 customerId = 36;
+}
+
+message CustomerInput {
+  string level = 1;
+  int32 branchId = 2;
+  optional string referrer = 3;
+  optional string referrerCode = 4;
+  optional string customerCode = 5;
+  optional string facebook = 6;
+  optional string zaloPhone = 7;
+  optional int32 height = 8;
+  optional int32 weight = 9;
+  optional string memberCardNo = 10;
+  optional string company = 11;
+  optional string taxNo = 12;
+  optional string note = 13;
+  optional string relatedUser = 14;
+  optional string relatedUserRole = 15;
+  optional string relatedUserPhone = 16;
 }
 
 message CreateCustomerInput {
-  string fullName = 1;
-  string email = 2;
-  string password = 3;
-  string contact = 4;
-  string level = 5;
-  string gender = 6;
-  int32 branchId = 7;
-  optional int32 dobDay = 8;
-  optional int32 dobMonth = 9;
-  optional int32 dobYear = 10;
-  optional string occupation = 11;
-  optional string avatar = 12;
-  optional string referrer = 13;
-  optional string referrerCode = 14;
-  optional string customerCode = 15;
-  optional string facebook = 16;
-  optional string zaloPhone = 17;
-  optional int32 height = 18;
-  optional int32 weight = 19;
-  optional string memberCardNo = 20;
-  optional string address = 21;
-  optional int32 cityCode = 22;
-  optional int32 districtCode = 23;
-  optional string company = 24;
-  optional string taxNo = 25;
-  optional string note = 26;
-  optional string relatedUser = 27;
-  optional string relatedUserRole = 28;
-  optional string relatedUserPhone = 29;
+  user.CreateUserInput userInput = 1;
+  CustomerInput customerInput = 2;
 }
 
 message UpdateCustomerInput {
-  string id = 1;
-  Customer data = 2;
+  int32 id = 1;
+  CreateCustomerInput data = 2;
 }
 
 message CustomerEdge {

@@ -10,8 +10,10 @@ import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
 import { Customer } from '../../database/models/customer.model';
 import { EGrpcClientService, EUserRole } from '../../enums';
-import { ICustomer } from '../../interfaces/customers';
+import { ICreateCustomer, ICustomer, IUpdateCustomer, IUpdateCustomerInput } from '../../interfaces/customers';
 import { CustomersService } from './customers.service';
+import { User } from '../../database/models';
+import { ErrorHelper } from '../../helpers';
 
 const { map } = Aigle;
 
@@ -22,7 +24,7 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'find')
-  async find(query: IQuery): Promise<IFindPayload<Customer>> {
+  async find(query: IQuery): Promise<IFindPayload<ICustomer>> {
     this.logger.info('CustomersController#findAll.call %o', query);
 
     const { results, cursors } = await this.service.find({
@@ -34,9 +36,12 @@ export class CustomersController {
       after: !isEmpty(query.after) ? query.after : undefined,
     });
 
-    const result: IFindPayload<Customer> = {
+    const result: IFindPayload<ICustomer> = {
       edges: await map(results, async (customer: Customer) => ({
-        node: customer,
+        node: {
+          ...customer.user,
+          ...customer,
+        },
         cursor: Buffer.from(JSON.stringify([customer.id])).toString('base64'),
       })),
       pageInfo: {
@@ -53,10 +58,10 @@ export class CustomersController {
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findById')
-  async findById({ id }): Promise<Customer> {
+  async findById({ id }): Promise<ICustomer> {
     this.logger.info('CustomersController#findById.call %o', id);
 
-    const result: Customer = await this.service.findById(id);
+    const result: ICustomer = await this.service.findById(id);
 
     this.logger.info('CustomersController#findById.result %o', result);
 
@@ -94,22 +99,34 @@ export class CustomersController {
     return { count };
   }
 
-  // @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
-  async create(data: ICustomer): Promise<Customer> {
-    this.logger.info('CustomersController#create.call %o', data);
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
+  async create(data: ICreateCustomer): Promise<ICustomer> {
+    try {
+      this.logger.info('CustomersController#create.call %o', data);
 
-    const result: Customer = await this.service.create({ ...data, role: EUserRole.USER });
+      const result: ICustomer = await this.service.create({
+        userInput: {
+          ...data.userInput,
+          role: EUserRole.USER,
+        },
+        customerInput: {
+          ...data.customerInput,
+        },
+      });
 
-    this.logger.info('CustomersController#create.result %o', result);
+      this.logger.info('CustomersController#create.result %o', result);
 
-    return result;
+      return result;
+    } catch (error) {
+      ErrorHelper.BadRequestException('Can not create customer');
+    }
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'update')
-  async update({ id, data }): Promise<Customer> {
+  async update({ data, id }: IUpdateCustomerInput): Promise<ICustomer> {
     this.logger.info('CustomersController#update.call %o %o', id, data);
 
-    const result: Customer = await this.service.update(id, data);
+    const result: ICustomer = await this.service.update(id, data);
 
     this.logger.info('CustomersController#update.result %o', result);
 

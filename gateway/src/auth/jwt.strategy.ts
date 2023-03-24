@@ -5,7 +5,7 @@ import { ClientGrpcProxy } from '@nestjs/microservices';
 
 import { get } from 'lodash';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { IUserServiceGrpc } from './interfaces/authServiceGrpc';
+import { IUserServiceGrpc } from './interfaces/auth-services-grpc';
 import { User } from '../types';
 import { EGrpcClientService } from '../enums/grpc-services.enum';
 import { lastValueFrom } from 'rxjs';

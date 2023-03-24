@@ -1,3 +1,5 @@
+import { ICustomer, ICustomerInput } from '../customers';
+
 export interface IUser {
   id?: number;
   fullName?: string;
@@ -15,4 +17,9 @@ export interface IUser {
   role?: string;
   gender?: string;
   contact?: string;
+}
+
+export interface IUserIncludeCustomer {
+  user: IUser;
+  customer: ICustomer;
 }

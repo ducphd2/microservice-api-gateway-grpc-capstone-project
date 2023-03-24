@@ -98,7 +98,7 @@ type User {
   updatedAt: String!
   email: String!
   fullName: String!
-  status: String!
+  status: EUserStatus!
   role: EUserRole!
   gender: EUserGender!
   contact: String!
@@ -107,8 +107,16 @@ type User {
   dobYear: Float!
   occupation: String
   avatar: String
+  address: String
+  cityCode: Float
+  districtCode: Float
   merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
   devices: DeviceConnection!
+}
+
+enum EUserStatus {
+  active
+  banned
 }
 
 enum EUserRole {
@@ -182,6 +190,9 @@ type Category {
 }
 
 type Customer {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
   email: String!
   fullName: String!
   status: EUserStatus!
@@ -196,6 +207,7 @@ type Customer {
   avatar: String
   referrer: String
   referrerCode: String
+  userId: Int!
   branchId: Int
   customerCode: String
   facebook: String
@@ -212,11 +224,7 @@ type Customer {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
-}
-
-enum EUserStatus {
-  active
-  banned
+  customerId: Int
 }
 
 enum ECustomerLevel {
@@ -252,6 +260,13 @@ type ResponseAuthGrpc {
   refreshToken: String!
 }
 
+type CustomerLoginResponse {
+  user: User!
+  customer: Customer!
+  accessToken: String!
+  refreshToken: String!
+}
+
 type FindAllCategories {
   categories: [Category!]!
 }
@@ -275,11 +290,13 @@ type Query {
   me: User!
   findCategories: FindAllCategories!
   findCategoryById(id: Float!): Category!
-  getAllCustomer(q: String!, first: Float!, last: Float!, before: String!, after: String!, orderBy: String!): CustomersConnection!
+  getAllCustomer(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): CustomersConnection!
+  getCustomerById(id: Int!): Customer!
 }
 
 type Mutation {
   login(data: InputLoginRequest!): ResponseAuthGrpc!
+  customerLogin(data: InputLoginRequest!): CustomerLoginResponse!
   register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
@@ -292,14 +309,26 @@ type Mutation {
   deleteCategory(id: Float!): Category!
   uploadSingleFiles(file: Upload!, folder: String): ResponseSingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [ResponseSingleUpload!]!
-  createCustomer(data: CreateCustomerInput!): CustomerPayload!
-  updateCustomer(id: Float!, data: PartialUpdateCustomer!): CustomerPayload!
+  createCustomer(userInput: TestUserInput!, customerInput: CreateCustomerInput!): CustomerPayload!
+  updateCustomer(id: Float!, data: TestUpdateDto!): CustomerPayload!
   deleteCustomer(id: Float!): DeleteCustomerPayload!
 }
 
 input InputLoginRequest {
   email: String!
   password: String!
+  device: DeviceInputDto
+}
+
+input DeviceInputDto {
+  os: EDeviceOs!
+  deviceId: String!
+  token: String!
+}
+
+enum EDeviceOs {
+  android
+  ios
 }
 
 input InputRegisterRequest {
@@ -310,28 +339,24 @@ input InputRegisterRequest {
   role: EUserRole!
   gender: EUserGender!
   contact: String!
-  dobDay: Float!
-  dobMonth: Float!
-  dobYear: Float!
+  dobDay: Int
+  dobMonth: Int
+  dobYear: Int
   occupation: String
   avatar: String
+  address: String
+  cityCode: Float!
+  districtCode: Float!
   confirmPassword: String!
   phone: String!
   merchantPhone: String!
   merchantName: String!
   merchantAddress: String!
-  cityCode: Float!
-  districtCode: Float!
   wardCode: Float!
   merchantSubdomain: String!
   deviceId: String
   os: EDeviceOs
   token: String
-}
-
-enum EDeviceOs {
-  android
-  ios
 }
 
 input CreateBranchInput {
@@ -371,30 +396,35 @@ input CategoryDto {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input CreateCustomerInput {
+input TestUserInput {
   fullName: String!
   email: String!
   password: String!
-  gender: EUserGender = female
+  gender: EUserGender!
   contact: String!
-  branchId: Int!
   dobDay: Int
   dobMonth: Int
   dobYear: Int
   occupation: String
   avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+  status: EUserStatus = active
+  role: EUserRole = user
+}
+
+input CreateCustomerInput {
+  branchId: Int!
+  level: String
   referrer: String
   referrerCode: String
-  level: String
   customerCode: String
   facebook: String
   zaloPhone: String
   height: Int
   weight: Int
   memberCardNo: String
-  address: String
-  cityCode: Int
-  districtCode: Int
   company: String
   taxNo: String
   note: String
@@ -403,30 +433,40 @@ input CreateCustomerInput {
   relatedUserPhone: String
 }
 
-input PartialUpdateCustomer {
+input TestUpdateDto {
+  userInput: UpdateUserInputDto!
+  customerInput: PartialUpdateCustomer!
+}
+
+input UpdateUserInputDto {
   fullName: String
   email: String
   password: String
-  gender: EUserGender = female
+  status: EUserStatus
+  role: EUserRole
+  gender: EUserGender
   contact: String
-  branchId: Int
   dobDay: Int
   dobMonth: Int
   dobYear: Int
   occupation: String
   avatar: String
+  address: String
+  cityCode: Int
+  districtCode: Int
+}
+
+input PartialUpdateCustomer {
+  branchId: Int
+  level: String
   referrer: String
   referrerCode: String
-  level: String
   customerCode: String
   facebook: String
   zaloPhone: String
   height: Int
   weight: Int
   memberCardNo: String
-  address: String
-  cityCode: Int
-  districtCode: Int
   company: String
   taxNo: String
   note: String

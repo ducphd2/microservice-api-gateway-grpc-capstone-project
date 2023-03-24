@@ -1,9 +1,10 @@
 import { hash } from 'argon2';
 import * as paginate from 'sequelize-cursor-pagination';
-import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, Column, DataType, HasMany, HasOne, Table } from 'sequelize-typescript';
 import { EUserGender, EUserRole, EUserStatus } from '../../enums/user.enum';
 import { BaseModel } from './base.model';
 import { Device } from './device.model';
+import { Customer } from './customer.model';
 
 @Table({
   modelName: 'user',
@@ -102,6 +103,9 @@ export class User extends BaseModel<User> {
     if (!user.password) return;
     user.password = await hash(user.password);
   }
+
+  @HasOne(() => Customer, { foreignKey: 'userId' })
+  customer: Customer;
 
   @HasMany(() => Device)
   devices: Device[];
