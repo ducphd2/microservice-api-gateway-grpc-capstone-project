@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { isEmpty, pick } from 'lodash';
+import { isEmpty, omit, pick } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
 import { FindOptions, Transaction } from 'sequelize';
 
@@ -8,9 +8,9 @@ import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/f
 import { IUsersService } from './users.interface';
 
 import { Sequelize } from 'sequelize-typescript';
-import { Device } from '../../database/models';
+import { Customer, Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
-import { IDevice } from '../../interfaces';
+import { IDevice, IUserIncludeCustomer } from '../../interfaces';
 import { DevicesService } from '../devices/devices.service';
 import { IUserDto } from './dto';
 
@@ -63,6 +63,24 @@ export class UsersService implements IUsersService {
     this.logger.info('UsersService#findOne.result %o', result);
 
     return result;
+  }
+
+  async findOneCustomer(query: FindOptions): Promise<IUserIncludeCustomer> {
+    this.logger.info('UsersService#findOneCustomer.call %o', query);
+
+    const result: User = await this.repo.findOne({
+      include: [Customer],
+      ...query,
+      raw: true,
+      nest: true,
+    });
+
+    this.logger.info('UsersService#findOne.result %o', result);
+
+    return {
+      customer: result.customer,
+      user: omit(result, 'customer'),
+    };
   }
 
   async count(query?: FindOptions): Promise<number> {

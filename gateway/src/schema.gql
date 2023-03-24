@@ -107,6 +107,9 @@ type User {
   dobYear: Float!
   occupation: String
   avatar: String
+  address: String
+  cityCode: Float
+  districtCode: Float
   merchants(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): MerchantConnection!
   devices: DeviceConnection!
 }
@@ -204,6 +207,7 @@ type Customer {
   avatar: String
   referrer: String
   referrerCode: String
+  userId: Int!
   branchId: Int
   customerCode: String
   facebook: String
@@ -220,6 +224,7 @@ type Customer {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
+  customerId: Int
 }
 
 enum ECustomerLevel {
@@ -255,6 +260,13 @@ type ResponseAuthGrpc {
   refreshToken: String!
 }
 
+type CustomerLoginResponse {
+  user: User!
+  customer: Customer!
+  accessToken: String!
+  refreshToken: String!
+}
+
 type FindAllCategories {
   categories: [Category!]!
 }
@@ -284,6 +296,7 @@ type Query {
 
 type Mutation {
   login(data: InputLoginRequest!): ResponseAuthGrpc!
+  customerLogin(data: InputLoginRequest!): CustomerLoginResponse!
   register(data: InputRegisterRequest!): ResponseAuthGrpc!
   refreshToken: UserPayload!
   logout: Boolean!
@@ -304,6 +317,18 @@ type Mutation {
 input InputLoginRequest {
   email: String!
   password: String!
+  device: DeviceInputDto
+}
+
+input DeviceInputDto {
+  os: EDeviceOs!
+  deviceId: String!
+  token: String!
+}
+
+enum EDeviceOs {
+  android
+  ios
 }
 
 input InputRegisterRequest {
@@ -332,11 +357,6 @@ input InputRegisterRequest {
   deviceId: String
   os: EDeviceOs
   token: String
-}
-
-enum EDeviceOs {
-  android
-  ios
 }
 
 input CreateBranchInput {

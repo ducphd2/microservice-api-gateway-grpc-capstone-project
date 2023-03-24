@@ -9,11 +9,11 @@ import { ICount, IQuery } from '../../commons/commons.interface';
 import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
 import { USER_MESSAGE } from '../../constants';
-import { Device } from '../../database/models';
+import { Customer, Device } from '../../database/models';
 import { User } from '../../database/models/user.model';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { IId, IUser } from '../../interfaces';
+import { ICustomer, IId, IUser, IUserIncludeCustomer } from '../../interfaces';
 import { IUserDto } from './dto';
 import { UsersService } from './users.service';
 
@@ -121,6 +121,22 @@ export class UsersController {
     });
 
     this.logger.info('UsersController#findOne.result %o', result);
+
+    if (isEmpty(result)) ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
+
+    return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.USER_SERVICE, 'findOneCustomer')
+  async findOneCustomer(query: IQuery): Promise<IUserIncludeCustomer> {
+    this.logger.info('UsersController#findOne.call %o', query);
+
+    const result: IUserIncludeCustomer = await this.service.findOneCustomer({
+      attributes: !isEmpty(query.select) ? query.select : undefined,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    this.logger.info('UsersController#findOneCustomer.result %o', result);
 
     if (isEmpty(result)) ErrorHelper.NotFoundException(USER_MESSAGE.USER_NOT_FOUND);
 

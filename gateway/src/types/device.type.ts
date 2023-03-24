@@ -1,5 +1,7 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, PartialType } from '@nestjs/graphql';
 import { BaseType, PageInfo } from './base.type';
+import { EDeviceOs } from '../enums';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @ObjectType()
 export class Device extends BaseType {
@@ -33,3 +35,25 @@ export class DeviceConnection {
   @Field(() => PageInfo)
   pageInfo: PageInfo;
 }
+
+@InputType()
+export class DeviceInputDto {
+  @Field(() => EDeviceOs)
+  @IsEnum(EDeviceOs)
+  @IsString()
+  @IsNotEmpty()
+  os: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  deviceId: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+}
+
+@InputType()
+export class PartialAuthDeviceInputDto extends PartialType<DeviceInputDto>(DeviceInputDto) {}

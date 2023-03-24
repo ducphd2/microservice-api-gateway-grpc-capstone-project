@@ -1,11 +1,8 @@
-import { FindOptions, Transaction } from 'sequelize';
+import { FindOptions } from 'sequelize';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/find-and-paginate.interface';
 import { IUser } from '../users';
 
-export interface ICustomer extends IUser {
-  referrer?: string;
-  referrerCode?: string;
-  userId?: number;
+export interface ICustomerInput {
   level?: string;
   branchId?: number;
   customerCode?: string;
@@ -23,16 +20,37 @@ export interface ICustomer extends IUser {
   relatedUser?: string;
   relatedUserRole?: string;
   relatedUserPhone?: string;
+  referrer?: string;
+  referrerCode?: string;
+}
+
+export interface ICustomer extends ICustomerInput {
+  id?: number;
+  fullName?: string;
+  email?: string;
+  password?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  dobDay?: number;
+  dobMonth?: number;
+  dobYear?: number;
+  occupation?: string;
+  avatar?: string;
+  status?: string;
+  role?: string;
+  gender?: string;
+  contact?: string;
+  userId?: number;
 }
 
 export interface ICreateCustomer {
   userInput: IUser;
-  customerInput: ICustomer;
+  customerInput: ICustomerInput;
 }
 
 export interface IUpdateCustomer {
   userInput: Partial<IUser>;
-  customerInput: Partial<ICustomer>;
+  customerInput: Partial<ICustomerInput>;
 }
 
 export interface IUpdateCustomerInput {

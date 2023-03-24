@@ -50,6 +50,9 @@ export class Customer extends BaseType {
   @Field(() => String, { nullable: true })
   referrerCode: string;
 
+  @Field(() => Int)
+  userId: number;
+
   @Field(() => Int, { nullable: true })
   branchId?: number;
 
@@ -97,6 +100,9 @@ export class Customer extends BaseType {
 
   @Field(() => String, { nullable: true })
   relatedUserPhone?: string;
+
+  @Field(() => Int, { nullable: true })
+  customerId?: number;
 }
 
 @ObjectType()

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../types';
+import { IUser } from '../interfaces/users';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +12,7 @@ export class AuthService {
     private readonly refreshTokenService: JwtService,
   ) {}
 
-  async generateAccessToken(user: User): Promise<string> {
+  async generateAccessToken(user: IUser): Promise<string> {
     return this.accessTokenService.sign(
       {
         user: user.id,
@@ -23,7 +23,7 @@ export class AuthService {
     );
   }
 
-  async generateRefreshToken(user: User): Promise<string> {
+  async generateRefreshToken(user: IUser): Promise<string> {
     return this.refreshTokenService.sign(
       {
         user: user.id,

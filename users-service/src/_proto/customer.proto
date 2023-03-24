@@ -39,6 +39,7 @@ message Customer {
   optional string relatedUser = 31;
   optional string relatedUserRole = 32;
   optional string relatedUserPhone = 33;
+  optional int32 customerId = 34;
 }
 
 message CustomerInput {

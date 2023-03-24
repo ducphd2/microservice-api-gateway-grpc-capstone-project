@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { isEmpty } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
-import { FindOptions, Transaction, WhereOptions } from 'sequelize';
+import { FindOptions, Transaction } from 'sequelize';
 
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../commons/find-and-paginate.interface';
 
+import { Sequelize } from 'sequelize-typescript';
 import { Customer, User } from '../../database/models';
+import { EUserRole } from '../../enums';
 import { ErrorHelper } from '../../helpers';
 import { ICreateCustomer, ICustomer, ICustomersService, IUpdateCustomer } from '../../interfaces/customers';
-import { Sequelize } from 'sequelize-typescript';
 import { UsersService } from '../users/users.service';
-import { EUserRole } from '../../enums';
 
 @Injectable()
 export class CustomersService implements ICustomersService {
@@ -30,9 +30,7 @@ export class CustomersService implements ICustomersService {
     // @ts-ignore
     const result: IFindAndPaginateResult<Customer> = await this.repo.findAndPaginate({
       ...query,
-      include: {
-        model: User,
-      },
+      include: [User],
       raw: true,
       nest: true,
       paranoid: false,
@@ -47,11 +45,7 @@ export class CustomersService implements ICustomersService {
     this.logger.info('CustomersService#findById.call %o', id);
 
     const result: Customer = await this.repo.findByPk(id, {
-      include: [
-        {
-          model: User,
-        },
-      ],
+      include: [User],
       raw: true,
       nest: true,
     });
@@ -69,7 +63,9 @@ export class CustomersService implements ICustomersService {
 
     const result: Customer = await this.repo.findOne({
       ...query,
+      include: [User],
       raw: true,
+      nest: true,
     });
 
     this.logger.info('CustomersService#findOne.result %o', result);
@@ -171,7 +167,7 @@ export class CustomersService implements ICustomersService {
     }
 
     const record: Customer = await this.repo.findByPk(id, {
-      include: [{ model: User }],
+      include: [User],
       raw: true,
       nest: true,
     });
@@ -189,7 +185,7 @@ export class CustomersService implements ICustomersService {
     );
 
     const result: Customer = await this.repo.findByPk(id, {
-      include: [{ model: User }],
+      include: [User],
       raw: true,
       nest: true,
     });

@@ -44,6 +44,15 @@ export class User extends BaseType {
   @Field(() => String, { nullable: true })
   readonly avatar?: string;
 
+  @Field({ nullable: true })
+  address?: string;
+
+  @Field({ nullable: true })
+  cityCode?: number;
+
+  @Field({ nullable: true })
+  districtCode?: number;
+
   @Field(() => [MerchantConnection], { nullable: true })
   merchants: MerchantConnection;
 
@@ -154,4 +163,52 @@ export class DeleteUserPayload {
 
   @Field(() => Int, { nullable: true })
   count?: number;
+}
+
+@ObjectType()
+export class UserIncludeCustomer extends BaseType {
+  @Field()
+  email: string;
+
+  @HideField()
+  password: string;
+
+  @Field()
+  readonly fullName: string;
+
+  @Field(() => EUserStatus)
+  readonly status: EUserStatus;
+
+  @Field(() => EUserRole)
+  readonly role: EUserRole;
+
+  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
+  readonly gender: EUserGender;
+
+  @Field()
+  readonly contact: string;
+
+  @Field({ nullable: true })
+  readonly dobDay?: number;
+
+  @Field({ nullable: true })
+  readonly dobMonth?: number;
+
+  @Field({ nullable: true })
+  readonly dobYear?: number;
+
+  @Field(() => String, { nullable: true })
+  readonly occupation?: string;
+
+  @Field(() => String, { nullable: true })
+  readonly avatar?: string;
+
+  @Field({ nullable: true })
+  address?: string;
+
+  @Field({ nullable: true })
+  cityCode?: number;
+
+  @Field({ nullable: true })
+  districtCode?: number;
 }

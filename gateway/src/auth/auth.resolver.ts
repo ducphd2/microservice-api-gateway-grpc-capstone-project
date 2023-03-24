@@ -4,16 +4,18 @@ import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { isEmpty } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { CurrentUser } from '../common/decorators';
+import { EUserRole } from '../enums';
 import { EGrpcClientService } from '../enums/grpc-services.enum';
 import { RefreshAuthGuard } from '../guard';
+import { IUserIncludeCustomer } from '../interfaces/users';
 import { MerchantService } from '../modules/merchant/merchant.service';
 import { IUserPayload } from '../modules/user/interfaces';
-import { ResponseAuthGrpc, User, UserPayload } from '../types';
+import { CustomerLoginResponse, ResponseAuthGrpc, User, UserPayload } from '../types';
 import { PasswordUtils } from '../utils/password.utils';
 import { AuthService } from './auth.service';
 import { InputLoginRequest } from './dtos/inputLoginRequest.dto';
 import { InputRegisterRequest } from './dtos/inputRegisterRequest.dto';
-import { IUserServiceGrpc } from './interfaces/authServiceGrpc';
+import { ICustomerAuthRes, IUserServiceGrpc } from './interfaces/auth-services-grpc';
 
 @Resolver()
 export class AuthResolver implements OnModuleInit {
@@ -60,6 +62,43 @@ export class AuthResolver implements OnModuleInit {
 
       return {
         user,
+        accessToken: await this.authService.generateAccessToken(user),
+        refreshToken: await this.authService.generateRefreshToken(user),
+      };
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @Mutation(() => CustomerLoginResponse)
+  async customerLogin(@Context() context: any, @Args('data') data: InputLoginRequest): Promise<CustomerLoginResponse> {
+    try {
+      const { res } = context;
+
+      const { user, customer }: ICustomerAuthRes = await lastValueFrom(
+        this.usersService.findOneCustomer({
+          where: JSON.stringify({ email: data.email, role: EUserRole.user }),
+        }),
+      );
+
+      if (isEmpty(user)) throw new Error('Unable to login');
+
+      const isSame: boolean = await this.passwordUtils.compare(data.password, user.password);
+
+      if (!isSame) throw new Error('Unable to login');
+
+      res.cookie('access-token', await this.authService.generateAccessToken(user), {
+        httpOnly: true,
+        maxAge: 1.8e6,
+      });
+      res.cookie('refresh-token', await this.authService.generateRefreshToken(user), {
+        httpOnly: true,
+        maxAge: 1.728e8,
+      });
+
+      return {
+        user,
+        customer,
         accessToken: await this.authService.generateAccessToken(user),
         refreshToken: await this.authService.generateRefreshToken(user),
       };
