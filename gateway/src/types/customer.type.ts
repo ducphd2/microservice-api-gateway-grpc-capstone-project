@@ -1,48 +1,12 @@
 import { Field, HideField, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 import { ECustomerLevel, EUserGender, EUserRole, EUserStatus } from '../enums';
 import { BaseType, ErrorPayload, IErrorPayload, PageInfo } from './base.type';
-import { UpdateUserInputDto } from './user.type';
+import { UpdateUserInputDto, User } from './user.type';
 
 @ObjectType()
 export class Customer extends BaseType {
-  @Field()
-  email: string;
-
-  @HideField()
-  password: string;
-
-  @Field()
-  fullName: string;
-
-  @Field(() => EUserStatus, { defaultValue: EUserStatus.active })
-  status: string;
-
   @Field(() => ECustomerLevel, { defaultValue: ECustomerLevel.normal })
   level: ECustomerLevel;
-
-  @Field(() => EUserRole, { defaultValue: EUserRole.user })
-  role: EUserRole;
-
-  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
-  gender: EUserGender;
-
-  @Field()
-  contact: string;
-
-  @Field(() => Int, { nullable: true })
-  dobDay: number;
-
-  @Field(() => Int, { nullable: true })
-  dobMonth: number;
-
-  @Field(() => Int, { nullable: true })
-  dobYear: number;
-
-  @Field(() => String, { nullable: true })
-  occupation?: string;
-
-  @Field(() => String, { nullable: true })
-  avatar?: string;
 
   @Field(() => String, { nullable: true })
   referrer: string;
@@ -100,9 +64,6 @@ export class Customer extends BaseType {
 
   @Field(() => String, { nullable: true })
   relatedUserPhone?: string;
-
-  @Field(() => Int, { nullable: true })
-  customerId?: number;
 }
 
 @ObjectType()
@@ -127,6 +88,9 @@ export class CustomerEdge {
 export class CustomerPayload {
   @Field(() => [ErrorPayload], { nullable: true })
   errors?: IErrorPayload[];
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 
   @Field(() => Customer, { nullable: true })
   customer?: Customer;

@@ -32,6 +32,11 @@ export class Customer extends BaseModel<Customer> {
   @Column({
     type: DataType.TEXT,
   })
+  customerCode: string;
+
+  @Column({
+    type: DataType.TEXT,
+  })
   referrer: string;
 
   @Column({

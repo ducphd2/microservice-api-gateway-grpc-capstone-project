@@ -193,18 +193,7 @@ type Customer {
   id: Int!
   createdAt: String!
   updatedAt: String!
-  email: String!
-  fullName: String!
-  status: EUserStatus!
   level: ECustomerLevel!
-  role: EUserRole!
-  gender: EUserGender!
-  contact: String!
-  dobDay: Int
-  dobMonth: Int
-  dobYear: Int
-  occupation: String
-  avatar: String
   referrer: String
   referrerCode: String
   userId: Int!
@@ -224,7 +213,6 @@ type Customer {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
-  customerId: Int
 }
 
 enum ECustomerLevel {
@@ -246,6 +234,7 @@ type CustomerEdge {
 
 type CustomerPayload {
   errors: [ErrorPayload!]
+  user: User
   customer: Customer
 }
 
@@ -265,6 +254,39 @@ type CustomerLoginResponse {
   customer: Customer!
   accessToken: String!
   refreshToken: String!
+}
+
+type Booking {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
+  status: EBookingStatus!
+  customerId: Int!
+  branchServiceId: Int!
+  duration: Int!
+  startTime: String!
+  endTime: String!
+}
+
+enum EBookingStatus {
+  PENDING
+  APPROVE
+  CANCELLED
+}
+
+type BookingPayload {
+  errors: [ErrorPayload!]
+  booking: Booking
+}
+
+type BookingEdge {
+  node: Booking!
+  cursor: String!
+}
+
+type DeleteBookingPayload {
+  errors: [ErrorPayload!]
+  count: Int
 }
 
 type FindAllCategories {
@@ -312,6 +334,9 @@ type Mutation {
   createCustomer(userInput: TestUserInput!, customerInput: CreateCustomerInput!): CustomerPayload!
   updateCustomer(id: Float!, data: TestUpdateDto!): CustomerPayload!
   deleteCustomer(id: Float!): DeleteCustomerPayload!
+  createBooking(data: CreateBookingInput!): BookingPayload!
+  updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
+  deleteBooking(id: Float!): DeleteBookingPayload!
 }
 
 input InputLoginRequest {
@@ -473,4 +498,28 @@ input PartialUpdateCustomer {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
+}
+
+input CreateBookingInput {
+  status: EBookingStatus!
+  customerId: Int!
+  branchServiceId: Int!
+  duration: Int!
+  startTime: String!
+  endTime: String!
+  adminBranchEmail: String!
+  customerEmail: String!
+  customerName: String!
+}
+
+input PartialUpdateBooking {
+  status: EBookingStatus
+  customerId: Int
+  branchServiceId: Int
+  duration: Int
+  startTime: String
+  endTime: String
+  adminBranchEmail: String
+  customerEmail: String
+  customerName: String
 }

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package notification;
+
+import "commons.proto";
+import "user.proto";
+import "customer.proto";
+
+message QueryFromNotificationService {
+  int32 customerId = 1;
+  int32 branchServiceId = 2;
+}
+
+message DataToNotificationService {
+  customer.Customer customer = 1;
+  user.User user = 2;
+  user.User admin = 3;
+}
+
+service NotificationServiceGrpc {
+  rpc GetUserDataFromNotificationService (QueryFromNotificationService) returns (DataToNotificationService) {}
+}

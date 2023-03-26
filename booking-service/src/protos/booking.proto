@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package booking;
+
+import "commons.proto";
+
+message Booking {
+  int32 id = 1;
+  string status = 2;
+  int32 customerId = 3;
+  int32 branchServiceId = 4;
+  string startTime = 5;
+  string endTime = 6;
+  int32 duration = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+message BookingEdge {
+  Booking node = 1;
+  string cursor = 2;
+}
+
+message CreateBookingInput {
+  string status = 1;
+  int32 customerId = 2;
+  int32 branchServiceId = 3;
+  string startTime = 4;
+  string endTime = 5;
+  int32 duration = 6;
+  string adminBranchEmail = 7;
+  string customerEmail = 8;
+  string customerName = 9;
+}
+
+message UpdateBookingInput {
+  string id = 1;
+  Booking data = 2;
+}
+
+message FindBookingsPayload {
+  repeated BookingEdge edges = 1;
+  commons.PageInfo pageInfo = 2;
+}
+
+message FindOneCustomerPayload {
+  Booking booking = 1;
+}
+
+service BookingServiceGrpc {
+  rpc find (commons.Query) returns (FindBookingsPayload) {}
+  rpc findById (commons.Id) returns (Booking) {}
+  rpc findOne (commons.Query) returns (Booking) {}
+  rpc count (commons.Query) returns (commons.Count) {}
+  rpc create (CreateBookingInput) returns (Booking) {}
+  rpc update (UpdateBookingInput) returns (Booking) {}
+  rpc destroy (commons.Query) returns (commons.Count) {}
+}

@@ -9,7 +9,7 @@
     "post:install": "./scripts/install.sh",
     "build": "./scripts/build.sh",
     "pm2-remove": "./scripts/pm2-remove.sh",
-    "pm2:start":"./scripts/pm2-start.sh",
+    "pm2:start": "./scripts/pm2-start.sh",
     "start": "yarn pm2-remove && yarn post:install && yarn build && yarn pm2:start"
   }
 }
