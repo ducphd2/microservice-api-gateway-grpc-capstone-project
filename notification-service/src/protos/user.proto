@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package user;
+
+import "commons.proto";
+import "customer.proto";
+
+message User {
+  int32 id = 1;
+  string fullName = 2;
+  string email = 3;
+  string password = 4;
+  string status = 5;
+  string role = 6;
+  string gender = 7;
+  string contact = 8;
+  int32 dobDay = 9;
+  int32 dobMonth = 10;
+  int32 dobYear = 11;
+  string createdAt = 12;
+  string updatedAt = 13;
+  optional string occupation = 14;
+  optional string avatar = 15;
+  optional string address = 16;
+  optional int32 cityCode = 17;
+  optional int32 districtCode = 18;
+  optional int32 wardCode = 19;
+}
+
+message UserEdge {
+  User node = 1;
+  string cursor = 2;
+}
+
+message CreateUserInput {
+  string fullName = 1;
+  string email = 2;
+  string password = 3;
+  string status = 4;
+  string role = 5;
+  string gender = 6;
+  string contact = 7;
+  int32 dobDay = 8;
+  int32 dobMonth = 9;
+  int32 dobYear = 10;
+  optional string occupation = 11;
+  optional string avatar = 12;
+  optional string os = 13;
+  optional string deviceId = 14;
+  optional string token = 15;
+}
+
+message UpdateUserInput {
+  string id = 1;
+  User data = 2;
+}
+
+message FindUsersPayload {
+  repeated UserEdge edges = 1;
+  commons.PageInfo pageInfo = 2;
+}
+
+message FindOneCustomerPayload {
+  User user = 1;
+  customer.Customer customer = 2;
+}
+
+service UserServiceGrpc {
+  rpc find (commons.Query) returns (FindUsersPayload) {}
+  rpc findById (commons.Id) returns (User) {}
+  rpc findOne (commons.Query) returns (User) {}
+  rpc count (commons.Query) returns (commons.Count) {}
+  rpc create (CreateUserInput) returns (User) {}
+  rpc update (UpdateUserInput) returns (User) {}
+  rpc destroy (commons.Query) returns (commons.Count) {}
+
+  rpc findOneCustomer (commons.Query) returns (FindOneCustomerPayload) {}
+}

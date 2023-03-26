@@ -13,7 +13,7 @@ import {
   TestUserInput,
 } from '../../types';
 import { IUserServiceGrpc } from '../user/interfaces';
-import { ICustomerServices } from './interfaces';
+import { ICreateCustomerResponse, ICustomerServices } from './interfaces';
 
 @Resolver()
 export class CustomersMutationResolver implements OnModuleInit {
@@ -50,7 +50,7 @@ export class CustomersMutationResolver implements OnModuleInit {
 
       if (count >= 1) throw new Error('The email is taken');
 
-      const customer: Customer = await lastValueFrom(
+      const { customer, user }: ICreateCustomerResponse = await lastValueFrom(
         this.customerService.create({
           userInput,
           customerInput,
@@ -58,6 +58,7 @@ export class CustomersMutationResolver implements OnModuleInit {
       );
 
       return {
+        user,
         customer,
       };
     } catch (error) {
@@ -68,9 +69,9 @@ export class CustomersMutationResolver implements OnModuleInit {
   @UseGuards(GqlAuthGuard)
   @Mutation(() => CustomerPayload)
   async updateCustomer(@Args('id') id: number, @Args('data') data: TestUpdateDto): Promise<CustomerPayload> {
-    const customer: Customer = await lastValueFrom(this.customerService.update({ id, data }));
+    const { customer, user }: ICreateCustomerResponse = await lastValueFrom(this.customerService.update({ id, data }));
 
-    return { customer };
+    return { customer, user };
   }
 
   @Mutation(() => DeleteCustomerPayload)
