@@ -1,5 +1,6 @@
 export enum EBullQueue {
   BOOKING_QUEUE = 'booking_queue',
+  GATEWAY_QUEUE = 'gateway_queue',
 }
 
 export enum EBullEvent {

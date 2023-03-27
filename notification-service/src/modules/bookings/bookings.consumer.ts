@@ -6,11 +6,16 @@ import { EBullEvent, EBullQueue } from '../../enums/queue-event.enum';
 import { MailService } from '../mailer/mailer.service';
 import { IBooking } from '../../interfaces';
 
+import { NotificationToGatewayQueueProvider } from './bull-producer.service';
+
 @Processor(EBullQueue.BOOKING_QUEUE)
 export class BookingQueueProcessor {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly mailService: MailService) {}
+  constructor(
+    private readonly mailService: MailService,
+    private readonly notificationToGatewayQueue: NotificationToGatewayQueueProvider,
+  ) {}
 
   @OnQueueActive()
   onActive(job: Job) {
@@ -31,7 +36,10 @@ export class BookingQueueProcessor {
   async handleBookingEvent(job: Job<IBooking>): Promise<boolean> {
     const body = job.data;
     Logger.log(`Queue EBullEvent.BOOKING_NOTIFICATION_EVENT with data: ${JSON.stringify(body)}`);
-    await Promise.all([this.mailService.sendSuccessBookingUserEmail(body.customerEmail, body.customerName)]);
+    await Promise.all([
+      this.mailService.sendSuccessBookingUserEmail(body.customerEmail, body.customerName),
+      this.notificationToGatewayQueue.addBookingEvent(EBullEvent.BOOKING_NOTIFICATION_EVENT, body),
+    ]);
     return true;
   }
 }
