@@ -6,16 +6,16 @@ import { EGrpcClientService } from '../../enums';
 import { UtilsModule } from '../../utils/utils.module';
 import { MerchantBranchModule } from '../merchant-branch/merchant-branch.module';
 import { MerchantFieldResolver } from './merchant-field.resolver';
+import { MerchantMutationResolver } from './merchant-mutation.resolver';
 import { MerchantQueryResolver } from './merchant-query.resolver';
-import { MerchantResolver } from './merchant.resolver';
 import { MerchantService } from './merchant.service';
 
 @Module({
   imports: [ConfigModule, UtilsModule, MerchantBranchModule],
   providers: [
     MerchantFieldResolver,
-    MerchantResolver,
     MerchantQueryResolver,
+    MerchantMutationResolver,
     MerchantService,
     {
       provide: EGrpcClientService.MERCHANT_SERVICE,
