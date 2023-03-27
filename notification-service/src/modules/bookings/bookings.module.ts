@@ -10,11 +10,15 @@ import { MailModule } from '../mailer/mailer.module';
 import { EGrpcClientService } from '../../enums';
 
 import { BookingQueueProcessor } from './bookings.consumer';
+import { NotificationToGatewayQueueProvider } from './bull-producer.service';
 
 @Module({
   imports: [
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
+    }),
+    BullModule.registerQueue({
+      name: EBullQueue.GATEWAY_QUEUE,
     }),
     MailModule,
   ],
@@ -40,6 +44,7 @@ import { BookingQueueProcessor } from './bookings.consumer';
       inject: [ConfigService],
     },
     BookingQueueProcessor,
+    NotificationToGatewayQueueProvider,
   ],
 })
 export class BookingsModule {}

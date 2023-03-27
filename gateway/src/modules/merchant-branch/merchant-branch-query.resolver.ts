@@ -25,7 +25,35 @@ export class BranchQueryResolver {
 
   @Query(() => MerchantBranchConnection)
   @UseGuards(GqlAuthGuard)
-  async findAllBranches(
+  async findAllBranchesByMerchant(
+    @Args('merchantId') merchantId?: number,
+    @Args('q', { nullable: true }) q?: string,
+    @Args('first', { nullable: true }) first?: number,
+    @Args('last', { nullable: true }) last?: number,
+    @Args('before', { nullable: true }) before?: string,
+    @Args('after', { nullable: true }) after?: string,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+  ): Promise<MerchantBranchConnection> {
+    try {
+      const query = { where: { merchantId } };
+
+      if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
+
+      merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
+
+      const result = await this.merchantBranchService.findAllBranches({
+        ...query,
+        where: JSON.stringify(query.where),
+      });
+      return result;
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @Query(() => MerchantBranchConnection)
+  @UseGuards(GqlAuthGuard)
+  async findAllBranchesByAdmin(
     @CurrentUser() user: any,
     @Args('q', { nullable: true }) q?: string,
     @Args('first', { nullable: true }) first?: number,

@@ -5,10 +5,10 @@ import { JobOptions, Queue } from 'bull';
 import { EBullQueue } from '../../enums';
 
 @Injectable()
-export class BookingQueueProvider {
-  constructor(@InjectQueue(EBullQueue.BOOKING_QUEUE) private bookingQueue: Queue) {}
+export class NotificationToGatewayQueueProvider {
+  constructor(@InjectQueue(EBullQueue.GATEWAY_QUEUE) private gatewayQueue: Queue) {}
 
   async addBookingEvent<T = Record<string, any>>(eventName: string, eventData: T, options?: JobOptions) {
-    return await this.bookingQueue.add(eventName, eventData, options);
+    return await this.gatewayQueue.add(eventName, eventData, options);
   }
 }
