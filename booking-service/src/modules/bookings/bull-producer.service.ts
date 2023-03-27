@@ -9,7 +9,6 @@ export class BookingQueueProvider {
   constructor(@InjectQueue(EBullQueue.BOOKING_QUEUE) private bookingQueue: Queue) {}
 
   async addBookingEvent<T = Record<string, any>>(eventName: string, eventData: T, options?: JobOptions) {
-    const a = await this.bookingQueue.add(eventName, eventData, options);
-    return a;
+    return await this.bookingQueue.add(eventName, eventData, options);
   }
 }
