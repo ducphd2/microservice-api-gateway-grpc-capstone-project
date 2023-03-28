@@ -17,6 +17,7 @@ import { NotificationEventModule } from './modules/notification-event/notificati
 import { RestApiModule } from './modules/rest-api/rest-api.module';
 import { UserModule } from './modules/user/user.module';
 import { BranchServiceGroupModule } from './modules/branch-service-group/branch-service-group.module';
+import { BranchServicesModule } from './modules/branch-service/branch-service.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { BranchServiceGroupModule } from './modules/branch-service-group/branch-
     NotificationEventModule,
     RestApiModule,
     BranchServiceGroupModule,
+    BranchServicesModule,
   ],
   providers: [
     {

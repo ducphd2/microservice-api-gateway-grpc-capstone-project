@@ -331,6 +331,40 @@ type BranchServiceGroupPayload {
   branchServiceGroup: BranchServiceGroup
 }
 
+type BranchService {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
+  serviceGroupId: Int!
+  price: Float!
+  capitalPrice: Float!
+  durationHour: Int!
+  durationMinute: Int!
+  name: String!
+  code: String!
+  description: String
+  image: String
+  showType: Int!
+  status: Int!
+  canPrintHouseInInvoice: Boolean
+  canEditPriceInPay: Boolean
+}
+
+type BranchServiceEdge {
+  node: BranchService!
+  cursor: String!
+}
+
+type BranchServiceConnection {
+  edges: [BranchServiceEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BranchServicePayload {
+  errors: [ErrorPayload!]
+  branchService: BranchService
+}
+
 type FindAllCategories {
   categories: [Category!]!
 }
@@ -361,6 +395,8 @@ type Query {
   getCustomerById(id: Int!): Customer!
   findBranchServiceGroupById(id: Float!): BranchServiceGroup!
   findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceGroupConnection!
+  findBranchServiceById(id: Float!): BranchService!
+  findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
 }
 
 type Mutation {
@@ -388,6 +424,9 @@ type Mutation {
   createBranchServiceGroup(data: CreateBranchServiceGroupInput!): BranchServiceGroupPayload!
   updateBranchServiceGroup(id: Float!, data: PartialUpdateBranchServiceGroup!): BranchServiceGroupPayload!
   deleteBranchServiceGroup(id: Float!): DeletePayload!
+  createBranchService(data: CreateBranchServiceInput!): BranchServicePayload!
+  updateBranchService(id: Float!, data: PartialUpdateBranchService!): BranchServicePayload!
+  deleteBranchService(id: Float!): DeletePayload!
 }
 
 input InputLoginRequest {
@@ -578,6 +617,50 @@ input CreateBranchServiceGroupInput {
   image: String
   showType: Int!
   branchId: Int!
+}
+
+input CreateBranchServiceInput {
+  serviceGroupId: Int!
+  price: Float!
+  capitalPrice: Float
+  durationHour: Int!
+  durationMinute: Int!
+  name: String!
+  code: String!
+  description: String
+  canEditPriceInPay: Boolean
+  image: String
+  showType: EBranchServiceShowType!
+  status: EBranchServiceStatus!
+  canPrintHouseInInvoice: Boolean
+}
+
+enum EBranchServiceShowType {
+  both_in_screen
+  only_cashier
+  only_booking
+  not_at_all
+}
+
+enum EBranchServiceStatus {
+  active
+  pending
+}
+
+input PartialUpdateBranchService {
+  serviceGroupId: Int
+  price: Float
+  capitalPrice: Float
+  durationHour: Int
+  durationMinute: Int
+  name: String
+  code: String
+  description: String
+  canEditPriceInPay: Boolean
+  image: String
+  showType: EBranchServiceShowType
+  status: EBranchServiceStatus
+  canPrintHouseInInvoice: Boolean
 }
 
 type Subscription {

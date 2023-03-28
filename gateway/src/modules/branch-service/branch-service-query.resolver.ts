@@ -1,31 +1,30 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { RpcException } from '@nestjs/microservices';
 import { isEmpty, merge } from 'lodash';
 import { CurrentUser } from '../../common/decorators';
 import { GqlAuthGuard } from '../../guard';
-import { MerchantBranch, MerchantBranchConnection } from '../../types';
+import { BranchService, BranchServiceConnection } from '../../types';
 import { QueryUtils } from '../../utils/query.utils';
-import { MerchantBranchService } from './branch-service.service';
+import { BranchServicesService } from './branch-service.service';
 
 @Resolver()
-export class BranchQueryResolver {
-  constructor(private merchantBranchService: MerchantBranchService, private readonly queryUtils: QueryUtils) {}
+export class BranchServicesQueryResolver {
+  constructor(private branchServicesSvc: BranchServicesService, private readonly queryUtils: QueryUtils) {}
 
-  @Query(() => MerchantBranch)
+  @Query(() => BranchService)
   @UseGuards(GqlAuthGuard)
-  async findMerchantBranchById(@Args('id') id: number): Promise<MerchantBranch> {
+  async findBranchServiceById(@Args('id') id: number): Promise<BranchService> {
     try {
-      const result = await this.merchantBranchService.findMerchantBranchById({ id });
+      const result = await this.branchServicesSvc.findById({ id });
       return result;
     } catch (error) {
-      throw new RpcException(error);
+      throw new Error(error);
     }
   }
 
-  @Query(() => MerchantBranchConnection)
+  @Query(() => BranchServiceConnection)
   @UseGuards(GqlAuthGuard)
-  async findAllBranches(
+  async findAllBranchServices(
     @CurrentUser() user: any,
     @Args('q', { nullable: true }) q?: string,
     @Args('first', { nullable: true }) first?: number,
@@ -33,21 +32,21 @@ export class BranchQueryResolver {
     @Args('before', { nullable: true }) before?: string,
     @Args('after', { nullable: true }) after?: string,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-  ): Promise<MerchantBranchConnection> {
+  ): Promise<BranchServiceConnection> {
     try {
-      const query = { where: { userId: user.id } };
+      const query = { where: {} };
 
       if (!isEmpty(q)) merge(query, { where: { name: { _iLike: `%${q}%` } } });
 
       merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
-      const result = await this.merchantBranchService.findAllBranches({
+      const result = await this.branchServicesSvc.findAllBranches({
         ...query,
         where: JSON.stringify(query.where),
       });
       return result;
     } catch (error) {
-      throw new RpcException(error);
+      throw new Error(error);
     }
   }
 }

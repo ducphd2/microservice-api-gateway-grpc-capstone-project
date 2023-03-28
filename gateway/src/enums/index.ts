@@ -5,3 +5,4 @@ export * from './device.enum';
 export * from './booking.enum';
 export * from './queue-event.enum';
 export * from './subscription-event.enum';
+export * from './branch-service.enum';

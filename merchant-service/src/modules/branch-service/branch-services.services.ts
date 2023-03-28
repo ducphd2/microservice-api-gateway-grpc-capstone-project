@@ -2,13 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { ErrorHelper } from '../../helpers';
-import { IPaginationRes } from '../../interfaces';
-import { BranchServicesRepository } from './branch-services.repository';
-import { BranchServices } from '../../database/entities/branch-service.model';
+import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes } from '../../interfaces';
+import { BranchServiceRepository } from './branch-services.repository';
+import { BranchServices } from '../../database/entities';
 
 @Injectable()
 export class BranchServicesService {
-  constructor(private branchServicesRepository: BranchServicesRepository) {}
+  constructor(private branchServicesRepository: BranchServiceRepository) {}
+
+  async find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<BranchServices>> {
+    const result: IFindAndPaginateResult<BranchServices> = await this.branchServicesRepository.findServiceGroups(query);
+
+    return result;
+  }
 
   findAll(page?: number, limit?: number): Promise<IPaginationRes<BranchServices>> {
     const getAllCondition = {};
@@ -23,19 +29,19 @@ export class BranchServicesService {
     return this.branchServicesRepository.findById(id);
   }
 
-  async updateMerchantBranch(id: number, params: any): Promise<BranchServices> {
-    const branchService = await this.findById(id);
-    if (!branchService) {
+  async updateBranchServiceGroup(id: number, params: any): Promise<BranchServices> {
+    const branchServiceGroup = await this.findById(id);
+    if (!branchServiceGroup) {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
     }
 
-    const updateByIdConditions: WhereOptions = { id: branchService.id };
+    const updateByIdConditions: WhereOptions = { id: branchServiceGroup.id };
     const affectedRows = await this.branchServicesRepository.update({ ...params }, updateByIdConditions);
 
     return affectedRows[0];
   }
 
-  async delete(id: number): Promise<number> {
+  async destroy(id: number): Promise<number> {
     const removeByIdConditions: WhereOptions = { id };
 
     return this.branchServicesRepository.delete(removeByIdConditions);

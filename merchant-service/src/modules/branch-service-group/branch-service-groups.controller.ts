@@ -1,7 +1,7 @@
 import { GrpcMethod } from '@nestjs/microservices';
 import { ICount, IFindPayload, IId, IQuery } from '../../interfaces';
 import { BranchServiceGroupService } from './branch-service-groups.services';
-import { CreateBranchServicesInput, UpdateBranchServicesInput } from '../../interfaces/branch-service';
+import { ICreateBranchServicesInput, IUpdateBranchServicesInput } from '../../interfaces/branch-service';
 import { EGrpcClientService } from '../../enums';
 import { Controller } from '@nestjs/common';
 import { BranchServiceGroups } from '../../database/entities/branch-service-group.model';
@@ -47,7 +47,7 @@ export class BranchServiceGroupController {
   }
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'create')
-  async create(data: CreateBranchServicesInput) {
+  async create(data: ICreateBranchServicesInput) {
     const result = await this.branchServicesService.create(data);
     return result.toJSON();
   }
@@ -64,7 +64,7 @@ export class BranchServiceGroupController {
   }
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'update')
-  async updateBranch({ id, data }: UpdateBranchServicesInput) {
+  async updateBranch({ id, data }: IUpdateBranchServicesInput) {
     const result = await this.branchServicesService.updateBranchServiceGroup(id, data);
     return result;
   }

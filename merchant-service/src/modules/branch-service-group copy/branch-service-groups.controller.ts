@@ -2,20 +2,20 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import Aigle from 'aigle';
 import { isEmpty, isNil } from 'lodash';
-import { BranchServices } from '../../database/entities';
+import { BranchServiceGroups } from '../../database/entities/branch-service-group.model';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
 import { ICount, IFindPayload, IId, IQuery } from '../../interfaces';
 import { ICreateBranchServicesInput, IUpdateBranchServicesInput } from '../../interfaces/branch-service';
-import { BranchServicesService } from './branch-services.services';
+import { BranchServiceGroupService } from '../branch-service-group/branch-service-groups.services';
 const { map } = Aigle;
 
 @Controller()
-export class BranchServicesController {
-  constructor(private branchServicesService: BranchServicesService) {}
+export class BranchServiceGroupController {
+  constructor(private branchServicesService: BranchServiceGroupService) {}
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'find')
-  async find(query: IQuery): Promise<IFindPayload<BranchServices>> {
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'find')
+  async find(query: IQuery): Promise<IFindPayload<BranchServiceGroups>> {
     const { results, cursors } = await this.branchServicesService.find({
       attributes: !isEmpty(query.select) ? ['id'].concat(query.select) : undefined,
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
@@ -25,8 +25,8 @@ export class BranchServicesController {
       after: !isEmpty(query.after) ? query.after : undefined,
     });
 
-    const result: IFindPayload<BranchServices> = {
-      edges: await map(results, async (group: BranchServices) => ({
+    const result: IFindPayload<BranchServiceGroups> = {
+      edges: await map(results, async (group: BranchServiceGroups) => ({
         node: group,
         cursor: Buffer.from(JSON.stringify([group.id])).toString('base64'),
       })),
@@ -41,18 +41,18 @@ export class BranchServicesController {
     return result;
   }
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'findAll')
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'findAll')
   async findAll() {
     return this.branchServicesService.findAll();
   }
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'create')
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'create')
   async create(data: ICreateBranchServicesInput) {
     const result = await this.branchServicesService.create(data);
     return result.toJSON();
   }
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'findById')
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'findById')
   async findById({ id }: IId) {
     const result = await this.branchServicesService.findById(id);
 
@@ -63,15 +63,15 @@ export class BranchServicesController {
     return result;
   }
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'update')
-  async update({ id, data }: IUpdateBranchServicesInput) {
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'update')
+  async updateBranch({ id, data }: IUpdateBranchServicesInput) {
     const result = await this.branchServicesService.updateBranchServiceGroup(id, data);
     return result;
   }
 
-  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'destroy')
-  async destroy({ id }: IId): Promise<ICount> {
-    const count = await this.branchServicesService.destroy(id);
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'destroy')
+  async deleteBranch({ id }: IId): Promise<ICount> {
+    const count = await this.branchServicesService.delete(id);
     return { count };
   }
 }

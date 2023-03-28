@@ -1,12 +1,20 @@
-export interface CreateBranchServicesInput {
-  name: string;
-  code: string;
-  price: number;
-  durationMinute: number;
-  branchId: number;
+export interface ICreateBranchServicesInput {
+  serviceGroupId?: number;
+  price?: number;
+  capitalPrice?: number;
+  durationHour?: number;
+  durationMinute?: number;
+  name?: string;
+  code?: string;
+  description?: string;
+  canEditPriceInPay?: boolean;
+  image?: string;
+  showType?: number;
+  status?: number;
+  canPrintHouseInInvoice?: boolean;
 }
 
-export interface UpdateBranchServicesInput {
+export interface IUpdateBranchServicesInput {
   id: number;
-  data: Partial<CreateBranchServicesInput>;
+  data: Partial<ICreateBranchServicesInput>;
 }
