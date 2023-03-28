@@ -9,13 +9,14 @@ import { AuthModule } from './auth/auth.module';
 import { GqlLoggingInterceptor } from './interceptors/logging.interceptor';
 import { BookingModule } from './modules/booking/booking.module';
 import { MerchantCategoryModule } from './modules/category/category.module';
+import { BullConsumerModule } from './modules/comsumer/consumer.module';
 import { CustomerModule } from './modules/customer/customer.module';
 import { MerchantBranchModule } from './modules/merchant-branch/merchant-branch.module';
 import { MerchantModule } from './modules/merchant/merchant.module';
-import { UserModule } from './modules/user/user.module';
-import { BullConsumerModule } from './modules/comsumer/consumer.module';
 import { NotificationEventModule } from './modules/notification-event/notification-event.module';
 import { RestApiModule } from './modules/rest-api/rest-api.module';
+import { UserModule } from './modules/user/user.module';
+import { BranchServiceGroupModule } from './modules/branch-service-group/branch-service-group.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { RestApiModule } from './modules/rest-api/rest-api.module';
     BullConsumerModule,
     NotificationEventModule,
     RestApiModule,
+    BranchServiceGroupModule,
   ],
   providers: [
     {

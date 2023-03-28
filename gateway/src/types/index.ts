@@ -9,3 +9,4 @@ export * from './device.type';
 export * from './base.type';
 export * from './booking.type';
 export * from './notification.type';
+export * from './branch-service-group.type';

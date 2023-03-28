@@ -44,8 +44,10 @@ export class MerchantsService {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
     }
 
-    const updatedMerchant = await this.merchantsRepository.updateItem(merchant, params);
-    return updatedMerchant;
+    const updateByIdConditions: WhereOptions = { id: merchant.id };
+    const affectedRows = await this.merchantsRepository.update({ ...params }, updateByIdConditions);
+
+    return affectedRows[0];
   }
 
   async deleteMerchant(id: number): Promise<number> {

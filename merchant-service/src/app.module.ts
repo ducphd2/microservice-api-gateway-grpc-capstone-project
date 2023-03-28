@@ -7,6 +7,7 @@ import { ImagesModule } from './modules/images/images.module';
 import { ProductsModule } from './modules/product/products.module';
 import { CategoriesModule } from './modules/category/categories.module';
 import { BranchServicesModule } from './modules/branch-service/branch-services.module';
+import { BranchServiceGroupsModule } from './modules/branch-service-group/branch-service-groups.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BranchServicesModule } from './modules/branch-service/branch-services.m
     ImagesModule,
     ProductsModule,
     CategoriesModule,
+    BranchServiceGroupsModule,
   ],
 })
 export class AppModule {}

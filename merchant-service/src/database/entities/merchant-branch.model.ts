@@ -1,7 +1,8 @@
 import * as paginate from 'sequelize-cursor-pagination';
-import { BelongsTo, Column, DataType, ForeignKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Table } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
 import { Merchant } from './merchant.model';
+import { BranchServiceGroups } from './branch-service-group.model';
 
 @Table({
   modelName: 'merchant_branch',
@@ -57,6 +58,9 @@ export class MerchantBranch extends BaseModel<MerchantBranch> {
 
   @BelongsTo(() => Merchant)
   merchant: Merchant;
+
+  @HasMany(() => BranchServiceGroups)
+  branchServiceGroups: BranchServiceGroups[];
 }
 
 paginate({
