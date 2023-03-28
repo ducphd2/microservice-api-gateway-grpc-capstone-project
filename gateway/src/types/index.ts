@@ -10,3 +10,4 @@ export * from './base.type';
 export * from './booking.type';
 export * from './notification.type';
 export * from './branch-service-group.type';
+export * from './branch-service.type';

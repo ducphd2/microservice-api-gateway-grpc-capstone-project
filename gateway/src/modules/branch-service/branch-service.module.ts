@@ -4,25 +4,25 @@ import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microser
 import { join } from 'path';
 import { EGrpcClientService } from '../../enums';
 import { UtilsModule } from '../../utils/utils.module';
-import { BranchMutationResolver } from './branch-service-mutation.resolver';
-import { BranchQueryResolver } from './branch-service-query.resolver';
-import { MerchantBranchService } from './branch-service.service';
+import { BranchServicesMutationResolver } from './branch-service-mutation.resolver';
+import { BranchServicesQueryResolver } from './branch-service-query.resolver';
+import { BranchServicesService } from './branch-service.service';
 
 @Module({
   imports: [ConfigModule, UtilsModule],
   providers: [
-    BranchMutationResolver,
-    BranchQueryResolver,
-    MerchantBranchService,
+    BranchServicesMutationResolver,
+    BranchServicesQueryResolver,
+    BranchServicesService,
     {
-      provide: EGrpcClientService.MERCHANT_BRANCH_SERVICE,
+      provide: EGrpcClientService.BRANCH_SERVICE_GRPC,
       useFactory: (configService: ConfigService): ClientGrpcProxy => {
         return ClientProxyFactory.create({
           transport: Transport.GRPC,
           options: {
-            url: configService.get<string>('MERCHANT_BRANCHES_SVC_URL'),
-            package: 'merchant_branch',
-            protoPath: join(__dirname, '../../protos/merchant_branch.proto'),
+            url: configService.get<string>('MERCHANTS_SVC_URL'),
+            package: 'branch_service',
+            protoPath: join(__dirname, '../../protos/branch_service.proto'),
             loader: {
               keepCase: true,
               enums: String,
@@ -35,6 +35,6 @@ import { MerchantBranchService } from './branch-service.service';
       inject: [ConfigService],
     },
   ],
-  exports: [MerchantBranchService, EGrpcClientService.MERCHANT_BRANCH_SERVICE],
+  exports: [BranchServicesService, EGrpcClientService.BRANCH_SERVICE_GRPC],
 })
-export class MerchantBranchModule {}
+export class BranchServicesModule {}
