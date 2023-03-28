@@ -15,6 +15,7 @@ import { MerchantModule } from './modules/merchant/merchant.module';
 import { UserModule } from './modules/user/user.module';
 import { BullConsumerModule } from './modules/comsumer/consumer.module';
 import { NotificationEventModule } from './modules/notification-event/notification-event.module';
+import { RestApiModule } from './modules/rest-api/rest-api.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { NotificationEventModule } from './modules/notification-event/notificati
     }),
     BullConsumerModule,
     NotificationEventModule,
+    RestApiModule,
   ],
   providers: [
     {
