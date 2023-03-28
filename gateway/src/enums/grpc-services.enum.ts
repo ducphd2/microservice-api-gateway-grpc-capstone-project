@@ -4,4 +4,5 @@ export enum EGrpcClientService {
   CUSTOMER_SERVICE = 'CustomerServiceGrpc',
   MERCHANT_BRANCH_SERVICE = 'MerchantBranchServiceGrpc',
   BOOKING_SERVICE = 'BookingServiceGrpc',
+  BRANCH_SERVICE_GROUP_SERVICE = 'BranchServiceGroupServiceGrpc',
 }

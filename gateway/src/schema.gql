@@ -305,6 +305,32 @@ type UserBookingNotificationSubscription {
   notification: UserBookingNotification!
 }
 
+type BranchServiceGroup {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  description: String!
+  image: String
+  showType: Int!
+  branchId: Int!
+}
+
+type BranchServiceGroupEdge {
+  node: BranchServiceGroup!
+  cursor: String!
+}
+
+type BranchServiceGroupConnection {
+  edges: [BranchServiceGroupEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BranchServiceGroupPayload {
+  errors: [ErrorPayload!]
+  branchServiceGroup: BranchServiceGroup
+}
+
 type FindAllCategories {
   categories: [Category!]!
 }
@@ -333,6 +359,8 @@ type Query {
   findCategoryById(id: Float!): Category!
   getAllCustomer(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): CustomersConnection!
   getCustomerById(id: Int!): Customer!
+  findBranchServiceGroupById(id: Float!): BranchServiceGroup!
+  findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceGroupConnection!
 }
 
 type Mutation {
@@ -343,7 +371,7 @@ type Mutation {
   logout: Boolean!
   findMerchantById(id: Float!): Merchant!
   createBranch(data: CreateBranchInput!): MerchantBranchPayload!
-  updateBranch(id: Float!, data: PartialUpdateBranch!): MerchantBranchPayload!
+  updateBranch(id: Float!, data: PartialUpdateBranchServiceGroup!): MerchantBranchPayload!
   deleteBranch(id: Float!): DeletePayload!
   updatePassword(data: ChangePasswordInput!): User!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
@@ -357,6 +385,9 @@ type Mutation {
   createBooking(data: CreateBookingInput!): BookingPayload!
   updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
   deleteBooking(id: Float!): DeleteBookingPayload!
+  createBranchServiceGroup(data: CreateBranchServiceGroupInput!): BranchServiceGroupPayload!
+  updateBranchServiceGroup(id: Float!, data: PartialUpdateBranchServiceGroup!): BranchServiceGroupPayload!
+  deleteBranchServiceGroup(id: Float!): DeletePayload!
 }
 
 input InputLoginRequest {
@@ -415,15 +446,12 @@ input CreateBranchInput {
   wardCode: Float
 }
 
-input PartialUpdateBranch {
+input PartialUpdateBranchServiceGroup {
   name: String
-  phone: String
-  address: String
-  merchantId: Int
-  userId: Int
-  cityCode: Int
-  districtCode: Int
-  wardCode: Float
+  description: String
+  image: String
+  showType: Int
+  branchId: Int
 }
 
 input ChangePasswordInput {
@@ -542,6 +570,14 @@ input PartialUpdateBooking {
   adminBranchEmail: String
   customerEmail: String
   customerName: String
+}
+
+input CreateBranchServiceGroupInput {
+  name: String!
+  description: String!
+  image: String
+  showType: Int!
+  branchId: Int!
 }
 
 type Subscription {

@@ -20,7 +20,7 @@ export class GqlLoggingInterceptor implements NestInterceptor {
     const args = JSON.stringify(gqlContext.getArgs());
 
     return call$.pipe(
-      tap(() => Logger.debug(`Handling request: ${resolverName} - args: ${args} took ${Date.now() - now}ms`)),
+      tap(() => this.logger.debug(`Handling request: ${resolverName} - args: ${args} took ${Date.now() - now}ms`)),
     );
   }
 }

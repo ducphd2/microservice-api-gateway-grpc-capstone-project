@@ -29,7 +29,10 @@ export class BranchServicesService {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);
     }
 
-    return await this.branchServicesRepository.updateItem(branchService, params);
+    const updateByIdConditions: WhereOptions = { id: branchService.id };
+    const affectedRows = await this.branchServicesRepository.update({ ...params }, updateByIdConditions);
+
+    return affectedRows[0];
   }
 
   async delete(id: number): Promise<number> {
