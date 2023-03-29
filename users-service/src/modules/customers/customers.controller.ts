@@ -10,7 +10,14 @@ import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
 import { Customer } from '../../database/models/customer.model';
 import { EGrpcClientService, EUserRole } from '../../enums';
-import { ICreateCustomer, ICustomer, IUpdateCustomer, IUpdateCustomerInput } from '../../interfaces/customers';
+import {
+  ICreateCustomer,
+  ICustomer,
+  IRegisterCustomer,
+  IRegisterCustomerResponse,
+  IUpdateCustomer,
+  IUpdateCustomerInput,
+} from '../../interfaces/customers';
 import { CustomersService } from './customers.service';
 import { User } from '../../database/models';
 import { ErrorHelper } from '../../helpers';
@@ -119,6 +126,22 @@ export class CustomersController {
       return result;
     } catch (error) {
       ErrorHelper.BadRequestException('Can not create customer');
+    }
+  }
+
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'register')
+  async registerCustomer(data: IRegisterCustomer): Promise<IRegisterCustomerResponse> {
+    try {
+      this.logger.info('CustomersController#registerCustomer.call %o', data);
+
+      const result: IRegisterCustomerResponse = await this.service.register(data);
+
+      this.logger.info('CustomersController#registerCustomer.result %o', result);
+
+      return result;
+    } catch (error) {
+      console.log(error);
+      ErrorHelper.BadRequestException('Can not register customer');
     }
   }
 

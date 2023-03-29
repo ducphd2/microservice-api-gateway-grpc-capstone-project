@@ -14,7 +14,7 @@ export class Customer extends BaseType {
   @Field(() => String, { nullable: true })
   referrerCode: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   userId: number;
 
   @Field(() => Int, { nullable: true })
@@ -169,9 +169,9 @@ export class TestUpdateDto {
 }
 
 @InputType()
-export class TestUserInput {
-  @Field()
-  fullName: string;
+export class UserInput {
+  @Field({ nullable: true })
+  fullName?: string;
 
   @Field()
   email: string;
@@ -179,20 +179,20 @@ export class TestUserInput {
   @Field()
   password: string;
 
-  @Field(() => EUserGender)
-  gender: string;
+  @Field(() => EUserGender, { nullable: true })
+  gender?: string;
 
-  @Field()
-  contact: string;
-
-  @Field(() => Int, { nullable: true })
-  dobDay: number;
+  @Field({ nullable: true })
+  contact?: string;
 
   @Field(() => Int, { nullable: true })
-  dobMonth: number;
+  dobDay?: number;
 
   @Field(() => Int, { nullable: true })
-  dobYear: number;
+  dobMonth?: number;
+
+  @Field(() => Int, { nullable: true })
+  dobYear?: number;
 
   @Field(() => String, { nullable: true })
   occupation?: string;
@@ -210,8 +210,26 @@ export class TestUserInput {
   districtCode?: number;
 
   @Field(() => EUserStatus, { defaultValue: EUserStatus.active })
-  status: string;
+  status?: string;
 
   @Field(() => EUserRole, { defaultValue: EUserRole.user })
-  role: EUserRole;
+  role?: EUserRole;
+}
+
+@InputType()
+export class RegisterCustomer {
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+}
+
+@ObjectType()
+export class CustomerRegisterPayload extends CustomerPayload {
+  @Field(() => String)
+  accessToken: string;
+
+  @Field(() => String)
+  refreshToken: string;
 }

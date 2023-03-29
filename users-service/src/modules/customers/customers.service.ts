@@ -10,7 +10,14 @@ import { Sequelize } from 'sequelize-typescript';
 import { Customer, User } from '../../database/models';
 import { EUserRole } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { ICreateCustomer, ICustomer, ICustomersService, IUpdateCustomer } from '../../interfaces/customers';
+import {
+  ICreateCustomer,
+  ICustomer,
+  ICustomersService,
+  IRegisterCustomer,
+  IRegisterCustomerResponse,
+  IUpdateCustomer,
+} from '../../interfaces/customers';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -110,6 +117,30 @@ export class CustomersService implements ICustomersService {
 
       return res;
     } catch (error) {
+      await transaction.rollback();
+      ErrorHelper.BadRequestException('Can not create customer user');
+    }
+  }
+
+  async register(data: IRegisterCustomer): Promise<IRegisterCustomerResponse> {
+    const transaction = await this.sequelize.transaction();
+
+    try {
+      this.logger.info('UsersService#createCustomer.call %o', data);
+
+      const user: User = await this.usersService.create({ ...data, role: EUserRole.USER }, transaction);
+      const customer: ICustomer = await this.createCustomer({ ...data, userId: user.id }, transaction);
+
+      await transaction.commit();
+      this.logger.info('UsersService#createCustomer.result %o', user, customer);
+
+      return {
+        user: user.toJSON(),
+        customer: customer,
+      };
+    } catch (error) {
+      console.log(error);
+
       await transaction.rollback();
       ErrorHelper.BadRequestException('Can not create customer user');
     }
