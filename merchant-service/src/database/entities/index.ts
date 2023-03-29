@@ -1,7 +1,5 @@
-export * from './appointment-product';
-export * from './appointment.model';
-export * from './branch-service-group.model';
-export * from './branch-service.model';
+export * from './service-group.model';
+export * from './service.model';
 export * from './category-image.model';
 export * from './category.model';
 export * from './merchant-branch.model';
@@ -9,3 +7,4 @@ export * from './merchant.model';
 export * from './product-image.model';
 export * from './product.model';
 export * from './stock.model';
+export * from './branch-service.model';

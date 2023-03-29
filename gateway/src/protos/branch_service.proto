@@ -34,6 +34,8 @@ message InputCreateRequest {
     optional string description = 11;
     optional string image = 12;
     optional bool canEditPriceInPay = 13;
+    repeated int32 branchIds = 14;
+    int32 merchantId = 15;
 }
 
 message BranchService {

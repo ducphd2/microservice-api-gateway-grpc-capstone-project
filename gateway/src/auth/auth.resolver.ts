@@ -8,7 +8,7 @@ import { EUserRole } from '../enums';
 import { EGrpcClientService } from '../enums/grpc-services.enum';
 import { RefreshAuthGuard } from '../guard';
 import { IUserIncludeCustomer } from '../interfaces/users';
-import { MerchantService } from '../modules/merchant/merchant.service';
+import { MerchantService } from '../modules/merchants/merchants.service';
 import { IUserPayload } from '../modules/user/interfaces';
 import { CustomerLoginResponse, ResponseAuthGrpc, User, UserPayload } from '../types';
 import { PasswordUtils } from '../utils/password.utils';

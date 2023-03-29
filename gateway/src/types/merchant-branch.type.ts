@@ -70,9 +70,6 @@ export class CreateBranchInput {
   merchantId: number;
 
   @Field(() => Int)
-  userId: number;
-
-  @Field(() => Int)
   cityCode: number;
 
   @Field(() => Int)
