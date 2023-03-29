@@ -91,7 +91,7 @@ export class CreateBranchServiceInput {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   code: string;
 
   @Field({ nullable: true })
@@ -111,6 +111,9 @@ export class CreateBranchServiceInput {
 
   @Field(() => Boolean, { nullable: true })
   canPrintHouseInInvoice: boolean;
+
+  @Field(() => [Int], { nullable: true })
+  branchIds?: number[];
 }
 
 @InputType()

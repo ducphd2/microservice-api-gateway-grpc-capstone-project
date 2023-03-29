@@ -24,9 +24,9 @@ message InputCreateRequest {
     string code = 1;
     string name = 2;
     string description = 3;
-    string image = 4;
+    string thumbnailUrl = 4;
     int32 showType = 5;
-    int32 branchId = 6;
+    int32 merchantId = 6;
 }
 
 message BranchServiceGroup {
@@ -34,11 +34,11 @@ message BranchServiceGroup {
     string code = 2;
     string name = 3;
     optional string description = 4;
-    string image = 5;
+    string thumbnailUrl = 5;
     string createdAt = 6;
     string updatedAt = 7;
     int32 showType = 8;
-    int32 branchId = 9;
+    int32 merchantId = 9;
 }
 
 message BranchServiceGroupEdge {

@@ -1,7 +1,7 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
 import { InputRegisterRequest } from '../../auth/dtos/inputRegisterRequest.dto';
-import { UpdateMerchantRequestInputDto } from '../../modules/merchant/dtos/merchant';
+import { UpdateMerchantRequestInputDto } from '../../modules/merchants/dtos/merchant';
 import { Merchant, MerchantBranch, MerchantConnection } from '../../types';
 import { ICount, IId, IQuery } from '../commons.interface';
 import { IMerchantConnection, IRegisterInput, IRegisterResponse } from './merchant.interface';
@@ -9,6 +9,7 @@ import { IMerchantConnection, IRegisterInput, IRegisterResponse } from './mercha
 export interface IMerchantServiceGrpc {
   create(input: IRegisterInput, metadata?: Metadata): Observable<Merchant>;
   find(query: IQuery, metadata?: Metadata): Observable<MerchantConnection>;
+  findById(id: IId, metadata?: Metadata): Observable<Merchant>;
   findMerchantById(id: IId, metadata?: Metadata): Observable<Merchant>;
   findOneMerchant(query?: IQuery, metadata?: Metadata): Observable<Merchant>;
   countMerchants(query?: IQuery, metadata?: Metadata): Observable<ICount>;

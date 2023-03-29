@@ -8,7 +8,7 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtRefreshStrategy } from './jwt-refresh.strategy';
 import { JwtStrategy } from './jwt.strategy';
-import { MerchantModule } from '../modules/merchant/merchant.module';
+import { MerchantModule } from '../modules/merchants/merchants.module';
 
 @Module({
   imports: [MerchantModule, UtilsModule, PassportModule.register({ defaultStrategy: 'jwt' }), UserModule],

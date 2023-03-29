@@ -305,32 +305,6 @@ type UserBookingNotificationSubscription {
   notification: UserBookingNotification!
 }
 
-type BranchServiceGroup {
-  id: Int!
-  createdAt: String!
-  updatedAt: String!
-  name: String!
-  description: String!
-  image: String
-  showType: Int!
-  branchId: Int!
-}
-
-type BranchServiceGroupEdge {
-  node: BranchServiceGroup!
-  cursor: String!
-}
-
-type BranchServiceGroupConnection {
-  edges: [BranchServiceGroupEdge!]!
-  pageInfo: PageInfo!
-}
-
-type BranchServiceGroupPayload {
-  errors: [ErrorPayload!]
-  branchServiceGroup: BranchServiceGroup
-}
-
 type BranchService {
   id: Int!
   createdAt: String!
@@ -363,6 +337,33 @@ type BranchServiceConnection {
 type BranchServicePayload {
   errors: [ErrorPayload!]
   branchService: BranchService
+}
+
+type BranchServiceGroup {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
+  name: String!
+  showType: Int!
+  merchantId: Int!
+  description: String
+  thumbnailUrl: String
+  services: [BranchServiceConnection!]
+}
+
+type BranchServiceGroupEdge {
+  node: BranchServiceGroup!
+  cursor: String!
+}
+
+type BranchServiceGroupConnection {
+  edges: [BranchServiceGroupEdge!]!
+  pageInfo: PageInfo!
+}
+
+type BranchServiceGroupPayload {
+  errors: [ErrorPayload!]
+  branchServiceGroup: BranchServiceGroup
 }
 
 type FindAllCategories {
@@ -407,7 +408,7 @@ type Mutation {
   logout: Boolean!
   findMerchantById(id: Float!): Merchant!
   createBranch(data: CreateBranchInput!): MerchantBranchPayload!
-  updateBranch(id: Float!, data: PartialUpdateBranch!): MerchantBranchPayload!
+  updateBranch(id: Float!, data: PartialUpdateBranchServiceGroup!): MerchantBranchPayload!
   deleteBranch(id: Float!): DeletePayload!
   updatePassword(data: ChangePasswordInput!): User!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
@@ -479,21 +480,24 @@ input CreateBranchInput {
   phone: String!
   address: String!
   merchantId: Int!
-  userId: Int!
   cityCode: Int!
   districtCode: Int!
   wardCode: Float
 }
 
-input PartialUpdateBranch {
+input PartialUpdateBranchServiceGroup {
   name: String
-  phone: String
-  address: String
+  description: String
+  thumbnailUrl: String
+  showType: EBranchServiceShowType
   merchantId: Int
-  userId: Int
-  cityCode: Int
-  districtCode: Int
-  wardCode: Float
+}
+
+enum EBranchServiceShowType {
+  both_in_screen
+  only_cashier
+  only_booking
+  not_at_all
 }
 
 input ChangePasswordInput {
@@ -616,18 +620,10 @@ input PartialUpdateBooking {
 
 input CreateBranchServiceGroupInput {
   name: String!
-  description: String!
-  image: String
-  showType: Int!
-  branchId: Int!
-}
-
-input PartialUpdateBranchServiceGroup {
-  name: String
   description: String
-  image: String
-  showType: Int
-  branchId: Int
+  thumbnailUrl: String
+  showType: EBranchServiceShowType!
+  merchantId: Int!
 }
 
 input CreateBranchServiceInput {
@@ -637,20 +633,14 @@ input CreateBranchServiceInput {
   durationHour: Int!
   durationMinute: Int!
   name: String!
-  code: String!
+  code: String
   description: String
   canEditPriceInPay: Boolean
   image: String
   showType: EBranchServiceShowType!
   status: EBranchServiceStatus!
   canPrintHouseInInvoice: Boolean
-}
-
-enum EBranchServiceShowType {
-  both_in_screen
-  only_cashier
-  only_booking
-  not_at_all
+  branchIds: [Int!]
 }
 
 enum EBranchServiceStatus {
@@ -672,6 +662,7 @@ input PartialUpdateBranchService {
   showType: EBranchServiceShowType
   status: EBranchServiceStatus
   canPrintHouseInInvoice: Boolean
+  branchIds: [Int!]
 }
 
 type Subscription {

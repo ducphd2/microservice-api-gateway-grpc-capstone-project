@@ -1,6 +1,6 @@
 import { Column, DataType, HasMany, Table } from 'sequelize-typescript';
 import { BaseModel } from './base.model';
-import { MerchantBranch } from './merchant-branch.model';
+import { Branch } from './merchant-branch.model';
 
 import * as paginate from 'sequelize-cursor-pagination';
 
@@ -49,8 +49,8 @@ export class Merchant extends BaseModel<Merchant> {
   })
   userId: number;
 
-  @HasMany(() => MerchantBranch)
-  branches: MerchantBranch[];
+  @HasMany(() => Branch)
+  branches: Branch[];
 }
 
 paginate({

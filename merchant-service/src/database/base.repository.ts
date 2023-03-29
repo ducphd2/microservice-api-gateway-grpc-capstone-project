@@ -1,4 +1,11 @@
-import { FindAndCountOptions, FindOptions, Transaction, WhereOptions } from 'sequelize';
+import {
+  BulkCreateOptions,
+  FindAndCountOptions,
+  FindOptions,
+  ModelAttributes,
+  Transaction,
+  WhereOptions,
+} from 'sequelize';
 import { Model, Repository } from 'sequelize-typescript';
 import { FIRST_PAGE, LIMIT_PAGE } from 'src/constants';
 
@@ -75,5 +82,12 @@ export class BaseRepository<T extends Model> {
 
   getModel(): Repository<T> {
     return this.model;
+  }
+
+  async upsertMany(data: Array<Record<string, any>>, options?: BulkCreateOptions): Promise<T[]> {
+    return this.model.bulkCreate(data, {
+      ...options,
+      returning: true,
+    });
   }
 }
