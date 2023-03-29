@@ -14,28 +14,28 @@ export class User extends BaseType {
   @HideField()
   password: string;
 
-  @Field()
+  @Field({ nullable: true })
   readonly fullName: string;
 
-  @Field(() => EUserStatus)
+  @Field(() => EUserStatus, { nullable: true })
   readonly status: EUserStatus;
 
   @Field(() => EUserRole)
   readonly role: EUserRole;
 
-  @Field(() => EUserGender, { nullable: false, defaultValue: EUserGender.female })
+  @Field(() => EUserGender, { nullable: true, defaultValue: EUserGender.female })
   readonly gender: EUserGender;
 
-  @Field()
+  @Field({ nullable: true })
   readonly contact: string;
 
-  @Field()
+  @Field({ nullable: true })
   readonly dobDay: number;
 
-  @Field()
+  @Field({ nullable: true })
   readonly dobMonth: number;
 
-  @Field()
+  @Field({ nullable: true })
   readonly dobYear: number;
 
   @Field(() => String, { nullable: true })

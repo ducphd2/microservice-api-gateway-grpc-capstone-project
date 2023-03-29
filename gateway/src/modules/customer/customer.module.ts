@@ -7,9 +7,10 @@ import { UtilsModule } from '../../utils/utils.module';
 import { UserModule } from '../user/user.module';
 import { CustomersMutationResolver } from './customer-mutation.resolver';
 import { CustomerQueryResolver } from './customer-query.resolver';
+import { AuthModule } from '../../auth/auth.module';
 
 @Module({
-  imports: [UtilsModule, ConfigModule, UserModule],
+  imports: [UtilsModule, ConfigModule, UserModule, AuthModule],
   providers: [
     CustomerQueryResolver,
     CustomersMutationResolver,

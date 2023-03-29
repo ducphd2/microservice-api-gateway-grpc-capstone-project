@@ -1,4 +1,4 @@
-import { PartialUpdateCustomer, TestUserInput } from '../../../types';
+import { PartialUpdateCustomer, UserInput } from '../../../types';
 import { CustomerDto } from '../dtos';
 
 export interface UpdateCustomerInput {
@@ -77,12 +77,12 @@ export interface ICustomersConnection {
 }
 
 export interface ICreateCustomerInput {
-  userInput: TestUserInput;
+  userInput: UserInput;
   customerInput: ICreateCustomer;
 }
 
 export interface IPartialUpdateCustomerInput {
-  userInput: Partial<TestUserInput>;
+  userInput: Partial<UserInput>;
   customerInput: Partial<ICreateCustomer>;
 }
 

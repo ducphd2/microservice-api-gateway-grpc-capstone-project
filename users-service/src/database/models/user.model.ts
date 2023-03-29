@@ -27,13 +27,11 @@ export class User extends BaseModel<User> {
 
   @Column({
     type: DataType.TEXT,
-    allowNull: false,
   })
   fullName: string;
 
   @Column({
     type: DataType.ENUM(EUserStatus.ACTIVE, EUserStatus.BANNED),
-    allowNull: false,
     defaultValue: EUserStatus.ACTIVE,
   })
   status: string;
@@ -47,7 +45,6 @@ export class User extends BaseModel<User> {
 
   @Column({
     type: DataType.ENUM(EUserGender.FEMALE, EUserGender.MALE, EUserGender.OTHER),
-    allowNull: false,
   })
   gender: string;
 
@@ -63,7 +60,6 @@ export class User extends BaseModel<User> {
 
   @Column({
     type: DataType.TEXT,
-    allowNull: false,
   })
   contact: string;
 

@@ -97,14 +97,14 @@ type User {
   createdAt: String!
   updatedAt: String!
   email: String!
-  fullName: String!
-  status: EUserStatus!
+  fullName: String
+  status: EUserStatus
   role: EUserRole!
-  gender: EUserGender!
-  contact: String!
-  dobDay: Float!
-  dobMonth: Float!
-  dobYear: Float!
+  gender: EUserGender
+  contact: String
+  dobDay: Float
+  dobMonth: Float
+  dobYear: Float
   occupation: String
   avatar: String
   address: String
@@ -196,7 +196,7 @@ type Customer {
   level: ECustomerLevel!
   referrer: String
   referrerCode: String
-  userId: Int!
+  userId: Int
   branchId: Int
   customerCode: String
   facebook: String
@@ -241,6 +241,14 @@ type CustomerPayload {
 type DeleteCustomerPayload {
   errors: [ErrorPayload!]
   count: Int
+}
+
+type CustomerRegisterPayload {
+  errors: [ErrorPayload!]
+  user: User
+  customer: Customer
+  accessToken: String!
+  refreshToken: String!
 }
 
 type ResponseAuthGrpc {
@@ -415,7 +423,8 @@ type Mutation {
   deleteCategory(id: Float!): Category!
   uploadSingleFiles(file: Upload!, folder: String): ResponseSingleUpload!
   uploadMultipleFiles(folder: String, files: [Upload!]!): [ResponseSingleUpload!]!
-  createCustomer(userInput: TestUserInput!, customerInput: CreateCustomerInput!): CustomerPayload!
+  createCustomer(userInput: UserInput!, customerInput: CreateCustomerInput!): CustomerPayload!
+  registerCustomer(data: RegisterCustomer!): CustomerRegisterPayload!
   updateCustomer(id: Float!, data: TestUpdateDto!): CustomerPayload!
   deleteCustomer(id: Float!): DeleteCustomerPayload!
   createBooking(data: CreateBookingInput!): BookingPayload!
@@ -511,12 +520,12 @@ input CategoryDto {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input TestUserInput {
-  fullName: String!
+input UserInput {
+  fullName: String
   email: String!
   password: String!
-  gender: EUserGender!
-  contact: String!
+  gender: EUserGender
+  contact: String
   dobDay: Int
   dobMonth: Int
   dobYear: Int
@@ -546,6 +555,11 @@ input CreateCustomerInput {
   relatedUser: String
   relatedUserRole: String
   relatedUserPhone: String
+}
+
+input RegisterCustomer {
+  email: String!
+  password: String!
 }
 
 input TestUpdateDto {

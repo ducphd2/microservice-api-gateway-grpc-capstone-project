@@ -67,3 +67,13 @@ export interface ICustomersService {
   update(id: number, data: IUpdateCustomer): Promise<ICustomer>;
   destroy(query?: FindOptions): Promise<number>;
 }
+
+export interface IRegisterCustomer {
+  email: string;
+  password: string;
+}
+
+export interface IRegisterCustomerResponse {
+  customer: ICustomer;
+  user: IUser;
+}

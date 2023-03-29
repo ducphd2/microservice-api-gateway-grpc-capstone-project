@@ -8,12 +8,16 @@ import {
   CreateCustomerInput,
   Customer,
   CustomerPayload,
+  CustomerRegisterPayload,
   DeleteCustomerPayload,
+  PartialUpdateCustomer,
+  RegisterCustomer,
   TestUpdateDto,
-  TestUserInput,
+  UserInput,
 } from '../../types';
 import { IUserServiceGrpc } from '../user/interfaces';
 import { ICreateCustomerResponse, ICustomerServices } from './interfaces';
+import { AuthService } from '../../auth/auth.service';
 
 @Resolver()
 export class CustomersMutationResolver implements OnModuleInit {
@@ -25,6 +29,7 @@ export class CustomersMutationResolver implements OnModuleInit {
     private readonly customersServiceClient: ClientGrpcProxy,
     @Inject(EGrpcClientService.USER_SERVICE)
     private readonly usersServiceClient: ClientGrpcProxy,
+    private authService: AuthService,
   ) {}
 
   onModuleInit(): void {
@@ -38,7 +43,7 @@ export class CustomersMutationResolver implements OnModuleInit {
   @UseGuards(GqlAuthGuard)
   @Mutation(() => CustomerPayload)
   async createCustomer(
-    @Args('userInput') userInput: TestUserInput,
+    @Args('userInput') userInput: UserInput,
     @Args('customerInput') customerInput: CreateCustomerInput,
   ): Promise<CustomerPayload> {
     try {
@@ -60,6 +65,30 @@ export class CustomersMutationResolver implements OnModuleInit {
       return {
         user,
         customer,
+      };
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @Mutation(() => CustomerRegisterPayload)
+  async registerCustomer(@Args('data') data: RegisterCustomer): Promise<CustomerRegisterPayload> {
+    try {
+      const { count } = await lastValueFrom(
+        this.userService.count({
+          where: JSON.stringify({ email: data.email }),
+        }),
+      );
+
+      if (count >= 1) throw new Error('The email is taken');
+
+      const { customer, user }: ICreateCustomerResponse = await lastValueFrom(this.customerService.register(data));
+
+      return {
+        user,
+        customer,
+        accessToken: await this.authService.generateAccessToken(user),
+        refreshToken: await this.authService.generateRefreshToken(user),
       };
     } catch (error) {
       throw new RpcException(error);
