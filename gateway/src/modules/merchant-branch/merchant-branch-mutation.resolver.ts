@@ -10,6 +10,7 @@ import {
   DeletePayload,
   MerchantBranch,
   MerchantBranchPayload,
+  PartialUpdateBranch,
   PartialUpdateBranchServiceGroup,
 } from '../../types';
 import { IMerchantBranchServiceGrpc } from './interfaces';
@@ -43,10 +44,7 @@ export class BranchMutationResolver implements OnModuleInit {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => MerchantBranchPayload)
-  async updateBranch(
-    @Args('id') id: number,
-    @Args('data') data: PartialUpdateBranchServiceGroup,
-  ): Promise<MerchantBranchPayload> {
+  async updateBranch(@Args('id') id: number, @Args('data') data: PartialUpdateBranch): Promise<MerchantBranchPayload> {
     try {
       const branch: MerchantBranch = await lastValueFrom(this.merchantService.update({ id, data }));
 

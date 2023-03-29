@@ -407,7 +407,7 @@ type Mutation {
   logout: Boolean!
   findMerchantById(id: Float!): Merchant!
   createBranch(data: CreateBranchInput!): MerchantBranchPayload!
-  updateBranch(id: Float!, data: PartialUpdateBranchServiceGroup!): MerchantBranchPayload!
+  updateBranch(id: Float!, data: PartialUpdateBranch!): MerchantBranchPayload!
   deleteBranch(id: Float!): DeletePayload!
   updatePassword(data: ChangePasswordInput!): User!
   createCategory(data: CategoryDto!, file: Upload, folder: String): Category!
@@ -485,12 +485,15 @@ input CreateBranchInput {
   wardCode: Float
 }
 
-input PartialUpdateBranchServiceGroup {
+input PartialUpdateBranch {
   name: String
-  description: String
-  image: String
-  showType: Int
-  branchId: Int
+  phone: String
+  address: String
+  merchantId: Int
+  userId: Int
+  cityCode: Int
+  districtCode: Int
+  wardCode: Float
 }
 
 input ChangePasswordInput {
@@ -617,6 +620,14 @@ input CreateBranchServiceGroupInput {
   image: String
   showType: Int!
   branchId: Int!
+}
+
+input PartialUpdateBranchServiceGroup {
+  name: String
+  description: String
+  image: String
+  showType: Int
+  branchId: Int
 }
 
 input CreateBranchServiceInput {
