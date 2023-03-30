@@ -1,6 +1,7 @@
 import { EUserGender, EUserRole, EUserStatus } from '../../enums';
 import { InputRegisterRequest } from '../../modules/user/dtos/inputRegisterRequest.dto';
-import { IErrorPayload } from '../commons.interface';
+import { IErrorPayload, IPageInfo } from '../commons.interface';
+import { ICustomerInput } from '../customer';
 
 export interface IUser {
   email?: string;
@@ -18,13 +19,6 @@ export interface IUser {
   id?: number;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface IPageInfo {
-  startCursor?: string;
-  endCursor?: string;
-  hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
 }
 
 export interface IUserEdge {
@@ -45,28 +39,6 @@ export interface IUserPayload {
 export class UpdateDataRequest {
   id: number;
   data: Partial<InputRegisterRequest>;
-}
-
-export interface ICustomerInput {
-  level?: string;
-  branchId?: number;
-  customerCode?: string;
-  facebook?: string;
-  zaloPhone?: string;
-  height?: number;
-  weight?: number;
-  memberCardNo?: string;
-  address?: string;
-  cityCode?: number;
-  districtCode?: number;
-  company?: string;
-  taxNo?: string;
-  note?: string;
-  relatedUser?: string;
-  relatedUserRole?: string;
-  relatedUserPhone?: string;
-  referrer?: string;
-  referrerCode?: string;
 }
 
 export interface IUserIncludeCustomer extends ICustomerInput {

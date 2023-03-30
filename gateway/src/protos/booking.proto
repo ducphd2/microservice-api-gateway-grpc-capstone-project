@@ -14,6 +14,7 @@ message Booking {
   int32 duration = 7;
   string createdAt = 8;
   string updatedAt = 9;
+  optional string note = 10;
 }
 
 message BookingEdge {
@@ -31,6 +32,7 @@ message CreateBookingInput {
   string adminBranchEmail = 7;
   string customerEmail = 8;
   string customerName = 9;
+  optional string note = 10;
 }
 
 message UpdateBookingInput {
@@ -53,6 +55,7 @@ service BookingServiceGrpc {
   rpc findOne (commons.Query) returns (Booking) {}
   rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateBookingInput) returns (Booking) {}
+  rpc customerCreate (CreateBookingInput) returns (Booking) {}
   rpc update (UpdateBookingInput) returns (Booking) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
 }

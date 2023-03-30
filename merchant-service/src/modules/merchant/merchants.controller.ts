@@ -47,6 +47,12 @@ export class MerchantsController {
     return result;
   }
 
+  @GrpcMethod(EGrpcClientService.MERCHANT_SERVICE, 'findById')
+  async findById(data: IId) {
+    const result = await this.merchantsService.findById(data.id);
+    return result;
+  }
+
   @GrpcMethod(EGrpcClientService.MERCHANT_SERVICE, 'findMerchantById')
   async getMerchantDetail(data: IId) {
     const result = await this.merchantsService.findById(data.id);

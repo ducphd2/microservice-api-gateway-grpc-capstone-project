@@ -212,3 +212,21 @@ export class UserIncludeCustomer extends BaseType {
   @Field({ nullable: true })
   districtCode?: number;
 }
+
+@ObjectType()
+export class UserPaginationResponse {
+  @Field(() => [User])
+  items: User[];
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  totalPage: number;
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  limit: number;
+}

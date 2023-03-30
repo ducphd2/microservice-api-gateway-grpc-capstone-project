@@ -27,6 +27,13 @@ export class BookingsController {
     return result;
   }
 
+  @GrpcMethod(EGrpcClientService.BOOKING_SERVICE, 'customerCreate')
+  async customerCreate(data: CreateBookingDto): Promise<IBooking> {
+    const result: IBooking = await this.service.create(data);
+
+    return result;
+  }
+
   @GrpcMethod(EGrpcClientService.BOOKING_SERVICE, 'find')
   async find(query: IQuery): Promise<IFindPayload<Booking>> {
     const { results, cursors } = await this.service.find({

@@ -5,9 +5,13 @@ import { join } from 'path';
 import { EGrpcClientService } from '../../enums';
 import { UtilsModule } from '../../utils/utils.module';
 import { BookingMutationResolver } from './booking-mutation.resolver';
+import { MerchantModule } from '../merchant/merchant.module';
+import { BranchServicesModule } from '../branch-service/branch-service.module';
+import { UserModule } from '../user/user.module';
+import { CustomerModule } from '../customer/customer.module';
 
 @Module({
-  imports: [UtilsModule, ConfigModule],
+  imports: [UtilsModule, ConfigModule, BranchServicesModule, UserModule, MerchantModule, CustomerModule],
   providers: [
     BookingMutationResolver,
     {
