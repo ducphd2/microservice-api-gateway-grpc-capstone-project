@@ -43,9 +43,10 @@ export class Booking extends BaseModel<Booking> {
   endTime: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.TEXT,
+    allowNull: false,
   })
-  duration: number;
+  bookingDate: string;
 
   @Column({
     type: DataType.TEXT,
