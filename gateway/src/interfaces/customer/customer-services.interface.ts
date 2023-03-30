@@ -1,18 +1,26 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
-import { CreateUserInputDto, Customer, CustomerPaginationResponse, DeviceConnection } from '../../types';
+import { Customer, CustomerPaginationResponse, RegisterCustomer } from '../../types';
 import { ICount, IId, IQuery, IQueryV2 } from '../commons.interface';
-import { ICustomersConnection, UpdateCustomerInput } from './customer.interface';
+import {
+  ICreateCustomerInput,
+  ICreateCustomerResponse,
+  ICustomer,
+  ICustomersConnection,
+  IUpdateCustomerInput,
+} from './customer.interface';
 
 export interface ICustomerServiceGrpc {
   find(query: IQuery, metadata?: Metadata): Observable<ICustomersConnection>;
   findOne(query: IQuery, metadata?: Metadata): Observable<Customer>;
-  findById(id: IId, metadata?: Metadata): Observable<Customer>;
-  findByUserId(id: IId, metadata?: Metadata): Observable<Customer>;
+  findById(id: IId, metadata?: Metadata): Observable<ICustomer>;
+  findByUserId(id: IId, metadata?: Metadata): Observable<ICustomer>;
   findAll(query: IQueryV2, metadata?: Metadata): Observable<CustomerPaginationResponse>;
 
-  update(data: UpdateCustomerInput): Observable<Customer>;
-  create(data: CreateUserInputDto): Observable<Customer>;
   count(query: IQuery, metadata?: Metadata): Observable<ICount>;
-  destroy(query?: IId, metadata?: Metadata): Observable<ICount>;
+  destroy(query?: IQuery, metadata?: Metadata): Observable<ICount>;
+
+  create(input: ICreateCustomerInput, metadata?: Metadata): Observable<ICreateCustomerResponse>;
+  register(input: RegisterCustomer, metadata?: Metadata): Observable<ICreateCustomerResponse>;
+  update(input: IUpdateCustomerInput): Observable<ICreateCustomerResponse>;
 }

@@ -2,26 +2,24 @@ import { Inject, OnModuleInit, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 import { EGrpcClientService } from '../../enums/grpc-services.enum';
 import { GqlAuthGuard } from '../../guard';
+import { ICreateCustomerResponse, ICustomerServiceGrpc } from '../../interfaces';
 import {
   CreateCustomerInput,
-  Customer,
   CustomerPayload,
   CustomerRegisterPayload,
   DeleteCustomerPayload,
-  PartialUpdateCustomer,
   RegisterCustomer,
   TestUpdateDto,
   UserInput,
 } from '../../types';
 import { IUserServiceGrpc } from '../user/interfaces';
-import { ICreateCustomerResponse, ICustomerServices } from './interfaces';
-import { AuthService } from '../../auth/auth.service';
 
 @Resolver()
 export class CustomersMutationResolver implements OnModuleInit {
-  private customerService: ICustomerServices;
+  private customerService: ICustomerServiceGrpc;
   private userService: IUserServiceGrpc;
 
   constructor(
@@ -33,7 +31,7 @@ export class CustomersMutationResolver implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.customerService = this.customersServiceClient.getService<ICustomerServices>(
+    this.customerService = this.customersServiceClient.getService<ICustomerServiceGrpc>(
       EGrpcClientService.CUSTOMER_SERVICE,
     );
 

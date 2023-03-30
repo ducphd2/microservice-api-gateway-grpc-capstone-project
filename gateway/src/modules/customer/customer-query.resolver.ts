@@ -5,13 +5,13 @@ import { isEmpty, merge } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { EGrpcClientService } from '../../enums';
 import { GqlAuthGuard } from '../../guard';
+import { ICustomer, ICustomerServiceGrpc, ICustomersConnection } from '../../interfaces';
 import { Customer, CustomersConnection } from '../../types';
 import { QueryUtils } from '../../utils/query.utils';
-import { ICustomerServices, ICustomersConnection } from './interfaces';
 
 @Resolver()
 export class CustomerQueryResolver implements OnModuleInit {
-  private customerService: ICustomerServices;
+  private customerService: ICustomerServiceGrpc;
 
   constructor(
     @Inject(EGrpcClientService.CUSTOMER_SERVICE)
@@ -20,7 +20,7 @@ export class CustomerQueryResolver implements OnModuleInit {
   ) {}
 
   onModuleInit(): void {
-    this.customerService = this.customersServiceClient.getService<ICustomerServices>(
+    this.customerService = this.customersServiceClient.getService<ICustomerServiceGrpc>(
       EGrpcClientService.CUSTOMER_SERVICE,
     );
   }
@@ -53,7 +53,7 @@ export class CustomerQueryResolver implements OnModuleInit {
 
   @Query(() => Customer)
   @UseGuards(GqlAuthGuard)
-  async getCustomerById(@Args('id', { type: () => Int }) id: number): Promise<Customer> {
+  async getCustomerById(@Args('id', { type: () => Int }) id: number): Promise<ICustomer> {
     const result = await lastValueFrom(
       this.customerService.findById({
         id,

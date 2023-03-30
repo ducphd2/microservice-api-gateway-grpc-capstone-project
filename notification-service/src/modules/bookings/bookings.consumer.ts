@@ -38,6 +38,12 @@ export class BookingQueueProcessor {
     Logger.log(`Queue EBullEvent.BOOKING_NOTIFICATION_EVENT with data: ${JSON.stringify(body)}`);
     await Promise.all([
       this.mailService.sendSuccessBookingUserEmail(body.customerEmail, body.customerName),
+      this.mailService.sendSuccessBookingAdminBranchEmail(
+        body.adminBranchEmail,
+        body.customerName,
+        body.customerPhone,
+        body.customerEmail,
+      ),
       this.notificationToGatewayQueue.addBookingEvent(EBullEvent.BOOKING_NOTIFICATION_EVENT, body),
     ]);
     return true;

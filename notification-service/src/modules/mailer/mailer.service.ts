@@ -31,14 +31,14 @@ export class MailService {
     adminEmail: string,
     fullName: string,
     phoneNumber: string,
-    userEmail: string,
+    customerEmail: string,
   ) {
     return this.sendEmailViaSMTP({
       to: adminEmail,
       subject: 'Successfully booked a health appointment',
       template: 'admin-success-booking',
       context: {
-        email: userEmail,
+        customerEmail,
         fullName,
         phoneNumber,
       },
