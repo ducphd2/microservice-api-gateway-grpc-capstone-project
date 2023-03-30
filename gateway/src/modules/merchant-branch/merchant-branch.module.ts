@@ -20,7 +20,7 @@ import { MerchantBranchService } from './merchant-branch.service';
         return ClientProxyFactory.create({
           transport: Transport.GRPC,
           options: {
-            url: configService.get<string>('MERCHANT_BRANCHES_SVC_URL'),
+            url: configService.get<string>('MERCHANTS_SVC_URL'),
             package: 'merchant_branch',
             protoPath: join(__dirname, '../../protos/merchant_branch.proto'),
             loader: {
