@@ -103,8 +103,8 @@ export class CustomerCreateBookingInput {
   @Field({ nullable: true })
   readonly note: string;
 
-  @Field(() => Int, { nullable: true })
-  readonly duration: number;
+  @Field()
+  readonly bookingDate: string;
 
   @Field()
   readonly startTime: string;

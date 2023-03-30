@@ -634,7 +634,7 @@ input CreateBookingInput {
 input CustomerCreateBookingInput {
   branchServiceId: Int!
   note: String
-  duration: Int
+  bookingDate: String!
   startTime: String!
   endTime: String!
 }

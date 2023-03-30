@@ -28,10 +28,10 @@ message CreateBookingInput {
   int32 branchServiceId = 3;
   string startTime = 4;
   string endTime = 5;
-  int32 duration = 6;
-  string adminBranchEmail = 7;
-  string customerEmail = 8;
-  string customerName = 9;
+  string adminBranchEmail = 6;
+  string customerEmail = 7;
+  string customerName = 8;
+  string bookingDate = 9;
   optional string note = 10;
 }
 
