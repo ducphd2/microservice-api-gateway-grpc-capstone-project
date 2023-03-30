@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package branch_service;
+
+import "commons.proto";
+
+service BranchServiceGrpc {
+    rpc find (commons.Query) returns (FindBranchServicePayload) {}
+    rpc findByMerchantId (QueryRequest) returns (FindBranchServicePagination) {}
+    rpc findAll (QueryRequest) returns (FindBranchServicePagination) {}
+    rpc findOne (commons.Query) returns (BranchService) {}
+    rpc findById (commons.Id) returns (BranchService) {}
+    rpc findByUserId (commons.Query) returns (FindBranchServicePayload) {}
+    rpc create (InputCreateRequest) returns (BranchService) {}
+    rpc update (UpdateBranchServiceInput) returns (BranchService) {}
+    rpc destroy (commons.Id) returns (commons.Count) {}
+    rpc count (InputCreateRequest) returns (commons.Count) {}
+}
+
+message QueryRequest {
+    string where = 1;
+    int32 page = 2;
+    int32 limit = 3;
+    string searchKey = 4;
+    string orderBy = 5;
+    string orderDirection = 6;
+}  
+
+message UpdateBranchServiceInput {
+    int32 id = 1;
+    BranchService data = 2;
+}
+
+message InputCreateRequest {
+    int32 serviceGroupId = 1;
+    float price = 2;
+    int32 durationHour = 3;
+    int32 durationMinute = 4;
+    string name = 5;
+    int32 showType = 6;
+    int32 status = 7;
+    optional bool canPrintHouseInInvoice = 8;
+    optional float capitalPrice = 9;
+    optional string code = 10;
+    optional string description = 11;
+    optional string image = 12;
+    optional bool canEditPriceInPay = 13;
+}
+
+message BranchService {
+    int32 id = 1;
+    string createdAt = 2;
+    string updatedAt = 3;
+    int32 serviceGroupId = 4;
+    float price = 5;
+    float capitalPrice = 6;
+    int32 durationHour = 7;
+    int32 durationMinute = 8;
+    string name = 9;
+    string code = 10;
+    int32 showType = 11;
+    int32 status = 12;
+    bool canPrintHouseInInvoice = 13;
+    optional string description = 14;
+    optional string image = 15;
+    optional bool canEditPriceInPay = 16;
+    optional int32 branchId = 17;
+    optional int32 merchantId = 18;
+}
+
+message BranchServiceEdge {
+    BranchService node = 1;
+    string cursor = 2;
+}
+
+message FindBranchServicePayload {
+    repeated BranchServiceEdge edges = 1;
+    commons.PageInfo pageInfo = 2;
+}
+
+
+message FindBranchServicePagination {
+    repeated BranchService items = 1;
+    int32 totalPage = 2;
+    int32 total = 3;
+    int32 page = 4;
+    int32 limit = 5;
+}

@@ -12,12 +12,16 @@ import {
 } from '../../interfaces';
 import { MerchantBranchesService } from '../merchant-branch/merchant-branches.services';
 import { MerchantsRepository } from './merchants.repository';
+import { BranchServicesService } from '../branch-service/branch-services.services';
+import { isNil } from 'lodash';
+import { MerchantBranch } from '../../database/entities';
 
 @Injectable()
 export class MerchantsService {
   constructor(
     private merchantsRepository: MerchantsRepository,
     private merchantBranchesService: MerchantBranchesService,
+    private branchServicesSvc: BranchServicesService,
   ) {}
 
   async find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<Merchant>> {
@@ -78,6 +82,26 @@ export class MerchantsService {
     return {
       ...merchant,
       branches: [branch],
+    };
+  }
+
+  async findMerchantAndBranchDetailByBranchServiceId(
+    branchServiceId: number,
+  ): Promise<{ merchant: Merchant; branch: MerchantBranch }> {
+    const branchService = await this.branchServicesSvc.findById(branchServiceId);
+
+    if (isNil(branchService)) {
+      ErrorHelper.NotFoundException('Branch service is not found');
+    }
+
+    const [merchant, branch] = await Promise.all([
+      this.findById(branchService.merchantId),
+      this.merchantBranchesService.findById(branchService.branchId),
+    ]);
+
+    return {
+      merchant,
+      branch,
     };
   }
 }

@@ -12,8 +12,8 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       url: `${process.env.GRPC_HOST}:${process.env.GRPC_PORT}`,
-      package: ['notification'],
-      protoPath: [join(__dirname, 'protos/notification.proto')],
+      package: ['notification', 'merchant'],
+      protoPath: [join(__dirname, 'protos/notification.proto'), join(__dirname, 'protos/merchant.proto')],
       loader: {
         keepCase: true,
         enums: String,

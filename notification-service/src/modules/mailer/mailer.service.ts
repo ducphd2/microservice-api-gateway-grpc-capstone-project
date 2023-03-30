@@ -1,6 +1,8 @@
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
 
+import { IBooking, IMerchant, IMerchantBranch } from '../../interfaces';
+
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
@@ -15,32 +17,45 @@ export class MailService {
     }
   }
 
-  async sendSuccessBookingUserEmail(userEmail: string, fullName: string) {
+  async sendSuccessBookingUserEmail(bookingData: IBooking, merchant: IMerchant, branch: IMerchantBranch) {
+    const { customerEmail, customerName, startTime, endTime, bookingDate } = bookingData;
+    const { name, address, phone } = branch;
     return this.sendEmailViaSMTP({
-      to: userEmail,
+      to: customerEmail,
       subject: 'Successfully booked a health appointment',
       template: 'user-success-booking',
       context: {
-        email: userEmail,
-        fullName,
+        email: customerEmail,
+        fullName: customerName,
+        bookingDate: bookingDate,
+        startTime: startTime,
+        endTime: endTime,
+        merchantName: name,
+        merchantAddress: address,
+        merchantPhoneNumber: phone,
       },
     });
   }
 
-  async sendSuccessBookingAdminBranchEmail(
-    adminEmail: string,
-    fullName: string,
-    phoneNumber: string,
-    userEmail: string,
-  ) {
+  async sendSuccessBookingAdminBranchEmail(bookingData: IBooking, merchant: IMerchant, branch: IMerchantBranch) {
+    const { customerEmail, customerName, startTime, endTime, bookingDate, customerPhoneNumber, adminBranchEmail } =
+      bookingData;
+    const { name, address, phone } = branch;
     return this.sendEmailViaSMTP({
-      to: adminEmail,
-      subject: 'Successfully booked a health appointment',
+      to: adminBranchEmail,
+      subject: 'New customer booking appointment',
       template: 'admin-success-booking',
       context: {
-        email: userEmail,
-        fullName,
-        phoneNumber,
+        customerPhoneNumber: customerPhoneNumber,
+        customerName: customerName,
+        customerEmail: customerEmail,
+        fullName: customerName,
+        bookingDate: bookingDate,
+        startTime: startTime,
+        endTime: endTime,
+        merchantName: name,
+        merchantAddress: address,
+        merchantPhoneNumber: phone,
       },
     });
   }

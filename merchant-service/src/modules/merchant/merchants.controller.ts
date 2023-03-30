@@ -7,6 +7,7 @@ import { ICount, IFindPayload, IId, IQuery, InputCreateMerchantRequest, UpdateMe
 import { MerchantsService } from './merchants.services';
 
 import Aigle from 'aigle';
+import { MerchantBranch } from '../../database/entities';
 
 const { map } = Aigle;
 
@@ -70,5 +71,14 @@ export class MerchantsController {
     const count: number = await this.merchantsService.deleteMerchant(data.id);
 
     return { count };
+  }
+
+  @GrpcMethod(EGrpcClientService.MERCHANT_SERVICE, 'findMerchantAndBranchDetailByBranchServiceId')
+  async findMerchantAndBranchDetailByBranchServiceId(
+    data: IId,
+  ): Promise<{ merchant: Merchant; branch: MerchantBranch }> {
+    const result = await this.merchantsService.findMerchantAndBranchDetailByBranchServiceId(data.id);
+
+    return result;
   }
 }

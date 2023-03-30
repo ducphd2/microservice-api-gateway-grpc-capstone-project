@@ -8,7 +8,9 @@ export interface IBooking {
   startTime?: string;
   endTime?: string;
   duration?: number;
-  branchAdminEmail?: string;
+  adminBranchEmail?: string;
   customerEmail?: string;
   customerName?: string;
+  bookingDate?: string;
+  customerPhoneNumber?: string;
 }
