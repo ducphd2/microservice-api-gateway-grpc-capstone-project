@@ -5,14 +5,18 @@ import { isEmpty, isNil } from 'lodash';
 import { BranchServices } from '../../database/entities';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { ICount, IFindPayload, IId, IQuery } from '../../interfaces';
+import { ICount, IFindPayload, IId, IQuery, IQueryV2 } from '../../interfaces';
 import { ICreateBranchServicesInput, IUpdateBranchServicesInput } from '../../interfaces/branch-service';
 import { BranchServicesService } from './branch-services.services';
+import { BranchServiceGroupService } from '../branch-service-group/branch-service-groups.services';
 const { map } = Aigle;
 
 @Controller()
 export class BranchServicesController {
-  constructor(private branchServicesService: BranchServicesService) {}
+  constructor(
+    private branchServicesService: BranchServicesService,
+    private branchServiceGroupSvc: BranchServiceGroupService,
+  ) {}
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'find')
   async find(query: IQuery): Promise<IFindPayload<BranchServices>> {
@@ -41,14 +45,31 @@ export class BranchServicesController {
     return result;
   }
 
+  @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'findByMerchantId')
+  async findByMerchantId(query: IQueryV2): Promise<any> {
+    const result = await this.branchServicesService.findByMerchantId(query);
+
+    return result;
+  }
+
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'findAll')
-  async findAll() {
-    return this.branchServicesService.findAll();
+  async findAll(query: IQueryV2) {
+    return this.branchServicesService.findAll(query);
   }
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GRPC, 'create')
   async create(data: ICreateBranchServicesInput) {
-    const result = await this.branchServicesService.create(data);
+    const serviceGroup = await this.branchServiceGroupSvc.findById(data.serviceGroupId);
+
+    if (!serviceGroup) {
+      ErrorHelper.NotFoundException('Service group not found');
+    }
+
+    const result = await this.branchServicesService.create({
+      ...data,
+      merchantId: serviceGroup.merchantId,
+      branchId: serviceGroup.branchId,
+    });
     return result.toJSON();
   }
 

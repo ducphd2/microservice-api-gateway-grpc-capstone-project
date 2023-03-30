@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { WhereOptions } from 'sequelize';
+import { PaginationQuery, PaginationResponse } from '@ntheanh201/nestjs-sequelize-pagination';
+import { isEmpty, pick } from 'lodash';
+import { Includeable, WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
-import { ErrorHelper } from '../../helpers';
-import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes } from '../../interfaces';
-import { BranchServiceRepository } from './branch-services.repository';
 import { BranchServices } from '../../database/entities';
+import { ErrorHelper } from '../../helpers';
+import { IFindAndPaginateOptions, IFindAndPaginateResult, IQueryV2 } from '../../interfaces';
+import { ICreateBranchServicesInput } from '../../interfaces/branch-service';
+import { BranchServiceRepository } from './branch-services.repository';
 
 @Injectable()
 export class BranchServicesService {
@@ -16,12 +19,27 @@ export class BranchServicesService {
     return result;
   }
 
-  findAll(page?: number, limit?: number): Promise<IPaginationRes<BranchServices>> {
-    const getAllCondition = {};
-    return this.branchServicesRepository.paginate(getAllCondition, page, limit);
+  async findAll(query: IQueryV2): Promise<PaginationResponse<BranchServices>> {
+    const result = await this.branchServicesRepository.findAndPaginate({
+      ...query,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    return result;
   }
 
-  async create(data: any): Promise<BranchServices> {
+  async findByMerchantId(query?: IQueryV2): Promise<any> {
+    const result = await this.findAll(query);
+
+    return result;
+  }
+
+  // findAll(page?: number, limit?: number): Promise<IPaginationRes<BranchServices>> {
+  //   const getAllCondition = {};
+  //   return this.branchServicesRepository.paginate(getAllCondition, page, limit);
+  // }
+
+  async create(data: ICreateBranchServicesInput): Promise<BranchServices> {
     return await this.branchServicesRepository.create(data);
   }
 
@@ -29,7 +47,7 @@ export class BranchServicesService {
     return this.branchServicesRepository.findById(id);
   }
 
-  async updateBranchServiceGroup(id: number, params: any): Promise<BranchServices> {
+  async updateBranchServiceGroup(id: number, params: Partial<ICreateBranchServicesInput>): Promise<BranchServices> {
     const branchServiceGroup = await this.findById(id);
     if (!branchServiceGroup) {
       ErrorHelper.BadRequestException(MERCHANT.MERCHANT_NOT_FOUND);

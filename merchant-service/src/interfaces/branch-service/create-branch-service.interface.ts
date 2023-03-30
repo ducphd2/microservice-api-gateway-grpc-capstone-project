@@ -1,4 +1,6 @@
 export interface ICreateBranchServicesInput {
+  branchId?: number;
+  merchantId?: number;
   serviceGroupId?: number;
   price?: number;
   capitalPrice?: number;

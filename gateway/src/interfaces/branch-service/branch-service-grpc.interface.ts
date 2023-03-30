@@ -1,11 +1,12 @@
 import { Metadata } from '@grpc/grpc-js';
 import { Observable } from 'rxjs';
-import { BranchService, BranchServiceConnection } from '../../types';
-import { ICount, IId, IQuery } from '../commons.interface';
+import { BranchService, BranchServiceConnection, BranchServicePaginationResponse } from '../../types';
+import { ICount, IId, IQuery, IQueryV2 } from '../commons.interface';
 import { ICreateBranchServiceInput, IUpdateBranchServiceInput } from './branch-service.interface';
 
 export interface IBranchServiceGrpc {
   find(query: IQuery, metadata?: Metadata): Observable<BranchServiceConnection>;
+  findByMerchantId(query: IQueryV2, metadata?: Metadata): Observable<BranchServicePaginationResponse>;
   findById(id: IId, metadata?: Metadata): Observable<BranchService>;
   findByBranchId(query: IQuery, metadata?: Metadata): Observable<BranchServiceConnection>;
   findOne(query: IQuery, metadata?: Metadata): Observable<BranchService>;

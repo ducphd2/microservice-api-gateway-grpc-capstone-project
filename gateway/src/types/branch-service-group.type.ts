@@ -1,5 +1,6 @@
 import { Field, InputType, Int, ObjectType, PartialType } from '@nestjs/graphql';
 import { BaseType, ErrorPayload, PageInfo } from './base.type';
+import { EBranchServiceShowType } from '../enums';
 
 @ObjectType()
 export class BranchServiceGroup extends BaseType {
@@ -57,8 +58,8 @@ export class CreateBranchServiceGroupInput {
   @Field({ nullable: true })
   image: string;
 
-  @Field(() => Int)
-  showType: number;
+  @Field(() => EBranchServiceShowType)
+  showType: EBranchServiceShowType;
 
   @Field(() => Int)
   branchId: number;

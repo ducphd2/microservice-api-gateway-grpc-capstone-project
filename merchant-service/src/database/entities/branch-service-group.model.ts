@@ -3,6 +3,7 @@ import { BaseModel } from './base.model';
 import { MerchantBranch } from './merchant-branch.model';
 import * as paginate from 'sequelize-cursor-pagination';
 import { BranchServices } from './branch-service.model';
+import { Merchant } from './merchant.model';
 
 @Table({
   modelName: 'branch_service_group',
@@ -41,6 +42,15 @@ export class BranchServiceGroups extends BaseModel<BranchServiceGroups> {
 
   @BelongsTo(() => MerchantBranch)
   branch: MerchantBranch;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  @ForeignKey(() => Merchant)
+  merchantId: number;
+
+  @BelongsTo(() => Merchant)
+  merchant: Merchant;
 
   @HasMany(() => BranchServices)
   branchServices: BranchServices[];

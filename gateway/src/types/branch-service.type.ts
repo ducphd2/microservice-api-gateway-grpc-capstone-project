@@ -10,7 +10,7 @@ export class BranchService extends BaseType {
   @Field(() => Float)
   price: number;
 
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   capitalPrice: number;
 
   @Field(() => Int)
@@ -42,6 +42,12 @@ export class BranchService extends BaseType {
 
   @Field(() => Boolean, { nullable: true })
   canEditPriceInPay: boolean;
+
+  @Field(() => Int, { nullable: true })
+  branchId: number;
+
+  @Field(() => Int, { nullable: true })
+  merchantId: number;
 }
 
 @ObjectType()
@@ -123,4 +129,22 @@ export class UpdateBranchService {
 
   @Field(() => PartialUpdateBranchService)
   data: PartialUpdateBranchService;
+}
+
+@ObjectType()
+export class BranchServicePaginationResponse {
+  @Field(() => [BranchService])
+  items: BranchService[];
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  totalPage: number;
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  limit: number;
 }

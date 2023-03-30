@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { WhereOptions } from 'sequelize';
-import { MERCHANT, MERCHANT_BRANCH } from '../../constants';
+import { MERCHANT_BRANCH } from '../../constants';
 import { MerchantBranch } from '../../database/entities/merchant-branch.model';
 import { ErrorHelper } from '../../helpers';
 import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../interfaces';
-import { MerchantBranchesRepository } from './merchant-branches.repository';
 import { IMerchantBranch } from '../../interfaces/merchant-branch';
+import { MerchantBranchesRepository } from './merchant-branches.repository';
 
 @Injectable()
 export class MerchantBranchesService {

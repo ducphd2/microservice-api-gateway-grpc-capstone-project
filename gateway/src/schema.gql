@@ -345,7 +345,7 @@ type BranchService {
   updatedAt: String!
   serviceGroupId: Int!
   price: Float!
-  capitalPrice: Float!
+  capitalPrice: Float
   durationHour: Int!
   durationMinute: Int!
   name: String!
@@ -356,6 +356,8 @@ type BranchService {
   status: Int!
   canPrintHouseInInvoice: Boolean
   canEditPriceInPay: Boolean
+  branchId: Int
+  merchantId: Int
 }
 
 type BranchServiceEdge {
@@ -371,6 +373,14 @@ type BranchServiceConnection {
 type BranchServicePayload {
   errors: [ErrorPayload!]
   branchService: BranchService
+}
+
+type BranchServicePaginationResponse {
+  items: [BranchService!]!
+  page: Int!
+  totalPage: Int!
+  total: Int!
+  limit: Int!
 }
 
 type FindAllCategories {
@@ -405,6 +415,7 @@ type Query {
   findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceGroupConnection!
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
+  findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
 }
 
 type Mutation {
@@ -632,15 +643,22 @@ input CreateBranchServiceGroupInput {
   name: String!
   description: String!
   image: String
-  showType: Int!
+  showType: EBranchServiceShowType!
   branchId: Int!
+}
+
+enum EBranchServiceShowType {
+  both_in_screen
+  only_cashier
+  only_booking
+  not_at_all
 }
 
 input PartialUpdateBranchServiceGroup {
   name: String
   description: String
   image: String
-  showType: Int
+  showType: EBranchServiceShowType
   branchId: Int
 }
 
@@ -658,13 +676,6 @@ input CreateBranchServiceInput {
   showType: EBranchServiceShowType!
   status: EBranchServiceStatus!
   canPrintHouseInInvoice: Boolean
-}
-
-enum EBranchServiceShowType {
-  both_in_screen
-  only_cashier
-  only_booking
-  not_at_all
 }
 
 enum EBranchServiceStatus {
