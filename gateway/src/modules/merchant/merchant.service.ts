@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpcProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { EGrpcClientService } from '../../enums';
-import { IId, IQuery } from '../../interfaces';
+import { IId, IQuery, IQueryV2 } from '../../interfaces';
 import { IMerchantServiceGrpc, IRegisterInput, IRegisterResponse } from '../../interfaces/merchants';
 import { Merchant, MerchantConnection } from '../../types';
 import { UpdateMerchantRequestInputDto } from './dtos/merchant';
@@ -41,6 +41,11 @@ export class MerchantService {
 
   async findById(data: IId): Promise<Merchant> {
     const result = await lastValueFrom(this.merchantService.findById(data));
+    return result;
+  }
+
+  async findOne(query: IQueryV2): Promise<Merchant> {
+    const result = await lastValueFrom(this.merchantService.findOne(query));
     return result;
   }
 }

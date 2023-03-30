@@ -15,6 +15,10 @@ message Booking {
   string createdAt = 8;
   string updatedAt = 9;
   optional string note = 10;
+  int32 merchantId = 11;
+  int32 branchId = 12;
+  optional bool isCustomerCancel = 13;
+  optional string cancelReason = 14;
 }
 
 message BookingEdge {
@@ -33,6 +37,8 @@ message CreateBookingInput {
   string customerName = 8;
   string bookingDate = 9;
   optional string note = 10;
+  int32 merchantId = 11;
+  int32 branchId = 12;
 }
 
 message UpdateBookingInput {
@@ -49,8 +55,18 @@ message FindOneCustomerPayload {
   Booking booking = 1;
 }
 
+
+message FindAllBookingsPagination {
+  repeated Booking items = 1;
+  int32 page = 2;
+  int32 totalPage = 3;
+  int32 total = 4;
+  int32 limit = 5;
+}
+
 service BookingServiceGrpc {
   rpc find (commons.Query) returns (FindBookingsPayload) {}
+  rpc findAll (commons.QueryRequest) returns (FindAllBookingsPagination) {}
   rpc findById (commons.Id) returns (Booking) {}
   rpc findOne (commons.Query) returns (Booking) {}
   rpc count (commons.Query) returns (commons.Count) {}

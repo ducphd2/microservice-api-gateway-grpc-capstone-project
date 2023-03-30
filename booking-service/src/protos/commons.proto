@@ -25,3 +25,12 @@ message PageInfo {
 message Count {
   int32 count = 1;
 }
+
+message QueryRequest {
+  string where = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string searchKey = 4;
+  string orderBy = 5;
+  string orderDirection = 6;
+}

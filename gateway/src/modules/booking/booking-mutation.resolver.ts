@@ -1,7 +1,7 @@
 import { Inject, Logger, OnModuleInit, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
-import { isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { CurrentUser } from '../../common/decorators';
 import { EBookingStatus } from '../../enums';
@@ -10,6 +10,7 @@ import { GqlAuthGuard } from '../../guard';
 import { IBookingServiceGrpc } from '../../interfaces/booking';
 import {
   Booking,
+  BookingPaginationResponse,
   BookingPayload,
   CreateBookingInput,
   CustomerCreateBookingInput,
@@ -21,6 +22,7 @@ import { BranchServicesService } from '../branch-service/branch-service.service'
 import { CustomerService } from '../customer/customer.service';
 import { MerchantService } from '../merchant/merchant.service';
 import { UserService } from '../user/user.service';
+import { BookingService } from './booking.service';
 
 @Resolver()
 export class BookingMutationResolver implements OnModuleInit {
@@ -34,6 +36,7 @@ export class BookingMutationResolver implements OnModuleInit {
     private readonly userSvc: UserService,
     private readonly merchantSvc: MerchantService,
     private readonly customerSvc: CustomerService,
+    private readonly bookingSvc: BookingService,
   ) {}
 
   onModuleInit(): void {
@@ -105,6 +108,8 @@ export class BookingMutationResolver implements OnModuleInit {
           adminBranchEmail: adminOwner.email,
           customerName: user.fullName,
           status: EBookingStatus.PENDING,
+          merchantId: merchant.id,
+          branchId: branchService.branchId,
         }),
       );
 
@@ -132,5 +137,34 @@ export class BookingMutationResolver implements OnModuleInit {
         }),
       }),
     );
+  }
+
+  @Query(() => BookingPaginationResponse)
+  @UseGuards(GqlAuthGuard)
+  async findAllBookingByMerchant(
+    @CurrentUser() user: User,
+    @Args('q', { nullable: true }) q?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+  ): Promise<BookingPaginationResponse> {
+    const merchant = await this.merchantSvc.findOne({
+      where: JSON.stringify({
+        userId: user.id,
+      }),
+    });
+
+    const re = await this.bookingSvc.findAllByMerchant({
+      where: JSON.stringify({
+        merchantId: merchant.id,
+      }),
+      searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+      page: page ? page : 1,
+      limit: limit ? limit : 10,
+      orderBy: orderBy ? orderBy : 'updatedAt',
+      orderDirection: orderDirection ? orderDirection : 'DESC',
+    });
+    return re;
   }
 }

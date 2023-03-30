@@ -3,11 +3,20 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { isEmpty, isNil } from 'lodash';
 import { Merchant } from '../../database/entities/merchant.model';
 import { EGrpcClientService } from '../../enums';
-import { ICount, IFindPayload, IId, IQuery, InputCreateMerchantRequest, UpdateMerchantInput } from '../../interfaces';
+import {
+  ICount,
+  IFindPayload,
+  IId,
+  IQuery,
+  IQueryV2,
+  InputCreateMerchantRequest,
+  UpdateMerchantInput,
+} from '../../interfaces';
 import { MerchantsService } from './merchants.services';
 
 import Aigle from 'aigle';
 import { MerchantBranch } from '../../database/entities';
+import { ErrorHelper } from '../../helpers';
 
 const { map } = Aigle;
 
@@ -78,6 +87,20 @@ export class MerchantsController {
     data: IId,
   ): Promise<{ merchant: Merchant; branch: MerchantBranch }> {
     const result = await this.merchantsService.findMerchantAndBranchDetailByBranchServiceId(data.id);
+
+    return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.MERCHANT_SERVICE, 'findOne')
+  async findOne(query: IQueryV2): Promise<Merchant> {
+    const result: Merchant = await this.merchantsService.findOne({
+      attributes: !isEmpty(query.select) ? query.select : undefined,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException('Merchant is not found');
+    }
 
     return result;
   }

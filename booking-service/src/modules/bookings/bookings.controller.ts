@@ -8,7 +8,7 @@ import { BOOKING_MESSAGE } from '../../constants';
 import { Booking } from '../../database/models';
 import { EGrpcClientService } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { IBooking, ICount, IFindPayload, IId, IQuery } from '../../interfaces';
+import { IBooking, ICount, IFindPayload, IId, IQuery, IQueryV2 } from '../../interfaces';
 
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto';
@@ -105,5 +105,10 @@ export class BookingsController {
     });
 
     return { count };
+  }
+
+  @GrpcMethod(EGrpcClientService.BOOKING_SERVICE, 'findAll')
+  async findAll(query: IQueryV2) {
+    return this.service.findAll(query);
   }
 }

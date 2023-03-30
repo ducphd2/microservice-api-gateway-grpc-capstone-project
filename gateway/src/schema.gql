@@ -298,6 +298,14 @@ type DeleteBookingPayload {
   count: Int
 }
 
+type BookingPaginationResponse {
+  items: [Booking!]!
+  page: Int!
+  totalPage: Int!
+  total: Int!
+  limit: Int!
+}
+
 type UserBookingNotification {
   id: Int!
   createdAt: String!
@@ -413,6 +421,7 @@ type Query {
   findCategoryById(id: Float!): Category!
   getAllCustomer(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): CustomersConnection!
   getCustomerById(id: Int!): Customer!
+  findAllBookingByMerchant(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
