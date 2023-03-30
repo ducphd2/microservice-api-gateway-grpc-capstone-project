@@ -4,12 +4,12 @@ import { Attributes, FindOptions, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
 import { Booking } from '../../database/models';
-import { IFindAndPaginateOptions, IFindAndPaginateResult } from '../../interfaces';
 import { EBullEvent } from '../../enums';
+import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes, IQueryV2 } from '../../interfaces';
 
+import { IBookingsService } from './bookings.interface';
 import { BookingsRepository } from './bookings.repository';
 import { BookingQueueProvider } from './bull-producer.service';
-import { IBookingsService } from './bookings.interface';
 
 @Injectable()
 export class BookingsService implements IBookingsService {
@@ -80,6 +80,20 @@ export class BookingsService implements IBookingsService {
 
   async destroy(query?: FindOptions): Promise<number> {
     const result: number = await this.bookingsRepository.delete(query);
+
+    return result;
+  }
+
+  async findAll(query: IQueryV2): Promise<IPaginationRes<Booking>> {
+    const result = await this.bookingsRepository.findAll(
+      {
+        ...query,
+        where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+      },
+      {
+        order: [[query.orderBy, query.orderDirection]],
+      },
+    );
 
     return result;
   }

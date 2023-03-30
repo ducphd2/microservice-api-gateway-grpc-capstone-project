@@ -112,3 +112,29 @@ export class CustomerCreateBookingInput {
   @Field()
   readonly endTime: string;
 }
+
+@ObjectType()
+export class BookingPaginationResponse {
+  @Field(() => [Booking])
+  items: Booking[];
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  totalPage: number;
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  limit: number;
+}
+
+export class UpdateBookingInput {
+  @Field(() => Int)
+  id: number;
+
+  @Field(() => PartialUpdateBooking)
+  data: PartialUpdateBooking;
+}

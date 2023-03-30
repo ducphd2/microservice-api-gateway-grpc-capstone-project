@@ -31,6 +31,16 @@ export class Booking extends BaseModel<Booking> {
   branchServiceId: number;
 
   @Column({
+    type: DataType.INTEGER,
+  })
+  merchantId: number;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  branchId: number;
+
+  @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
@@ -52,6 +62,16 @@ export class Booking extends BaseModel<Booking> {
     type: DataType.TEXT,
   })
   note: string;
+
+  @Column({
+    type: DataType.TEXT,
+  })
+  cancelReason: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  isCustomerCancel: boolean;
 }
 
 paginate({

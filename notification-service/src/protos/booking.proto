@@ -15,6 +15,10 @@ message Booking {
   string createdAt = 8;
   string updatedAt = 9;
   optional string note = 10;
+  int32 merchantId = 11;
+  int32 branchId = 12;
+  optional bool isCustomerCancel = 13;
+  optional string cancelReason = 14;
 }
 
 message BookingEdge {
@@ -33,6 +37,8 @@ message CreateBookingInput {
   string customerName = 8;
   string bookingDate = 9;
   optional string note = 10;
+  int32 merchantId = 11;
+  int32 branchId = 12;
 }
 
 message UpdateBookingInput {

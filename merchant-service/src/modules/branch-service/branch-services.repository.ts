@@ -7,6 +7,7 @@ import { PaginationQuery, PaginationResponse, PaginationService } from '@ntheanh
 import { Includeable } from 'sequelize/types';
 import { isEmpty } from 'lodash';
 import { Op } from 'sequelize';
+import { FindOptions } from 'sequelize';
 
 @Injectable()
 export class BranchServiceRepository extends BaseRepository<BranchServices> {
@@ -28,8 +29,8 @@ export class BranchServiceRepository extends BaseRepository<BranchServices> {
     return result;
   }
 
-  async findAndPaginate(query?: IFindAndPaginateOptions): Promise<any> {
-    const result: IPaginationRes<BranchServices> = await this.paginate(query.where, query.page, query.limit);
+  async findAndPaginate(query?: IFindAndPaginateOptions, opts?: FindOptions): Promise<any> {
+    const result: IPaginationRes<BranchServices> = await this.paginate(query.where, query.page, query.limit, opts);
 
     return result;
   }

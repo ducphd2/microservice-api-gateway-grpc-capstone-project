@@ -44,7 +44,7 @@ message FindMerchantsPayload {
 
 service MerchantServiceGrpc {
     rpc find (commons.Query) returns (FindMerchantsPayload) {}
-    rpc findOneMerchant (InputCreateRequest) returns (Merchant) {}
+    rpc findOne (commons.Query) returns (Merchant) {}
     rpc create (InputCreateRequest) returns (Merchant) {}
     rpc countMerchants (InputCreateRequest) returns (commons.Count) {}
     rpc findById (commons.Id) returns (Merchant) {}

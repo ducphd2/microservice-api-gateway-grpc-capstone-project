@@ -44,6 +44,7 @@ export class BaseRepository<T extends Model> {
     return {
       items: rows,
       total: count,
+      totalPage: Math.ceil(count / LIMIT_PAGE),
       page,
       limit,
     } as IPaginationRes<T>;

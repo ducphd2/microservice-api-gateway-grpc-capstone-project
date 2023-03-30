@@ -1,12 +1,17 @@
 import { WhereOptions, FindAttributeOptions } from 'sequelize';
 
 export interface IFindAndPaginateOptions {
-  attributes: FindAttributeOptions;
-  where: WhereOptions;
-  order: string[];
-  limit: number;
-  before: string;
-  after: string;
+  attributes?: FindAttributeOptions;
+  where?: WhereOptions;
+  order?: string[];
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  orderBy?: string;
+  orderDirection?: string;
+  offset?: number;
+  keySearch?: string;
 }
 
 export interface ICursor {

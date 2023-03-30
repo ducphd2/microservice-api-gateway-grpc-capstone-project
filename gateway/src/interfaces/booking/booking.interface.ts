@@ -36,6 +36,8 @@ export interface IUpdateBookingInput {
 export interface ICustomerCreateBookingInput {
   status?: string;
   customerId?: number;
+  merchantId?: number;
+  branchId?: number;
   branchServiceId?: number;
   startTime?: string;
   endTime?: string;

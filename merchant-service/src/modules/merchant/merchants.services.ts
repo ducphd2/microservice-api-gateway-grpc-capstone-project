@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { WhereOptions } from 'sequelize';
+import { FindOptions, WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { Merchant } from '../../database/entities/merchant.model';
 import { ErrorHelper } from '../../helpers';
@@ -103,5 +103,11 @@ export class MerchantsService {
       merchant,
       branch,
     };
+  }
+
+  async findOne(options?: FindOptions) {
+    return await this.merchantsRepository.findOne({
+      where: options.where,
+    });
   }
 }

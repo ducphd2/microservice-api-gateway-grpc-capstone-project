@@ -14,3 +14,16 @@ export interface IQuery {
 export interface ICount {
   count: number;
 }
+
+export interface IQueryV2 {
+  select?: string[];
+  where?: string;
+  orderBy?: string;
+  orderDirection?: string;
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  offset?: number;
+  keySearch?: string;
+}
