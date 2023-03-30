@@ -41,6 +41,11 @@ export class BranchServicesService {
     return result;
   }
 
+  async findAll(query: IQueryV2): Promise<BranchServicePaginationResponse> {
+    const result = await lastValueFrom(this.branchServiceGrpc.findAll(query));
+    return result;
+  }
+
   async create(data: CreateBranchServiceInput): Promise<BranchService> {
     const result = await lastValueFrom(this.branchServiceGrpc.create(data));
     return result;

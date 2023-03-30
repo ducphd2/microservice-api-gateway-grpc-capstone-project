@@ -7,6 +7,7 @@ import "commons.proto";
 service BranchServiceGrpc {
     rpc find (commons.Query) returns (FindBranchServicePayload) {}
     rpc findByMerchantId (QueryRequest) returns (FindBranchServicePagination) {}
+    rpc findAll (QueryRequest) returns (FindBranchServicePagination) {}
     rpc findOne (commons.Query) returns (BranchService) {}
     rpc findById (commons.Id) returns (BranchService) {}
     rpc findByUserId (commons.Query) returns (FindBranchServicePayload) {}

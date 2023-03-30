@@ -39,6 +39,7 @@ message BranchServiceGroup {
     string updatedAt = 7;
     int32 showType = 8;
     int32 branchId = 9;
+    optional int32 merchantId = 10;
 }
 
 message BranchServiceGroupEdge {
