@@ -35,12 +35,17 @@ export interface IFindPayload<T> {
 }
 
 export interface IFindAndPaginateOptions {
-  attributes: FindAttributeOptions;
-  where: WhereOptions;
-  order: string[];
-  limit: number;
-  before: string;
-  after: string;
+  attributes?: FindAttributeOptions;
+  where?: WhereOptions;
+  order?: string[];
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  orderBy?: string;
+  orderDirection?: string;
+  offset?: number;
+  keySearch?: string;
 }
 
 export interface ICursor {
@@ -53,4 +58,17 @@ export interface ICursor {
 export interface IFindAndPaginateResult<T> {
   results: T[];
   cursors: ICursor;
+}
+
+export interface IQueryV2 {
+  select?: string[];
+  where?: string;
+  orderBy?: string;
+  orderDirection?: string;
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  offset?: number;
+  keySearch?: string;
 }

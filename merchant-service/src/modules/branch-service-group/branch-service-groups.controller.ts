@@ -1,5 +1,5 @@
 import { GrpcMethod } from '@nestjs/microservices';
-import { ICount, IFindPayload, IId, IQuery } from '../../interfaces';
+import { ICount, ICreateBranchServiceGroupInput, IFindPayload, IId, IQuery } from '../../interfaces';
 import { BranchServiceGroupService } from './branch-service-groups.services';
 import { ICreateBranchServicesInput, IUpdateBranchServicesInput } from '../../interfaces/branch-service';
 import { EGrpcClientService } from '../../enums';
@@ -8,11 +8,15 @@ import { BranchServiceGroups } from '../../database/entities/branch-service-grou
 import { isEmpty, isNil } from 'lodash';
 import Aigle from 'aigle';
 import { ErrorHelper } from '../../helpers';
+import { MerchantBranchesService } from '../merchant-branch/merchant-branches.services';
 const { map } = Aigle;
 
 @Controller()
 export class BranchServiceGroupController {
-  constructor(private branchServicesService: BranchServiceGroupService) {}
+  constructor(
+    private branchServicesService: BranchServiceGroupService,
+    private merchantBranchesSvc: MerchantBranchesService,
+  ) {}
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'find')
   async find(query: IQuery): Promise<IFindPayload<BranchServiceGroups>> {
@@ -47,8 +51,14 @@ export class BranchServiceGroupController {
   }
 
   @GrpcMethod(EGrpcClientService.BRANCH_SERVICE_GROUP_SERVICE, 'create')
-  async create(data: ICreateBranchServicesInput) {
-    const result = await this.branchServicesService.create(data);
+  async create(data: ICreateBranchServiceGroupInput) {
+    const branch = await this.merchantBranchesSvc.findById(data.branchId);
+
+    if (!branch) {
+      ErrorHelper.NotFoundException('Branch not found');
+    }
+
+    const result = await this.branchServicesService.create({ ...data, merchantId: branch.merchantId });
     return result.toJSON();
   }
 

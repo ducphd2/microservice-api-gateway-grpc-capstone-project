@@ -8,6 +8,7 @@ export interface IResponse {
 
 export interface IPaginationRes<T> {
   items: T[];
+  totalPage: number;
   total: number;
   page: number;
   limit: number;

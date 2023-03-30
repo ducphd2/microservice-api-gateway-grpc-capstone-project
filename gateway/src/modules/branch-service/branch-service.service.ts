@@ -2,10 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpcProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { EGrpcClientService } from '../../enums';
-import { ICount, IId, IQuery } from '../../interfaces';
+import { ICount, IId, IQuery, IQueryV2 } from '../../interfaces';
 import {
   BranchService,
   BranchServiceConnection,
+  BranchServicePaginationResponse,
   CreateBranchServiceInput,
   MerchantBranch,
   MerchantBranchConnection,
@@ -32,6 +33,11 @@ export class BranchServicesService {
 
   async findAllBranches(query: IQuery): Promise<BranchServiceConnection> {
     const result = await lastValueFrom(this.branchServiceGrpc.find(query));
+    return result;
+  }
+
+  async findAllBranchesByMerchant(query: IQueryV2): Promise<BranchServicePaginationResponse> {
+    const result = await lastValueFrom(this.branchServiceGrpc.findByMerchantId(query));
     return result;
   }
 

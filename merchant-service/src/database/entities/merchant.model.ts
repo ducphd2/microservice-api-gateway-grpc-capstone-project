@@ -3,6 +3,7 @@ import { BaseModel } from './base.model';
 import { MerchantBranch } from './merchant-branch.model';
 
 import * as paginate from 'sequelize-cursor-pagination';
+import { BranchServices } from './branch-service.model';
 
 @Table({
   modelName: 'merchant',
@@ -51,6 +52,9 @@ export class Merchant extends BaseModel<Merchant> {
 
   @HasMany(() => MerchantBranch)
   branches: MerchantBranch[];
+
+  @HasMany(() => BranchServices)
+  branchServices: BranchServices[];
 }
 
 paginate({

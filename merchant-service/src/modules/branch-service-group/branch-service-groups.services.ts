@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { ErrorHelper } from '../../helpers';
-import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes } from '../../interfaces';
+import {
+  ICreateBranchServiceGroupInput,
+  IFindAndPaginateOptions,
+  IFindAndPaginateResult,
+  IPaginationRes,
+} from '../../interfaces';
 import { BranchServiceGroupRepository } from './branch-service-groups.repository';
 import { BranchServiceGroups } from '../../database/entities/branch-service-group.model';
 
@@ -23,7 +28,7 @@ export class BranchServiceGroupService {
     return this.branchServicesRepository.paginate(getAllCondition, page, limit);
   }
 
-  async create(data: any): Promise<BranchServiceGroups> {
+  async create(data: ICreateBranchServiceGroupInput): Promise<BranchServiceGroups> {
     return await this.branchServicesRepository.create(data);
   }
 

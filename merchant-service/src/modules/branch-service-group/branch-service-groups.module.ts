@@ -4,9 +4,10 @@ import { BranchServiceGroups } from '../../database/entities/branch-service-grou
 import { BranchServiceGroupController } from './branch-service-groups.controller';
 import { BranchServiceGroupRepository } from './branch-service-groups.repository';
 import { BranchServiceGroupService } from './branch-service-groups.services';
+import { MerchantBranchesModule } from '../merchant-branch/merchant-branches.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([BranchServiceGroups])],
+  imports: [SequelizeModule.forFeature([BranchServiceGroups]), MerchantBranchesModule],
   controllers: [BranchServiceGroupController],
   providers: [BranchServiceGroupService, BranchServiceGroupRepository],
   exports: [BranchServiceGroupService],

@@ -3,7 +3,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { isEmpty, merge } from 'lodash';
 import { CurrentUser } from '../../common/decorators';
 import { GqlAuthGuard } from '../../guard';
-import { BranchService, BranchServiceConnection } from '../../types';
+import { BranchService, BranchServiceConnection, BranchServicePaginationResponse } from '../../types';
 import { QueryUtils } from '../../utils/query.utils';
 import { BranchServicesService } from './branch-service.service';
 
@@ -41,6 +41,38 @@ export class BranchServicesQueryResolver {
       merge(query, await this.queryUtils.buildQuery(orderBy, first, last, before, after));
 
       const result = await this.branchServicesSvc.findAllBranches({
+        ...query,
+        where: JSON.stringify(query.where),
+      });
+      return result;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  @Query(() => BranchServicePaginationResponse)
+  @UseGuards(GqlAuthGuard)
+  async findAllBranchServicesByMerchant(
+    @Args('merchantId') merchantId: number,
+    @Args('q', { nullable: true }) q?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+  ): Promise<BranchServicePaginationResponse> {
+    try {
+      const query = {
+        where: {
+          merchantId,
+        },
+        searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+        page: page ? page : 1,
+        limit: limit ? limit : 10,
+        orderBy: orderBy ? orderBy : 'updatedAt',
+        orderDirection: orderDirection ? orderDirection : 'DESC',
+      };
+
+      const result = await this.branchServicesSvc.findAllBranchesByMerchant({
         ...query,
         where: JSON.stringify(query.where),
       });

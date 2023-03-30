@@ -36,3 +36,15 @@ export interface IErrorPayload {
   field?: string;
   message?: string[];
 }
+
+export interface IQueryV2 {
+  select?: string[];
+  where?: string;
+  limit?: number;
+  before?: string;
+  after?: string;
+  page?: number;
+  orderBy?: string;
+  orderDirection?: string;
+  searchKey?: string;
+}

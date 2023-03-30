@@ -6,6 +6,7 @@ import "commons.proto";
 
 service BranchServiceGrpc {
     rpc find (commons.Query) returns (FindBranchServicePayload) {}
+    rpc findByMerchantId (QueryRequest) returns (FindBranchServicePagination) {}
     rpc findOne (commons.Query) returns (BranchService) {}
     rpc findById (commons.Id) returns (BranchService) {}
     rpc findByUserId (commons.Query) returns (FindBranchServicePayload) {}
@@ -14,6 +15,15 @@ service BranchServiceGrpc {
     rpc destroy (commons.Id) returns (commons.Count) {}
     rpc count (InputCreateRequest) returns (commons.Count) {}
 }
+
+message QueryRequest {
+    string where = 1;
+    int32 page = 2;
+    int32 limit = 3;
+    string searchKey = 4;
+    string orderBy = 5;
+    string orderDirection = 6;
+}  
 
 message UpdateBranchServiceInput {
     int32 id = 1;
@@ -52,7 +62,9 @@ message BranchService {
     bool canPrintHouseInInvoice = 13;
     optional string description = 14;
     optional string image = 15;
-    optional string canEditPriceInPay = 16;
+    optional bool canEditPriceInPay = 16;
+    optional int32 branchId = 17;
+    optional int32 merchantId = 18;
 }
 
 message BranchServiceEdge {
@@ -63,4 +75,13 @@ message BranchServiceEdge {
 message FindBranchServicePayload {
     repeated BranchServiceEdge edges = 1;
     commons.PageInfo pageInfo = 2;
+}
+
+
+message FindBranchServicePagination {
+    repeated BranchService items = 1;
+    int32 totalPage = 2;
+    int32 total = 3;
+    int32 page = 4;
+    int32 limit = 5;
 }
