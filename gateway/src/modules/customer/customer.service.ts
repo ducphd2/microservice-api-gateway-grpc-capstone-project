@@ -2,45 +2,57 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpcProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { EGrpcClientService } from '../../enums';
-import { ICount, ICustomerServiceGrpc, IId, IQueryV2 } from '../../interfaces';
-import { CreateUserInputDto, Customer, UserPaginationResponse } from '../../types';
+import {
+  ICount,
+  ICreateCustomerInput,
+  ICreateCustomerResponse,
+  ICustomer,
+  ICustomerServiceGrpc,
+  IId,
+  IQuery,
+  IQueryV2,
+  IUpdateCustomerInput,
+} from '../../interfaces';
+import { UserPaginationResponse } from '../../types';
 
 @Injectable()
 export class CustomerService {
-  private userServiceGrpc: ICustomerServiceGrpc;
-  constructor(@Inject(EGrpcClientService.USER_SERVICE) private readonly userServiceClient: ClientGrpcProxy) {}
+  private customerServiceGrpc: ICustomerServiceGrpc;
+  constructor(@Inject(EGrpcClientService.CUSTOMER_SERVICE) private readonly customerServiceClient: ClientGrpcProxy) {}
 
   onModuleInit() {
-    this.userServiceGrpc = this.userServiceClient.getService<ICustomerServiceGrpc>(EGrpcClientService.USER_SERVICE);
+    this.customerServiceGrpc = this.customerServiceClient.getService<ICustomerServiceGrpc>(
+      EGrpcClientService.CUSTOMER_SERVICE,
+    );
   }
 
-  async findById(data: IId): Promise<Customer> {
-    const result = await lastValueFrom(this.userServiceGrpc.findById(data));
+  async findById(data: IId): Promise<ICustomer> {
+    const result = await lastValueFrom(this.customerServiceGrpc.findById(data));
     return result;
   }
 
-  async findByUserId(data: IId): Promise<Customer> {
-    const result = await lastValueFrom(this.userServiceGrpc.findById(data));
+  async findByUserId(data: IId): Promise<ICustomer> {
+    const result = await lastValueFrom(this.customerServiceGrpc.findByUserId(data));
     return result;
   }
 
   async findAll(query: IQueryV2): Promise<UserPaginationResponse> {
-    const result = await lastValueFrom(this.userServiceGrpc.findAll(query));
+    const result = await lastValueFrom(this.customerServiceGrpc.findAll(query));
     return result;
   }
 
-  async create(data: CreateUserInputDto): Promise<Customer> {
-    const result = await lastValueFrom(this.userServiceGrpc.create(data));
+  async create(data: ICreateCustomerInput): Promise<ICreateCustomerResponse> {
+    const result = await lastValueFrom(this.customerServiceGrpc.create(data));
     return result;
   }
 
-  async update(data: any): Promise<Customer> {
-    const result = await lastValueFrom(this.userServiceGrpc.update(data));
+  async update(data: IUpdateCustomerInput): Promise<ICreateCustomerResponse> {
+    const result = await lastValueFrom(this.customerServiceGrpc.update(data));
     return result;
   }
 
-  async destroy(id: IId): Promise<ICount> {
-    const result = await lastValueFrom(this.userServiceGrpc.destroy(id));
+  async destroy(query?: IQuery): Promise<ICount> {
+    const result = await lastValueFrom(this.customerServiceGrpc.destroy(query));
     return result;
   }
 }
