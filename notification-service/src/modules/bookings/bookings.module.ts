@@ -8,6 +8,7 @@ import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microser
 import { EBullQueue } from '../../enums/queue-event.enum';
 import { MailModule } from '../mailer/mailer.module';
 import { EGrpcClientService } from '../../enums';
+import { MerchantModule } from '../merchant/merchant.module';
 
 import { BookingQueueProcessor } from './bookings.consumer';
 import { NotificationToGatewayQueueProvider } from './bull-producer.service';
@@ -21,6 +22,7 @@ import { NotificationToGatewayQueueProvider } from './bull-producer.service';
       name: EBullQueue.GATEWAY_QUEUE,
     }),
     MailModule,
+    MerchantModule,
   ],
   providers: [
     {

@@ -3,6 +3,7 @@ syntax = "proto3";
 package user;
 
 import "commons.proto";
+import "device.proto";
 import "customer.proto";
 
 message User {
@@ -74,5 +75,6 @@ service UserServiceGrpc {
   rpc update (UpdateUserInput) returns (User) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
 
+  rpc findDevices (commons.Query) returns (device.FindDevicesPayload) {}
   rpc findOneCustomer (commons.Query) returns (FindOneCustomerPayload) {}
 }
