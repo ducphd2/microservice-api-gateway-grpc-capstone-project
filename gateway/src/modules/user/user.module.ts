@@ -9,6 +9,7 @@ import { MerchantModule } from '../merchant/merchant.module';
 import { UserFieldResolver } from './user-field.resolver';
 import { UserMutationResolver } from './user-mutation.resolver';
 import { UserQueryResolver } from './user-query.resolver';
+import { UserService } from './user.service';
 
 @Module({
   imports: [ConfigModule, UtilsModule, MerchantModule, MerchantBranchModule],
@@ -16,6 +17,7 @@ import { UserQueryResolver } from './user-query.resolver';
     UserFieldResolver,
     UserQueryResolver,
     UserMutationResolver,
+    UserService,
     {
       provide: EGrpcClientService.USER_SERVICE,
       useFactory: (configService: ConfigService): ClientGrpcProxy => {
@@ -37,6 +39,6 @@ import { UserQueryResolver } from './user-query.resolver';
       inject: [ConfigService],
     },
   ],
-  exports: [EGrpcClientService.USER_SERVICE],
+  exports: [EGrpcClientService.USER_SERVICE, UserService],
 })
 export class UserModule {}

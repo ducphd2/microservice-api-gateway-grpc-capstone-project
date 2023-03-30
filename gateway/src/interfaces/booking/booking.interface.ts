@@ -32,3 +32,16 @@ export interface IUpdateBookingInput {
   id: number;
   data: PartialUpdateBooking;
 }
+
+export interface ICustomerCreateBookingInput {
+  status?: string;
+  customerId?: number;
+  branchServiceId?: number;
+  startTime?: string;
+  endTime?: string;
+  duration?: number;
+  adminBranchEmail?: string;
+  customerEmail?: string;
+  customerName?: string;
+  note?: string;
+}

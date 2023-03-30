@@ -271,9 +271,10 @@ type Booking {
   status: EBookingStatus!
   customerId: Int!
   branchServiceId: Int!
-  duration: Int!
+  duration: Int
   startTime: String!
   endTime: String!
+  note: String
 }
 
 enum EBookingStatus {
@@ -412,12 +413,12 @@ type Query {
   findCategoryById(id: Float!): Category!
   getAllCustomer(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): CustomersConnection!
   getCustomerById(id: Int!): Customer!
-  findBranchServiceGroupById(id: Float!): BranchServiceGroup!
-  findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceGroupConnection!
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
   customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
+  findBranchServiceGroupById(id: Float!): BranchServiceGroup!
+  findAllServiceGroups(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceGroupConnection!
 }
 
 type Mutation {
@@ -441,14 +442,15 @@ type Mutation {
   updateCustomer(id: Float!, data: TestUpdateDto!): CustomerPayload!
   deleteCustomer(id: Float!): DeleteCustomerPayload!
   createBooking(data: CreateBookingInput!): BookingPayload!
+  customerCreateBooking(data: CustomerCreateBookingInput!): BookingPayload!
   updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
   deleteBooking(id: Float!): DeleteBookingPayload!
-  createBranchServiceGroup(data: CreateBranchServiceGroupInput!): BranchServiceGroupPayload!
-  updateBranchServiceGroup(id: Float!, data: PartialUpdateBranchServiceGroup!): BranchServiceGroupPayload!
-  deleteBranchServiceGroup(id: Float!): DeletePayload!
   createBranchService(data: CreateBranchServiceInput!): BranchServicePayload!
   updateBranchService(id: Float!, data: PartialUpdateBranchService!): BranchServicePayload!
   deleteBranchService(id: Float!): DeletePayload!
+  createBranchServiceGroup(data: CreateBranchServiceGroupInput!): BranchServiceGroupPayload!
+  updateBranchServiceGroup(id: Float!, data: PartialUpdateBranchServiceGroup!): BranchServiceGroupPayload!
+  deleteBranchServiceGroup(id: Float!): DeletePayload!
 }
 
 input InputLoginRequest {
@@ -629,6 +631,14 @@ input CreateBookingInput {
   customerName: String!
 }
 
+input CustomerCreateBookingInput {
+  branchServiceId: Int!
+  note: String
+  duration: Int
+  startTime: String!
+  endTime: String!
+}
+
 input PartialUpdateBooking {
   status: EBookingStatus
   customerId: Int
@@ -639,29 +649,6 @@ input PartialUpdateBooking {
   adminBranchEmail: String
   customerEmail: String
   customerName: String
-}
-
-input CreateBranchServiceGroupInput {
-  name: String!
-  description: String!
-  image: String
-  showType: EBranchServiceShowType!
-  branchId: Int!
-}
-
-enum EBranchServiceShowType {
-  both_in_screen
-  only_cashier
-  only_booking
-  not_at_all
-}
-
-input PartialUpdateBranchServiceGroup {
-  name: String
-  description: String
-  image: String
-  showType: EBranchServiceShowType
-  branchId: Int
 }
 
 input CreateBranchServiceInput {
@@ -678,6 +665,13 @@ input CreateBranchServiceInput {
   showType: EBranchServiceShowType!
   status: EBranchServiceStatus!
   canPrintHouseInInvoice: Boolean
+}
+
+enum EBranchServiceShowType {
+  both_in_screen
+  only_cashier
+  only_booking
+  not_at_all
 }
 
 enum EBranchServiceStatus {
@@ -699,6 +693,22 @@ input PartialUpdateBranchService {
   showType: EBranchServiceShowType
   status: EBranchServiceStatus
   canPrintHouseInInvoice: Boolean
+}
+
+input CreateBranchServiceGroupInput {
+  name: String!
+  description: String!
+  image: String
+  showType: EBranchServiceShowType!
+  branchId: Int!
+}
+
+input PartialUpdateBranchServiceGroup {
+  name: String
+  description: String
+  image: String
+  showType: EBranchServiceShowType
+  branchId: Int
 }
 
 type Subscription {

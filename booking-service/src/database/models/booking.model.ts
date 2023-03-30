@@ -44,9 +44,13 @@ export class Booking extends BaseModel<Booking> {
 
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
   })
   duration: number;
+
+  @Column({
+    type: DataType.TEXT,
+  })
+  note: string;
 }
 
 paginate({

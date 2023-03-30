@@ -80,6 +80,7 @@ message RegisterCustomerResponse {
 service CustomerServiceGrpc {
   rpc find (commons.Query) returns (FindCustomersPayload) {}
   rpc findById (commons.Id) returns (Customer) {}
+  rpc findByUserId (commons.Id) returns (Customer) {}
   rpc findOne (commons.Query) returns (Customer) {}
   rpc count (commons.Query) returns (commons.Count) {}
   rpc create (CreateCustomerInput) returns (Customer) {}

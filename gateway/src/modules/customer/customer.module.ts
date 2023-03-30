@@ -8,10 +8,12 @@ import { UserModule } from '../user/user.module';
 import { CustomersMutationResolver } from './customer-mutation.resolver';
 import { CustomerQueryResolver } from './customer-query.resolver';
 import { AuthModule } from '../../auth/auth.module';
+import { CustomerService } from './customer.service';
 
 @Module({
   imports: [UtilsModule, ConfigModule, UserModule, AuthModule],
   providers: [
+    CustomerService,
     CustomerQueryResolver,
     CustomersMutationResolver,
     {
@@ -29,6 +31,6 @@ import { AuthModule } from '../../auth/auth.module';
       inject: [ConfigService],
     },
   ],
-  exports: [EGrpcClientService.CUSTOMER_SERVICE],
+  exports: [EGrpcClientService.CUSTOMER_SERVICE, CustomerService],
 })
 export class CustomerModule {}

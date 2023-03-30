@@ -38,4 +38,9 @@ export class MerchantService {
     const result = await lastValueFrom(this.merchantService.find(query));
     return result;
   }
+
+  async findById(data: IId): Promise<Merchant> {
+    const result = await lastValueFrom(this.merchantService.findById(data));
+    return result;
+  }
 }

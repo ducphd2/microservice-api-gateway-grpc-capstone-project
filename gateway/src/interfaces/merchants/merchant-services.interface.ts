@@ -21,4 +21,6 @@ export interface IMerchantServiceGrpc {
   countMerchantBranches(query?: IQuery, metadata?: Metadata): Observable<ICount>;
   updateMerchantBranch(input: InputRegisterRequest): Observable<MerchantBranch>;
   destroyMerchantBranch(query?: IQuery, metadata?: Metadata): Observable<ICount>;
+
+  findById(id: IId, metadata?: Metadata): Observable<Merchant>;
 }

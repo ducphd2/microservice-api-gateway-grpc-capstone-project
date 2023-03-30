@@ -233,3 +233,21 @@ export class CustomerRegisterPayload extends CustomerPayload {
   @Field(() => String)
   refreshToken: string;
 }
+
+@ObjectType()
+export class CustomerPaginationResponse {
+  @Field(() => [User])
+  items: User[];
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  totalPage: number;
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  limit: number;
+}

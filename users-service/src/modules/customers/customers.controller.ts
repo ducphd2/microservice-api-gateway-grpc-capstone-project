@@ -77,6 +77,23 @@ export class CustomersController {
     return result;
   }
 
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findByUserId')
+  async findByUserId({ id }): Promise<ICustomer> {
+    this.logger.info('CustomersController#findByUserId.call %o', id);
+
+    const result: ICustomer = await this.findOne({
+      where: JSON.stringify({
+        userId: id,
+      }),
+    });
+
+    this.logger.info('CustomersController#findByUserId.result %o', result);
+
+    if (isEmpty(result)) throw new Error('Record not found.');
+
+    return result;
+  }
+
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findOne')
   async findOne(query: IQuery): Promise<Customer> {
     this.logger.info('CustomersController#findOne.call %o', query);
