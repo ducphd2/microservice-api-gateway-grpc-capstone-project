@@ -322,6 +322,7 @@ type BranchServiceGroup {
   image: String
   showType: Int!
   branchId: Int!
+  merchantId: Int
 }
 
 type BranchServiceGroupEdge {
@@ -416,6 +417,7 @@ type Query {
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
+  customerFindAllServices(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
 }
 
 type Mutation {

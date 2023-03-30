@@ -18,6 +18,9 @@ export class BranchServiceGroup extends BaseType {
 
   @Field(() => Int)
   branchId: number;
+
+  @Field(() => Int, { nullable: true })
+  merchantId: number;
 }
 
 @ObjectType()

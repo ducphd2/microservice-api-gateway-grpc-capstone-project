@@ -7,6 +7,7 @@ import { ICreateBranchServiceInput, IUpdateBranchServiceInput } from './branch-s
 export interface IBranchServiceGrpc {
   find(query: IQuery, metadata?: Metadata): Observable<BranchServiceConnection>;
   findByMerchantId(query: IQueryV2, metadata?: Metadata): Observable<BranchServicePaginationResponse>;
+  findAll(query: IQueryV2, metadata?: Metadata): Observable<BranchServicePaginationResponse>;
   findById(id: IId, metadata?: Metadata): Observable<BranchService>;
   findByBranchId(query: IQuery, metadata?: Metadata): Observable<BranchServiceConnection>;
   findOne(query: IQuery, metadata?: Metadata): Observable<BranchService>;
