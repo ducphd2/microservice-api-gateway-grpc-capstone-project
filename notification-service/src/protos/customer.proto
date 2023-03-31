@@ -87,4 +87,5 @@ service CustomerServiceGrpc {
   rpc register (RegisterCustomerInput) returns (RegisterCustomerResponse) {}
   rpc update (UpdateCustomerInput) returns (Customer) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
+  rpc findOneCustomer (commons.Query) returns (user.FindOneCustomerPayload) {}
 }

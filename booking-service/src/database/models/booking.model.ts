@@ -72,6 +72,16 @@ export class Booking extends BaseModel<Booking> {
     type: DataType.BOOLEAN,
   })
   isCustomerCancel: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  isAdminUpdate: boolean;
+
+  @Column({
+    type: DataType.INTEGER,
+  })
+  adminUpdateId: number;
 }
 
 paginate({

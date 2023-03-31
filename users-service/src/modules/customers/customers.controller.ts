@@ -1,39 +1,36 @@
 import Aigle from 'aigle';
 
-import { Controller } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { isEmpty, isNil } from 'lodash';
-import { PinoLogger } from 'nestjs-pino';
 
 import { ICount, IQuery } from '../../commons/commons.interface';
 import { IFindPayload } from '../../commons/cursor-pagination.interface';
 
+import { CUSTOMER_MESSAGE } from '../../constants/messages';
 import { Customer } from '../../database/models/customer.model';
 import { EGrpcClientService, EUserRole } from '../../enums';
+import { ErrorHelper } from '../../helpers';
+import { IUserIncludeCustomer } from '../../interfaces';
 import {
   ICreateCustomer,
   ICustomer,
   IRegisterCustomer,
   IRegisterCustomerResponse,
-  IUpdateCustomer,
   IUpdateCustomerInput,
 } from '../../interfaces/customers';
 import { CustomersService } from './customers.service';
-import { User } from '../../database/models';
-import { ErrorHelper } from '../../helpers';
 
 const { map } = Aigle;
 
 @Controller()
 export class CustomersController {
-  constructor(private readonly service: CustomersService, private readonly logger: PinoLogger) {
-    logger.setContext(CustomersController.name);
-  }
+  private readonly logger = new Logger(this.constructor.name);
+
+  constructor(private readonly service: CustomersService) {}
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'find')
   async find(query: IQuery): Promise<IFindPayload<ICustomer>> {
-    this.logger.info('CustomersController#findAll.call %o', query);
-
     const { results, cursors } = await this.service.find({
       attributes: !isEmpty(query.select) ? ['id'].concat(query.select) : undefined,
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
@@ -59,66 +56,54 @@ export class CustomersController {
       },
     };
 
-    this.logger.info('CustomersController#findAll.result %o', result);
-
     return result;
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findById')
   async findById({ id }): Promise<ICustomer> {
-    this.logger.info('CustomersController#findById.call %o', id);
-
     const result: ICustomer = await this.service.findById(id);
 
-    this.logger.info('CustomersController#findById.result %o', result);
-
-    if (isEmpty(result)) throw new Error('Record not found.');
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException(CUSTOMER_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
 
     return result;
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findByUserId')
   async findByUserId({ id }): Promise<ICustomer> {
-    this.logger.info('CustomersController#findByUserId.call %o', id);
-
     const result: ICustomer = await this.findOne({
       where: JSON.stringify({
         userId: id,
       }),
     });
 
-    this.logger.info('CustomersController#findByUserId.result %o', result);
-
-    if (isEmpty(result)) throw new Error('Record not found.');
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException(CUSTOMER_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
 
     return result;
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findOne')
   async findOne(query: IQuery): Promise<Customer> {
-    this.logger.info('CustomersController#findOne.call %o', query);
-
     const result: Customer = await this.service.findOne({
       attributes: !isEmpty(query.select) ? query.select : undefined,
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
     });
 
-    this.logger.info('CustomersController#findOne.result %o', result);
-
-    if (isEmpty(result)) throw new Error('Record not found.');
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException(CUSTOMER_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
 
     return result;
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'count')
   async count(query: IQuery): Promise<ICount> {
-    this.logger.info('CustomersController#count.call %o', query);
-
     const count: number = await this.service.count({
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
     });
-
-    this.logger.info('CustomersController#count.result %o', count);
 
     return { count };
   }
@@ -126,8 +111,6 @@ export class CustomersController {
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'create')
   async create(data: ICreateCustomer): Promise<ICustomer> {
     try {
-      this.logger.info('CustomersController#create.call %o', data);
-
       const result: ICustomer = await this.service.create({
         userInput: {
           ...data.userInput,
@@ -138,51 +121,51 @@ export class CustomersController {
         },
       });
 
-      this.logger.info('CustomersController#create.result %o', result);
-
       return result;
     } catch (error) {
-      ErrorHelper.BadRequestException('Can not create customer');
+      ErrorHelper.BadRequestException(CUSTOMER_MESSAGE.CAN_NOT_CREATE_CUSTOMER);
     }
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'register')
   async registerCustomer(data: IRegisterCustomer): Promise<IRegisterCustomerResponse> {
     try {
-      this.logger.info('CustomersController#registerCustomer.call %o', data);
-
       const result: IRegisterCustomerResponse = await this.service.register(data);
-
-      this.logger.info('CustomersController#registerCustomer.result %o', result);
 
       return result;
     } catch (error) {
       console.log(error);
-      ErrorHelper.BadRequestException('Can not register customer');
+      ErrorHelper.BadRequestException(CUSTOMER_MESSAGE.CAN_NOT_CREATE_CUSTOMER);
     }
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'update')
   async update({ data, id }: IUpdateCustomerInput): Promise<ICustomer> {
-    this.logger.info('CustomersController#update.call %o %o', id, data);
-
     const result: ICustomer = await this.service.update(id, data);
-
-    this.logger.info('CustomersController#update.result %o', result);
 
     return result;
   }
 
   @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'destroy')
   async destroy(query: IQuery): Promise<ICount> {
-    this.logger.info('CustomersController#destroy.call %o', query);
-
     const count: number = await this.service.destroy({
       where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
     });
 
-    this.logger.info('CustomersController#destroy.result %o', count);
-
     return { count };
+  }
+
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findOneCustomer')
+  async findOneCustomer(query: IQuery): Promise<IUserIncludeCustomer> {
+    const result: IUserIncludeCustomer = await this.service.findOneCustomer({
+      attributes: !isEmpty(query.select) ? query.select : undefined,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException(CUSTOMER_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
+
+    return result;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { isEmpty } from 'lodash';
+import { isEmpty, omit, pick } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
 import { FindOptions, Transaction } from 'sequelize';
 
@@ -19,6 +19,7 @@ import {
   IUpdateCustomer,
 } from '../../interfaces/customers';
 import { UsersService } from '../users/users.service';
+import { IUser, IUserIncludeCustomer } from '../../interfaces';
 
 @Injectable()
 export class CustomersService implements ICustomersService {
@@ -237,5 +238,19 @@ export class CustomersService implements ICustomersService {
     this.logger.info('CustomersService#destroy.result %o', result);
 
     return result;
+  }
+
+  async findOneCustomer(query: FindOptions): Promise<IUserIncludeCustomer> {
+    const result: Customer = await this.repo.findOne({
+      include: [User],
+      ...query,
+      raw: true,
+      nest: true,
+    });
+
+    return {
+      user: result.user as IUser,
+      customer: omit(result, 'user'),
+    };
   }
 }

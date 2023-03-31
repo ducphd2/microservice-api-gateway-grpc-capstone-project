@@ -4,7 +4,7 @@ import { Attributes, FindOptions, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
 import { Booking } from '../../database/models';
-import { EBullEvent } from '../../enums';
+import { EBookingStatus, EBullEvent } from '../../enums';
 import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes, IQueryV2 } from '../../interfaces';
 
 import { IBookingsService } from './bookings.interface';
@@ -70,12 +70,19 @@ export class BookingsService implements IBookingsService {
 
     if (isEmpty(record)) throw new Error('Record not found.');
 
-    const [affectedCount, affectedRows] = await this.bookingsRepository.update(bookingInput, {
+    const bookings = await this.bookingsRepository.update(bookingInput, {
       where: { id },
       transaction,
     });
 
-    return affectedRows[0];
+    if (bookingInput.status === EBookingStatus.APPROVE && bookingInput.isAdminUpdate === true) {
+      await this.bookingQueue.addBookingEvent(EBullEvent.APPROVE_BOOKING_NOTIFICATION_EVENT, {
+        ...bookingInput,
+        ...bookings[0],
+      });
+    }
+
+    return bookings[0];
   }
 
   async destroy(query?: FindOptions): Promise<number> {

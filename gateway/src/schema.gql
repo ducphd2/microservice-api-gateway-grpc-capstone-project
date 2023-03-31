@@ -271,9 +271,15 @@ type Booking {
   status: EBookingStatus!
   customerId: Int!
   branchServiceId: Int!
-  duration: Int
+  merchantId: Int
+  branchId: Int
   startTime: String!
   endTime: String!
+  bookingDate: String!
+  cancelReason: String
+  isCustomerCancel: Boolean
+  isAdminUpdate: Boolean
+  adminUpdateId: Int
   note: String
 }
 
@@ -422,6 +428,7 @@ type Query {
   getAllCustomer(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): CustomersConnection!
   getCustomerById(id: Int!): Customer!
   findAllBookingByMerchant(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
+  findBookingById(id: Float!): BookingPayload!
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!
@@ -454,6 +461,7 @@ type Mutation {
   customerCreateBooking(data: CustomerCreateBookingInput!): BookingPayload!
   updateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
   deleteBooking(id: Float!): DeleteBookingPayload!
+  adminUpdateBooking(id: Float!, data: PartialUpdateBooking!): BookingPayload!
   createBranchService(data: CreateBranchServiceInput!): BranchServicePayload!
   updateBranchService(id: Float!, data: PartialUpdateBranchService!): BranchServicePayload!
   deleteBranchService(id: Float!): DeletePayload!
@@ -649,7 +657,7 @@ input CustomerCreateBookingInput {
 }
 
 input PartialUpdateBooking {
-  status: EBookingStatus
+  status: EBookingStatus!
   customerId: Int
   branchServiceId: Int
   duration: Int
@@ -658,6 +666,10 @@ input PartialUpdateBooking {
   adminBranchEmail: String
   customerEmail: String
   customerName: String
+  cancelReason: String
+  isCustomerCancel: Boolean
+  isAdminUpdate: Boolean
+  adminUpdateId: Int
 }
 
 input CreateBranchServiceInput {
