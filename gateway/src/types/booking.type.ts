@@ -14,13 +14,31 @@ export class Booking extends BaseType {
   readonly branchServiceId: number;
 
   @Field(() => Int, { nullable: true })
-  readonly duration: number;
+  readonly merchantId: number;
+
+  @Field(() => Int, { nullable: true })
+  readonly branchId: number;
 
   @Field()
   readonly startTime: string;
 
   @Field()
   readonly endTime: string;
+
+  @Field()
+  readonly bookingDate: string;
+
+  @Field({ nullable: true })
+  readonly cancelReason: string;
+
+  @Field({ nullable: true })
+  readonly isCustomerCancel: boolean;
+
+  @Field({ nullable: true })
+  readonly isAdminUpdate: boolean;
+
+  @Field(() => Int, { nullable: true })
+  readonly adminUpdateId: number;
 
   @Field({ nullable: true })
   readonly note: string;
@@ -93,7 +111,22 @@ export class DeleteBookingPayload {
 }
 
 @InputType()
-export class PartialUpdateBooking extends PartialType<CreateBookingInput>(CreateBookingInput) {}
+export class PartialUpdateBooking extends PartialType<CreateBookingInput>(CreateBookingInput) {
+  @Field(() => EBookingStatus)
+  readonly status: EBookingStatus;
+
+  @Field({ nullable: true })
+  readonly cancelReason: string;
+
+  @Field({ nullable: true })
+  readonly isCustomerCancel: boolean;
+
+  @Field({ nullable: true })
+  readonly isAdminUpdate: boolean;
+
+  @Field(() => Int, { nullable: true })
+  readonly adminUpdateId: number;
+}
 
 @InputType()
 export class CustomerCreateBookingInput {

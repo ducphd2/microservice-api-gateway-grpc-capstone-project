@@ -13,4 +13,10 @@ export interface IBooking {
   customerName?: string;
   bookingDate?: string;
   customerPhoneNumber?: string;
+  isAdminUpdate?: boolean;
+  isCustomerCancel?: boolean;
+  cancelReason?: string;
+  adminUpdateId?: number;
+  branchId?: number;
+  merchantId?: number;
 }

@@ -6,6 +6,15 @@ export enum EBookingStatus {
   CANCELLED = 'cancelled',
 }
 
+export enum ECustomerBookingStatus {
+  PENDING = 'pending',
+  CANCELLED = 'cancelled',
+}
+
 registerEnumType(EBookingStatus, {
   name: 'EBookingStatus',
+});
+
+registerEnumType(ECustomerBookingStatus, {
+  name: 'ECustomerBookingStatus',
 });

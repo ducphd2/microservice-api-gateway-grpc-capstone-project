@@ -4,4 +4,5 @@ export enum EBullQueue {
 
 export enum EBullEvent {
   BOOKING_NOTIFICATION_EVENT = 'booking_notification_event',
+  APPROVE_BOOKING_NOTIFICATION_EVENT = 'approve_booking_notification_event',
 }

@@ -23,6 +23,7 @@ import { CustomerService } from '../customer/customer.service';
 import { MerchantService } from '../merchant/merchant.service';
 import { UserService } from '../user/user.service';
 import { BookingService } from './booking.service';
+import { RolesGuard } from '../../guard/role.guard';
 
 @Resolver()
 export class BookingMutationResolver implements OnModuleInit {
@@ -167,4 +168,49 @@ export class BookingMutationResolver implements OnModuleInit {
     });
     return re;
   }
+
+  @Query(() => BookingPayload)
+  @UseGuards(GqlAuthGuard)
+  async findBookingById(@CurrentUser() user: User, @Args('id') id?: number): Promise<BookingPayload> {
+    const booking = await this.bookingSvc.findById({
+      id,
+    });
+    return { booking };
+  }
+
+  @Mutation(() => BookingPayload)
+  @UseGuards(GqlAuthGuard)
+  async adminUpdateBooking(
+    @CurrentUser() user: User,
+    @Args('id') id?: number,
+    @Args('data') data?: PartialUpdateBooking,
+  ): Promise<BookingPayload> {
+    const booking = await this.bookingSvc.update({
+      id,
+      data: {
+        ...data,
+        isAdminUpdate: true,
+        adminUpdateId: user.id,
+      },
+    });
+    return { booking };
+  }
+
+  // @Mutation(() => BookingPayload)
+  // @UseGuards(GqlAuthGuard, RolesGuard)
+  // async customerUpdateBooking(
+  //   @CurrentUser() user: User,
+  //   @Args('id') id?: number,
+  //   @Args('data') data?: PartialUpdateBooking,
+  // ): Promise<BookingPayload> {
+  //   const booking = await this.bookingSvc.update({
+  //     id,
+  //     data: {
+  //       ...data,
+  //       isAdminUpdate: true,
+  //       adminUpdateId: user.id,
+  //     },
+  //   });
+  //   return { booking };
+  // }
 }
