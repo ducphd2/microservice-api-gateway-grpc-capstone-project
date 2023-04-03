@@ -77,7 +77,6 @@ message RegisterCustomerResponse {
   user.User user = 2;
 }
 
-
 message FindCustomersIncludeUser {
   int32 id = 1;
   optional int32 userId = 2;
@@ -106,6 +105,7 @@ message RegisterCustomerResponseList {
   repeated FindCustomersIncludeUser items = 1;
 }
 
+
 service CustomerServiceGrpc {
   rpc find (commons.Query) returns (FindCustomersPayload) {}
   rpc findById (commons.Id) returns (Customer) {}
@@ -116,6 +116,5 @@ service CustomerServiceGrpc {
   rpc register (RegisterCustomerInput) returns (RegisterCustomerResponse) {}
   rpc update (UpdateCustomerInput) returns (Customer) {}
   rpc destroy (commons.Query) returns (commons.Count) {}
-  rpc findOneCustomer (commons.Query) returns (user.FindOneCustomerPayload) {}
   rpc findCustomerAndUserByCustomerIds (commons.Query) returns (RegisterCustomerResponseList) {}
 }

@@ -26,4 +26,5 @@ export interface CreateBookingDto extends Attributes<Booking> {
   customerEmail: string;
   customerName: string;
   note: string;
+  serviceName: string;
 }

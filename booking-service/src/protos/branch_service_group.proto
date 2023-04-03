@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package branch_service_group;
+
+import "commons.proto";
+
+service BranchServiceGroupServiceGrpc {
+    rpc find (commons.Query) returns (FindBranchServiceGroupesPayload) {}
+    rpc findOne (commons.Query) returns (BranchServiceGroup) {}
+    rpc findById (commons.Id) returns (BranchServiceGroup) {}
+    rpc findByUserId (commons.Query) returns (FindBranchServiceGroupesPayload) {}
+    rpc create (InputCreateRequest) returns (BranchServiceGroup) {}
+    rpc update (UpdateBranchServiceGroupInput) returns (BranchServiceGroup) {}
+    rpc destroy (commons.Id) returns (commons.Count) {}
+    rpc count (InputCreateRequest) returns (commons.Count) {}
+}
+
+message UpdateBranchServiceGroupInput {
+    int32 id = 1;
+    BranchServiceGroup data = 2;
+}
+
+message InputCreateRequest {
+    string code = 1;
+    string name = 2;
+    string description = 3;
+    string image = 4;
+    int32 showType = 5;
+    int32 branchId = 6;
+}
+
+message BranchServiceGroup {
+    int32 id = 1;
+    string code = 2;
+    string name = 3;
+    optional string description = 4;
+    string image = 5;
+    string createdAt = 6;
+    string updatedAt = 7;
+    int32 showType = 8;
+    int32 branchId = 9;
+    optional int32 merchantId = 10;
+}
+
+message BranchServiceGroupEdge {
+    BranchServiceGroup node = 1;
+    string cursor = 2;
+}
+
+message FindBranchServiceGroupesPayload {
+    repeated BranchServiceGroupEdge edges = 1;
+    commons.PageInfo pageInfo = 2;
+}

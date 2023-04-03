@@ -5,7 +5,14 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { Booking } from '../../database/models';
 import { EBookingStatus, EBullEvent } from '../../enums';
-import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes, IQueryV2 } from '../../interfaces';
+import {
+  IBookingResToGraphQl,
+  IFindAndPaginateOptions,
+  IFindAndPaginateResult,
+  IPaginationRes,
+  IQueryV2,
+} from '../../interfaces';
+import { UserGrpcService } from '../user-grpc/user-grpc.service';
 
 import { IBookingsService } from './bookings.interface';
 import { BookingsRepository } from './bookings.repository';
@@ -17,6 +24,7 @@ export class BookingsService implements IBookingsService {
     private bookingsRepository: BookingsRepository,
     private readonly sequelize: Sequelize,
     private bookingQueue: BookingQueueProvider,
+    private readonly userGrpcService: UserGrpcService,
   ) {}
 
   async find(query?: IFindAndPaginateOptions): Promise<IFindAndPaginateResult<Booking>> {
@@ -91,7 +99,7 @@ export class BookingsService implements IBookingsService {
     return result;
   }
 
-  async findAll(query: IQueryV2): Promise<IPaginationRes<Booking>> {
+  async findAll(query: IQueryV2): Promise<IPaginationRes<IBookingResToGraphQl>> {
     const result = await this.bookingsRepository.findAll(
       {
         ...query,
@@ -102,6 +110,31 @@ export class BookingsService implements IBookingsService {
       },
     );
 
-    return result;
+    const customerIds = result.items.reduce((acc, curr) => {
+      if (!acc.includes(curr.customerId)) {
+        acc.push(curr.customerId);
+      }
+      return acc;
+    }, [] as number[]);
+
+    const { items } = await this.userGrpcService.bookingFindCustomerAndUserDetailByCustomerId({
+      where: JSON.stringify({
+        id: customerIds,
+      }),
+    });
+
+    const a = result.items.map((booking) => {
+      const customer = items.find((c) => c.id === booking.customerId);
+      return {
+        ...booking,
+        customerName: customer.user.fullName,
+        customerEmail: customer.user.email,
+      };
+    });
+
+    return {
+      ...result,
+      items: a,
+    };
   }
 }

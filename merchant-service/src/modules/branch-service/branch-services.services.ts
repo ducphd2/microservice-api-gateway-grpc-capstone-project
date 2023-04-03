@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationQuery, PaginationResponse } from '@ntheanh201/nestjs-sequelize-pagination';
-import { isEmpty, pick } from 'lodash';
-import { Includeable, WhereOptions } from 'sequelize';
+import { PaginationResponse } from '@ntheanh201/nestjs-sequelize-pagination';
+import { isEmpty } from 'lodash';
+import { WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { BranchServices } from '../../database/entities';
 import { ErrorHelper } from '../../helpers';
