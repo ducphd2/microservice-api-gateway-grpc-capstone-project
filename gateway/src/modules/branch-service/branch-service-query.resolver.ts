@@ -93,23 +93,13 @@ export class BranchServicesQueryResolver {
   ): Promise<BranchServicePaginationResponse> {
     try {
       const query = {
-        searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+        searchKey: !isEmpty(q) ? q.toString() : undefined,
         page: page ? page : 1,
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
         orderDirection: orderDirection ? orderDirection : 'DESC',
         where: {},
       };
-
-      if (!isEmpty(q)) {
-        merge(query, {
-          where: {
-            name: {
-              _iLike: `%${q}%`,
-            },
-          },
-        });
-      }
 
       const result = await this.branchServicesSvc.findAll({
         ...query,
