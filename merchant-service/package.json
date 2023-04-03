@@ -25,11 +25,6 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.7.3",
     "@grpc/proto-loader": "^0.7.3",
-    "@mikro-orm/cli": "^5.5.0",
-    "@mikro-orm/core": "^5.5.0",
-    "@mikro-orm/migrations": "^5.5.0",
-    "@mikro-orm/nestjs": "^5.1.2",
-    "@mikro-orm/postgresql": "^5.5.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
@@ -42,7 +37,7 @@
     "dotenv": "^16.0.3",
     "grpc": "^1.24.11",
     "lodash": "^4.17.21",
-    "mikro-orm": "^5.5.0",
+    "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -93,12 +88,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "mikro-orm": {
-    "useTsNode": true,
-    "configPaths": [
-      "./src/mikro-orm.config.ts",
-      "./dist/mikro-orm.config.js"
-    ]
   }
 }

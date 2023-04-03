@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PaginationResponse } from '@ntheanh201/nestjs-sequelize-pagination';
 import { isEmpty } from 'lodash';
-import { WhereOptions } from 'sequelize';
+import { Sequelize, WhereOptions } from 'sequelize';
 import { MERCHANT } from '../../constants';
 import { BranchServices } from '../../database/entities';
 import { ErrorHelper } from '../../helpers';
@@ -20,9 +20,20 @@ export class BranchServicesService {
   }
 
   async findAll(query: IQueryV2): Promise<PaginationResponse<BranchServices>> {
+    let whereQuery = {} as WhereOptions;
+    const baseWhereQuery = !isEmpty(query.where) ? JSON.parse(query.where) : undefined;
+    if (baseWhereQuery !== undefined) {
+      whereQuery = !isEmpty(query.searchKey)
+        ? {
+            ...baseWhereQuery,
+            tsv: Sequelize.literal(`plainto_tsquery('english', '${query.searchKey}') @@ tsv`),
+          }
+        : undefined;
+    }
+
     const result = await this.branchServicesRepository.findAndPaginate({
       ...query,
-      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+      where: whereQuery,
     });
 
     return result;
