@@ -301,11 +301,11 @@ type DeleteBookingPayload {
 }
 
 type BookingPaginationResponse {
-  items: [ExtendResponseBooking!]!
-  page: Int!
-  totalPage: Int!
-  total: Int!
-  limit: Int!
+  items: [ExtendResponseBooking!]
+  page: Int
+  totalPage: Int
+  total: Int
+  limit: Int
 }
 
 type ExtendResponseBooking {
@@ -411,11 +411,11 @@ type BranchServicePayload {
 }
 
 type BranchServicePaginationResponse {
-  items: [BranchService!]!
-  page: Int!
-  totalPage: Int!
-  total: Int!
-  limit: Int!
+  items: [BranchService!]
+  page: Int
+  totalPage: Int
+  total: Int
+  limit: Int
 }
 
 type FindAllCategories {
@@ -448,6 +448,7 @@ type Query {
   getCustomerById(id: Int!): Customer!
   findAllBookingByMerchant(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
   findBookingById(id: Float!): BookingPayload!
+  findAllBooking(q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BookingPaginationResponse!
   findBranchServiceById(id: Float!): BranchService!
   findAllBranchServices(q: String, first: Float, last: Float, before: String, after: String, orderBy: String): BranchServiceConnection!
   findAllBranchServicesByMerchant(merchantId: Float!, q: String, limit: Float, page: Float, orderBy: String, orderDirection: String): BranchServicePaginationResponse!

@@ -25,5 +25,5 @@ export interface IQueryV2 {
   after?: string;
   page?: number;
   offset?: number;
-  keySearch?: string;
+  searchKey?: string;
 }

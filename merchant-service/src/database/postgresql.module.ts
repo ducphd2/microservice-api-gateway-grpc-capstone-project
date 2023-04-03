@@ -65,6 +65,7 @@ const operatorsAliases: OperatorsAliases = {
         database: POSTGRES_DATABASE,
         autoLoadModels: true,
         synchronize: true,
+        operatorsAliases,
         query: {
           raw: true,
         },

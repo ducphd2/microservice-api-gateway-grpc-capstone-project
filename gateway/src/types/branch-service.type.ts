@@ -133,18 +133,18 @@ export class UpdateBranchService {
 
 @ObjectType()
 export class BranchServicePaginationResponse {
-  @Field(() => [BranchService])
+  @Field(() => [BranchService], { nullable: true })
   items: BranchService[];
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   page: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   totalPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   total: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   limit: number;
 }

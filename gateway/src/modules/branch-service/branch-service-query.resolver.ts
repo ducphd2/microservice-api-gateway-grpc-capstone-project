@@ -98,9 +98,23 @@ export class BranchServicesQueryResolver {
         limit: limit ? limit : 10,
         orderBy: orderBy ? orderBy : 'updatedAt',
         orderDirection: orderDirection ? orderDirection : 'DESC',
+        where: {},
       };
 
-      const result = await this.branchServicesSvc.findAll(query);
+      if (!isEmpty(q)) {
+        merge(query, {
+          where: {
+            name: {
+              _iLike: `%${q}%`,
+            },
+          },
+        });
+      }
+
+      const result = await this.branchServicesSvc.findAll({
+        ...query,
+        where: JSON.stringify(query.where),
+      });
       return result;
     } catch (error) {
       throw new Error(error);
