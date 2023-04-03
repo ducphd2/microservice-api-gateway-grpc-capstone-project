@@ -4,7 +4,7 @@ import { ClientGrpcProxy, ClientProxyFactory, Transport } from '@nestjs/microser
 import { join } from 'path';
 import { EGrpcClientService } from '../../enums';
 import { UtilsModule } from '../../utils/utils.module';
-import { BookingMutationResolver } from './booking-mutation.resolver';
+import { BookingMutationResolver } from './booking.resolver';
 import { MerchantModule } from '../merchant/merchant.module';
 import { BranchServicesModule } from '../branch-service/branch-service.module';
 import { UserModule } from '../user/user.module';

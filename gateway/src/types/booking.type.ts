@@ -133,19 +133,19 @@ export class CustomerCreateBookingInput {
 
 @ObjectType()
 export class BookingPaginationResponse {
-  @Field(() => [ExtendResponseBooking])
+  @Field(() => [ExtendResponseBooking], { nullable: true })
   items: ExtendResponseBooking[];
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   page: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   totalPage: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   total: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   limit: number;
 }
 

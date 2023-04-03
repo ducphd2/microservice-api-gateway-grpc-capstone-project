@@ -1,7 +1,7 @@
 import { Inject, Logger, OnModuleInit, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ClientGrpcProxy, RpcException } from '@nestjs/microservices';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, merge } from 'lodash';
 import { lastValueFrom } from 'rxjs';
 import { CurrentUser } from '../../common/decorators';
 import { EBookingStatus } from '../../enums';
@@ -195,6 +195,37 @@ export class BookingMutationResolver implements OnModuleInit {
       },
     });
     return { booking };
+  }
+
+  @Query(() => BookingPaginationResponse)
+  @UseGuards(GqlAuthGuard)
+  async findAllBooking(
+    @Args('q', { nullable: true }) q?: string,
+    @Args('limit', { nullable: true }) limit?: number,
+    @Args('page', { nullable: true }) page?: number,
+    @Args('orderBy', { nullable: true }) orderBy?: string,
+    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+  ): Promise<BookingPaginationResponse> {
+    const query = { where: {} };
+
+    if (!isEmpty(q))
+      merge(query, {
+        where: {
+          serviceName: {
+            _iLike: `%${q}%`,
+          },
+        },
+      });
+
+    const re = await this.bookingSvc.findAll({
+      where: JSON.stringify(query.where),
+      searchKey: !isEmpty(q) ? `%${q}%` : undefined,
+      page: page ? page : 1,
+      limit: limit ? limit : 10,
+      orderBy: orderBy ? orderBy : 'updatedAt',
+      orderDirection: orderDirection ? orderDirection : 'DESC',
+    });
+    return re;
   }
 
   // @Mutation(() => BookingPayload)
