@@ -24,11 +24,6 @@ export class MerchantService {
     return result;
   }
 
-  async findMerchantById(data: IId): Promise<Merchant> {
-    const result = await lastValueFrom(this.merchantService.findMerchantById(data));
-    return result;
-  }
-
   async updateMerchant(input: UpdateMerchantRequestInputDto): Promise<Merchant> {
     const result = await lastValueFrom(this.merchantService.updateMerchant(input));
     return result;

@@ -20,7 +20,7 @@ export class MerchantBranchService {
     );
   }
 
-  async findMerchantBranchById(data: IId): Promise<MerchantBranch> {
+  async findById(data: IId): Promise<MerchantBranch> {
     const result = await lastValueFrom(this.merchantBranchService.findById(data));
     return result;
   }

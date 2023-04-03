@@ -16,7 +16,7 @@ export class MerchantQueryResolver {
   @UseGuards(GqlAuthGuard)
   async findMerchantById(@Args('id') id: number): Promise<Merchant> {
     try {
-      const result = await this.merchantService.findMerchantById({ id });
+      const result = await this.merchantService.findById({ id });
       return result;
     } catch (error) {
       throw new RpcException(error);

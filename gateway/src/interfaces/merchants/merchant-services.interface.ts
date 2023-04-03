@@ -9,7 +9,7 @@ import { IMerchantConnection, IRegisterInput, IRegisterResponse } from './mercha
 export interface IMerchantServiceGrpc {
   create(input: IRegisterInput, metadata?: Metadata): Observable<Merchant>;
   find(query: IQuery, metadata?: Metadata): Observable<MerchantConnection>;
-  findMerchantById(id: IId, metadata?: Metadata): Observable<Merchant>;
+  findById(id: IId, metadata?: Metadata): Observable<Merchant>;
   findOne(query?: IQueryV2, metadata?: Metadata): Observable<Merchant>;
   countMerchants(query?: IQuery, metadata?: Metadata): Observable<ICount>;
   updateMerchant(input: UpdateMerchantRequestInputDto): Observable<Merchant>;

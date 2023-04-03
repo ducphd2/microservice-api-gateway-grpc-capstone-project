@@ -16,7 +16,7 @@ export class BranchQueryResolver {
   @UseGuards(GqlAuthGuard)
   async findMerchantBranchById(@Args('id') id: number): Promise<MerchantBranch> {
     try {
-      const result = await this.merchantBranchService.findMerchantBranchById({ id });
+      const result = await this.merchantBranchService.findById({ id });
       return result;
     } catch (error) {
       throw new RpcException(error);
