@@ -82,6 +82,11 @@ export class Booking extends BaseModel<Booking> {
     type: DataType.INTEGER,
   })
   adminUpdateId: number;
+
+  @Column({
+    type: DataType.TEXT,
+  })
+  serviceName: string;
 }
 
 paginate({

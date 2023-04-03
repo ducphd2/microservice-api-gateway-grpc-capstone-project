@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package commons;
+
+message Id {
+  int32 id = 1;
+}
+
+message Query {
+  repeated string select = 1;
+  string where = 2;
+  repeated string orderBy = 3;
+  int32 limit = 4;
+  string before = 5;
+  string after = 6;
+}
+
+message PageInfo {
+  string startCursor = 1;
+  string endCursor = 2;
+  bool hasNextPage = 3;
+  bool hasPreviousPage = 4;
+}
+
+message Count {
+  int32 count = 1;
+}
+
+message QueryRequest {
+  string where = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string searchKey = 4;
+  string orderBy = 5;
+  string orderDirection = 6;
+}

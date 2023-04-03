@@ -281,6 +281,7 @@ type Booking {
   isAdminUpdate: Boolean
   adminUpdateId: Int
   note: String
+  serviceName: String
 }
 
 enum EBookingStatus {
@@ -294,22 +295,40 @@ type BookingPayload {
   booking: Booking
 }
 
-type BookingEdge {
-  node: Booking!
-  cursor: String!
-}
-
 type DeleteBookingPayload {
   errors: [ErrorPayload!]
   count: Int
 }
 
 type BookingPaginationResponse {
-  items: [Booking!]!
+  items: [ExtendResponseBooking!]!
   page: Int!
   totalPage: Int!
   total: Int!
   limit: Int!
+}
+
+type ExtendResponseBooking {
+  id: Int!
+  createdAt: String!
+  updatedAt: String!
+  status: EBookingStatus!
+  customerId: Int!
+  branchServiceId: Int!
+  merchantId: Int
+  branchId: Int
+  startTime: String!
+  endTime: String!
+  bookingDate: String!
+  cancelReason: String
+  isCustomerCancel: Boolean
+  isAdminUpdate: Boolean
+  adminUpdateId: Int
+  note: String
+  serviceName: String
+  customerEmail: String
+  customerName: String
+  customerAddress: String
 }
 
 type UserBookingNotification {

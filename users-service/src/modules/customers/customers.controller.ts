@@ -11,7 +11,7 @@ import { CUSTOMER_MESSAGE } from '../../constants/messages';
 import { Customer } from '../../database/models/customer.model';
 import { EGrpcClientService, EUserRole } from '../../enums';
 import { ErrorHelper } from '../../helpers';
-import { IUserIncludeCustomer } from '../../interfaces';
+import { IPaginationRes, IQueryV2, IUserIncludeCustomer } from '../../interfaces';
 import {
   ICreateCustomer,
   ICustomer,
@@ -167,5 +167,21 @@ export class CustomersController {
     }
 
     return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findCustomerAndUserByCustomerIds')
+  async findCustomerAndUserByCustomerIds(query: IQueryV2): Promise<any> {
+    const result = await this.service.findAllIncludeUser(query);
+
+    if (isEmpty(result)) {
+      ErrorHelper.NotFoundException(CUSTOMER_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
+
+    return result;
+  }
+
+  @GrpcMethod(EGrpcClientService.CUSTOMER_SERVICE, 'findAll')
+  async findAll(query: IQueryV2) {
+    return this.service.findAll(query);
   }
 }

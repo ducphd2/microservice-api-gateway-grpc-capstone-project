@@ -23,9 +23,6 @@ message Booking {
   optional bool isAdminUpdate = 16;
   optional int32 adminUpdateId = 17;
   optional string serviceName = 18;
-  optional string customerName = 19;
-  optional string customerEmail = 20;
-  optional string customerAddress = 21;
 }
 
 message BookingEdge {

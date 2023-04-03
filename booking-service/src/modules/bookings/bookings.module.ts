@@ -1,13 +1,14 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { BullModule } from '@nestjs/bull';
 
 import { Booking } from '../../database/models';
 import { EBullQueue } from '../../enums';
+import { UserGrpcModule } from '../user-grpc/user-grpc.module';
 
 import { BookingsController } from './bookings.controller';
-import { BookingsService } from './bookings.service';
 import { BookingsRepository } from './bookings.repository';
+import { BookingsService } from './bookings.service';
 import { BookingQueueProvider } from './bull-producer.service';
 
 @Module({
@@ -16,6 +17,7 @@ import { BookingQueueProvider } from './bull-producer.service';
     BullModule.registerQueue({
       name: EBullQueue.BOOKING_QUEUE,
     }),
+    UserGrpcModule,
   ],
   providers: [BookingsService, BookingsRepository, BookingQueueProvider],
   controllers: [BookingsController],

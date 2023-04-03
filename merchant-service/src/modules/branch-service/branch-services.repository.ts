@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { PaginationService } from '@ntheanh201/nestjs-sequelize-pagination';
+import { FindOptions } from 'sequelize';
 import { BaseRepository } from 'src/database/base.repository';
 import { BranchServices } from '../../database/entities/branch-service.model';
-import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes, IQueryV2 } from '../../interfaces';
-import { PaginationQuery, PaginationResponse, PaginationService } from '@ntheanh201/nestjs-sequelize-pagination';
-import { Includeable } from 'sequelize/types';
-import { isEmpty } from 'lodash';
-import { Op } from 'sequelize';
-import { FindOptions } from 'sequelize';
+import { IFindAndPaginateOptions, IFindAndPaginateResult, IPaginationRes } from '../../interfaces';
 
 @Injectable()
 export class BranchServiceRepository extends BaseRepository<BranchServices> {

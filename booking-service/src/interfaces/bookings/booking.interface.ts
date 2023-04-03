@@ -9,3 +9,9 @@ export interface IBooking {
   endTime?: string;
   duration?: number;
 }
+
+export interface IBookingResToGraphQl extends IBooking {
+  customerEmail?: string;
+  customerName?: string;
+  customerAddress?: string;
+}

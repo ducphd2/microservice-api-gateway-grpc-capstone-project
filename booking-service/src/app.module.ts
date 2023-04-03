@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+
 import { PostgresqlModule } from './database/postgresql.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { BookingProductsModule } from './modules/booking-products/booking-products.module';

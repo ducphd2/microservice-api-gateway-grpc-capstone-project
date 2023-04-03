@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { isEmpty, omit, pick } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
 import { FindOptions, Transaction } from 'sequelize';
 
@@ -10,6 +10,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Customer, User } from '../../database/models';
 import { EUserRole } from '../../enums';
 import { ErrorHelper } from '../../helpers';
+import { IPaginationRes, IQueryV2, IUser, IUserIncludeCustomer } from '../../interfaces';
 import {
   ICreateCustomer,
   ICustomer,
@@ -19,7 +20,7 @@ import {
   IUpdateCustomer,
 } from '../../interfaces/customers';
 import { UsersService } from '../users/users.service';
-import { IUser, IUserIncludeCustomer } from '../../interfaces';
+import { CustomerRepository } from './customer.repository';
 
 @Injectable()
 export class CustomersService implements ICustomersService {
@@ -28,6 +29,7 @@ export class CustomersService implements ICustomersService {
     private readonly logger: PinoLogger,
     private readonly sequelize: Sequelize,
     private readonly usersService: UsersService,
+    private readonly customerRepository: CustomerRepository,
   ) {
     logger.setContext(CustomersService.name);
   }
@@ -252,5 +254,33 @@ export class CustomersService implements ICustomersService {
       user: result.user as IUser,
       customer: omit(result, 'user'),
     };
+  }
+
+  async findAll(query: IQueryV2): Promise<IUserIncludeCustomer> {
+    const result: Customer = await this.customerRepository.findAndPaginate({
+      ...query,
+      where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+    });
+
+    return {
+      user: result.user as IUser,
+      customer: omit(result, 'user'),
+    };
+  }
+
+  async findAllIncludeUser(query: IQueryV2): Promise<IPaginationRes<Customer>> {
+    const result: IPaginationRes<Customer> = await this.customerRepository.findAndPaginate(
+      {
+        ...query,
+        where: !isEmpty(query.where) ? JSON.parse(query.where) : undefined,
+      },
+      {
+        include: [User],
+        nest: true,
+        raw: true,
+      },
+    );
+
+    return result;
   }
 }

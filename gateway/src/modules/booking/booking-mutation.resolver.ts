@@ -111,6 +111,7 @@ export class BookingMutationResolver implements OnModuleInit {
           status: EBookingStatus.PENDING,
           merchantId: merchant.id,
           branchId: branchService.branchId,
+          serviceName: branchService.name,
         }),
       );
 

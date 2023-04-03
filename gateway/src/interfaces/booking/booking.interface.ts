@@ -46,4 +46,5 @@ export interface ICustomerCreateBookingInput {
   customerEmail?: string;
   customerName?: string;
   note?: string;
+  serviceName?: string;
 }

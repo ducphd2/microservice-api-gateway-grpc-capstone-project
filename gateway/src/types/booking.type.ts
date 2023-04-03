@@ -42,6 +42,9 @@ export class Booking extends BaseType {
 
   @Field({ nullable: true })
   readonly note: string;
+
+  @Field({ nullable: true })
+  readonly serviceName: string;
 }
 
 @InputType()
@@ -81,24 +84,6 @@ export class BookingPayload {
 
   @Field(() => Booking, { nullable: true })
   booking?: Booking;
-}
-
-@ObjectType()
-export class BookingEdge {
-  @Field(() => Booking)
-  node: Booking;
-
-  @Field(() => String)
-  cursor: string;
-}
-
-@ObjectType()
-export class BookingsConnection {
-  @Field(() => [BookingEdge])
-  edges: BookingEdge[];
-
-  @Field(() => PageInfo)
-  pageInfo: PageInfo;
 }
 
 @ObjectType()
@@ -148,8 +133,8 @@ export class CustomerCreateBookingInput {
 
 @ObjectType()
 export class BookingPaginationResponse {
-  @Field(() => [Booking])
-  items: Booking[];
+  @Field(() => [ExtendResponseBooking])
+  items: ExtendResponseBooking[];
 
   @Field(() => Int)
   page: number;
@@ -170,4 +155,16 @@ export class UpdateBookingInput {
 
   @Field(() => PartialUpdateBooking)
   data: PartialUpdateBooking;
+}
+
+@ObjectType()
+export class ExtendResponseBooking extends Booking {
+  @Field({ nullable: true })
+  readonly customerEmail: string;
+
+  @Field({ nullable: true })
+  readonly customerName: string;
+
+  @Field({ nullable: true })
+  readonly customerAddress: string;
 }
