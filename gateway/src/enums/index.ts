@@ -6,3 +6,4 @@ export * from './booking.enum';
 export * from './queue-event.enum';
 export * from './subscription-event.enum';
 export * from './branch-service.enum';
+export * from './common.enum';
