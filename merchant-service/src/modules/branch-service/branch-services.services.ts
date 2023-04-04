@@ -31,10 +31,15 @@ export class BranchServicesService {
         : undefined;
     }
 
-    const result = await this.branchServicesRepository.findAndPaginate({
-      ...query,
-      where: whereQuery,
-    });
+    const result = await this.branchServicesRepository.findAndPaginate(
+      {
+        ...query,
+        where: whereQuery,
+      },
+      {
+        order: [[query.orderBy, query.orderDirection]],
+      },
+    );
 
     return result;
   }

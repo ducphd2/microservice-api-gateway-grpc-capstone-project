@@ -6,6 +6,7 @@ import { GqlAuthGuard } from '../../guard';
 import { BranchService, BranchServiceConnection, BranchServicePaginationResponse } from '../../types';
 import { QueryUtils } from '../../utils/query.utils';
 import { BranchServicesService } from './branch-service.service';
+import { ECommonOrderDirection } from '../../enums';
 
 @Resolver()
 export class BranchServicesQueryResolver {
@@ -89,7 +90,7 @@ export class BranchServicesQueryResolver {
     @Args('limit', { nullable: true }) limit?: number,
     @Args('page', { nullable: true }) page?: number,
     @Args('orderBy', { nullable: true }) orderBy?: string,
-    @Args('orderDirection', { nullable: true }) orderDirection?: string,
+    @Args('orderDirection', { nullable: true, type: () => ECommonOrderDirection }) orderDirection?: string,
   ): Promise<BranchServicePaginationResponse> {
     try {
       const query = {
