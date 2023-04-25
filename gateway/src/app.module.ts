@@ -18,9 +18,12 @@ import { RestApiModule } from './modules/rest-api/rest-api.module';
 import { UserModule } from './modules/user/user.module';
 import { BranchServiceGroupModule } from './modules/branch-service-group/branch-service-group.module';
 import { BranchServicesModule } from './modules/branch-service/branch-service.module';
+import { EventsModule } from './modules/events/events.module';
+import { MessagesModule } from './modules/messages/messages.module';
 
 @Module({
   imports: [
+    EventsModule ,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -71,6 +74,7 @@ import { BranchServicesModule } from './modules/branch-service/branch-service.mo
     RestApiModule,
     BranchServiceGroupModule,
     BranchServicesModule,
+    MessagesModule
   ],
   providers: [
     {
